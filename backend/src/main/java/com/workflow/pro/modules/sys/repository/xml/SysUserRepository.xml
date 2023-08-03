@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.workflow.pro.modules.sys.repository.SysUserRepository">
+
+    <select id="selectUser" parameterType="SysUserRequest" resultType="SysUser">
+        select *,
+        sp.name as postName,
+        sd.name as deptName,
+        gd.name as gradeName
+        from sys_user su
+        left join sys_post sp on sp.id = su.post_id
+        left join sys_dept sd on sd.id = su.dept_id
+        left join sys_user_grade gd on gd.id = su.grade_id
+        <where>
+            <if test="request.username!=null and request.username!=''">
+                and su.username like concat('%', #{request.username}, '%')
+            </if>
+            <if test="request.nickname!=null and request.nickname!=''">
+                and su.nickname like concat('%', #{request.nickname}, '%')
+            </if>
+            <if test="request.gradeId!=null and request.gradeId!=''">
+                and su.grade_id = #{request.gradeId}
+            </if>
+
+            <if test="request.phone!=null and request.phone!=''">
+                and su.phone = #{request.phone}
+            </if>
+            <if test="request.fromAgent!=null and request.fromAgent!=''">
+                and su.from_agent = #{request.fromAgent}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUsername" parameterType="string" resultType="SysUser">
+        select * from sys_user
+        where username = #{username} limit 1
+    </select>
+</mapper>

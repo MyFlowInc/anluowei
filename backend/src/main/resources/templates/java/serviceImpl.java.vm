@@ -1,0 +1,104 @@
+package ${packageName}.service.impl;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.workflow.pro.common.web.base.page.PageResponse;
+import com.workflow.pro.common.web.base.page.Pageable;
+
+
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.param.${ClassName}Request;
+import ${packageName}.service.I${ClassName}Service;
+
+
+import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
+import java.util.List;
+
+
+/**
+ * ${functionName}ServiceImpl业务层处理
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${ClassName}> implements I${ClassName}Service {
+
+    @Resource
+    ${ClassName}Mapper ${className}Mapper;
+
+    /**
+     * 查询${functionName}
+     *
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} select${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
+        return ${className}Mapper.select${ClassName}ById(${pkColumn.javaField});
+    }
+
+    /**
+     * 查询${functionName}列表
+     * @return ${functionName}
+     */
+    @Override
+    public List<${ClassName}> list (${ClassName}Request request){
+        return ${className}Mapper.list(request);
+    }
+
+    /**
+     * 查询${functionName}
+     * @return ${functionName} 分页集合
+     * */
+    @Override
+    public PageResponse<${ClassName}> page(${ClassName}Request request) {
+        return Pageable.of(request, (() -> ${className}Mapper.select${ClassName}List(request)));
+    }
+
+    /**
+     * 新增${functionName}
+     *
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+
+    @Override
+    public int insert${ClassName}(${ClassName} ${className}) {
+        return ${className}Mapper.insert${ClassName}(${className});
+    }
+
+    /**
+     * 修改${functionName}
+     *
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    @Override
+    public int update${ClassName}(${ClassName} ${className}) {
+        return ${className}Mapper.update${ClassName}(${className});
+    }
+
+    /**
+     * 删除${functionName}对象
+     *
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+    @Override
+    public int delete${ClassName}ByIds(String[] ids) {
+        return ${className}Mapper.delete${ClassName}ByIds(ids);
+    }
+
+    /**
+     * 删除${functionName}信息
+     *
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return 结果
+     */
+    @Override
+    public int delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
+        return ${className}Mapper.delete${ClassName}ById(${pkColumn.javaField});
+    }
+}

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.ApitableAuditInviteRecordMapper">
+
+    <resultMap type="ApitableAuditInviteRecord" id="ApitableAuditInviteRecordResult">
+                    <result property="id" column="id"/>
+                    <result property="spaceId" column="space_id"/>
+                    <result property="dstId" column="dst_id"/>
+                    <result property="inviter" column="inviter"/>
+                    <result property="accepter" column="accepter"/>
+                    <result property="type" column="type"/>
+                    <result property="content" column="content"/>
+                    <result property="sort" column="sort"/>
+                    <result property="ignoreMsg" column="ignore_msg"/>
+                    <result property="createBy" column="create_by"/>
+                    <result property="updateBy" column="update_by"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="deleted" column="deleted"/>
+                    <result property="updateTime" column="update_time"/>
+                    <result property="remark" column="remark"/>
+                    <result property="tenantId" column="tenant_id"/>
+                    </resultMap>
+    
+    <sql id="selectApitableAuditInviteRecordVo">
+        select`id`,`space_id`,`dst_id`,`inviter`,`accepter`,`type`,`content`,`sort`,`ignore_msg`,`create_by`,`update_by`,`create_time`,`deleted`,`update_time`,`remark`,`tenant_id`        from `apitable_audit_invite_record`
+    </sql>
+
+    <select id="selectApitableAuditInviteRecordList" parameterType="ApitableAuditInviteRecord" resultMap="ApitableAuditInviteRecordResult">
+        <include refid="selectApitableAuditInviteRecordVo"/>
+        <where>
+                                                                                                    <if test="request.spaceId != null  and request.spaceId != ''">and
+                            `space_id` = #{request.spaceId}
+                        </if>
+                                                                                                            <if test="request.dstId != null  and request.dstId != ''">and
+                            `dst_id` = #{request.dstId}
+                        </if>
+                                                                                                            <if test="request.inviter != null  and request.inviter != ''">and
+                            `inviter` = #{request.inviter}
+                        </if>
+                                                                                                            <if test="request.accepter != null  and request.accepter != ''">and
+                            `accepter` = #{request.accepter}
+                        </if>
+                                                                                                            <if test="request.type != null ">and
+                            `type` = #{request.type}
+                        </if>
+                                                                                                            <if test="request.content != null  and request.content != ''">and
+                            `content` = #{request.content}
+                        </if>
+                                                                                                            <if test="request.sort != null ">and
+                            `sort` = #{request.sort}
+                        </if>
+                                                                                                            <if test="request.ignoreMsg != null ">and
+                            `ignore_msg` = #{request.ignoreMsg}
+                        </if>
+                                                                                                                                                                                                <if test="request.deleted != null ">and
+                            `deleted` = #{request.deleted}
+                        </if>
+                                                                                                                                                                    <if test="request.tenantId != null  and request.tenantId != ''">and
+                            `tenant_id` = #{request.tenantId}
+                        </if>
+                                                        </where>
+                 order by   create_time desc
+            </select>
+
+    <select id="selectApitableAuditInviteRecordById" parameterType="String"
+            resultMap="ApitableAuditInviteRecordResult">
+                    <include refid="selectApitableAuditInviteRecordVo"/>
+            where `id` = #{id}
+            </select>
+
+    <insert id="insertApitableAuditInviteRecord" parameterType="ApitableAuditInviteRecord">
+        insert into `apitable_audit_invite_record`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">`id`,
+                    </if>
+                                                                <if test="spaceId != null and spaceId != ''">`space_id`,
+                    </if>
+                                                                <if test="dstId != null and dstId != ''">`dst_id`,
+                    </if>
+                                                                <if test="inviter != null and inviter != ''">`inviter`,
+                    </if>
+                                                                <if test="accepter != null and accepter != ''">`accepter`,
+                    </if>
+                                                                <if test="type != null">`type`,
+                    </if>
+                                                                <if test="content != null and content != ''">`content`,
+                    </if>
+                                                                <if test="sort != null">`sort`,
+                    </if>
+                                                                <if test="ignoreMsg != null">`ignore_msg`,
+                    </if>
+                                                                <if test="createBy != null">`create_by`,
+                    </if>
+                                                                <if test="updateBy != null">`update_by`,
+                    </if>
+                                                                <if test="createTime != null">`create_time`,
+                    </if>
+                                                                <if test="deleted != null">`deleted`,
+                    </if>
+                                                                <if test="updateTime != null">`update_time`,
+                    </if>
+                                                                <if test="remark != null">`remark`,
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id`,
+                    </if>
+                                    </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">#{id},
+                    </if>
+                                                                <if test="spaceId != null and spaceId != ''">#{spaceId},
+                    </if>
+                                                                <if test="dstId != null and dstId != ''">#{dstId},
+                    </if>
+                                                                <if test="inviter != null and inviter != ''">#{inviter},
+                    </if>
+                                                                <if test="accepter != null and accepter != ''">#{accepter},
+                    </if>
+                                                                <if test="type != null">#{type},
+                    </if>
+                                                                <if test="content != null and content != ''">#{content},
+                    </if>
+                                                                <if test="sort != null">#{sort},
+                    </if>
+                                                                <if test="ignoreMsg != null">#{ignoreMsg},
+                    </if>
+                                                                <if test="createBy != null">#{createBy},
+                    </if>
+                                                                <if test="updateBy != null">#{updateBy},
+                    </if>
+                                                                <if test="createTime != null">#{createTime},
+                    </if>
+                                                                <if test="deleted != null">#{deleted},
+                    </if>
+                                                                <if test="updateTime != null">#{updateTime},
+                    </if>
+                                                                <if test="remark != null">#{remark},
+                    </if>
+                                                                <if test="tenantId != null">#{tenantId},
+                    </if>
+                                    </trim>
+    </insert>
+
+    <update id="updateApitableAuditInviteRecord" parameterType="ApitableAuditInviteRecord">
+        update `apitable_audit_invite_record`
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="spaceId != null and spaceId != ''">`space_id` =
+                        #{spaceId},
+                    </if>
+                                                                <if test="dstId != null and dstId != ''">`dst_id` =
+                        #{dstId},
+                    </if>
+                                                                <if test="inviter != null and inviter != ''">`inviter` =
+                        #{inviter},
+                    </if>
+                                                                <if test="accepter != null and accepter != ''">`accepter` =
+                        #{accepter},
+                    </if>
+                                                                <if test="type != null">`type` =
+                        #{type},
+                    </if>
+                                                                <if test="content != null and content != ''">`content` =
+                        #{content},
+                    </if>
+                                                                <if test="sort != null">`sort` =
+                        #{sort},
+                    </if>
+                                                                <if test="ignoreMsg != null">`ignore_msg` =
+                        #{ignoreMsg},
+                    </if>
+                                                                <if test="createBy != null">`create_by` =
+                        #{createBy},
+                    </if>
+                                                                <if test="updateBy != null">`update_by` =
+                        #{updateBy},
+                    </if>
+                                                                <if test="createTime != null">`create_time` =
+                        #{createTime},
+                    </if>
+                                                                <if test="deleted != null">`deleted` =
+                        #{deleted},
+                    </if>
+                                                                <if test="updateTime != null">`update_time` =
+                        #{updateTime},
+                    </if>
+                                                                <if test="remark != null">`remark` =
+                        #{remark},
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id` =
+                        #{tenantId},
+                    </if>
+                                    </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteApitableAuditInviteRecordById" parameterType="String">
+        delete
+        from `apitable_audit_invite_record`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteApitableAuditInviteRecordByIds" parameterType="String">
+        delete from `apitable_audit_invite_record` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

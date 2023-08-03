@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.ApitableComponentMapper">
+
+    <resultMap type="ApitableComponent" id="ApitableComponentResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="nameEn" column="name_en"/>
+        <result property="content" column="content"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="revision" column="revision"/>
+        <result property="sort" column="sort"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+
+    <sql id="selectApitableComponentVo">
+        select`id`,`name`,`name_en`,`content`,`space_id`,`revision`,`sort`,`deleted`,`create_by`,`update_by`,`create_time`,`update_time`,`remark`,`tenant_id`
+        from `apitable_component`
+    </sql>
+
+    <select id="selectApitableComponentList" parameterType="ApitableComponent"
+            resultMap="ApitableComponentResult">
+        <include refid="selectApitableComponentVo"/>
+        <where>
+            <if test="request.name != null  and request.name != ''">and
+                `name` like concat('%', #{request.name}, '%')
+            </if>
+            <if test="request.nameEn != null  and request.nameEn != ''">and
+                `name_en` = #{request.nameEn}
+            </if>
+            <if test="request.content != null  and request.content != ''">and
+                `content` = #{request.content}
+            </if>
+            <if test="request.spaceId != null  and request.spaceId != ''">and
+                `space_id` = #{request.spaceId}
+            </if>
+            <if test="request.revision != null ">and
+                `revision` = #{request.revision}
+            </if>
+            <if test="request.sort != null ">and
+                `sort` = #{request.sort}
+            </if>
+            <if test="request.deleted != null ">and
+                `deleted` = #{request.deleted}
+            </if>
+            <if test="request.tenantId != null  and request.tenantId != ''">and
+                `tenant_id` = #{request.tenantId}
+            </if>
+        </where>
+        order by   create_time desc
+    </select>
+
+    <select id="selectApitableComponentById" parameterType="String"
+            resultMap="ApitableComponentResult">
+        <include refid="selectApitableComponentVo"/>
+        where `id` = #{id}
+    </select>
+
+    <insert id="insertApitableComponent" parameterType="ApitableComponent">
+        insert into `apitable_component`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">`id`,
+            </if>
+            <if test="name != null">`name`,
+            </if>
+            <if test="nameEn != null">`name_en`,
+            </if>
+            <if test="content != null">`content`,
+            </if>
+            <if test="spaceId != null">`space_id`,
+            </if>
+            <if test="revision != null">`revision`,
+            </if>
+            <if test="sort != null">`sort`,
+            </if>
+            <if test="deleted != null">`deleted`,
+            </if>
+            <if test="createBy != null">`create_by`,
+            </if>
+            <if test="updateBy != null">`update_by`,
+            </if>
+            <if test="createTime != null">`create_time`,
+            </if>
+            <if test="updateTime != null">`update_time`,
+            </if>
+            <if test="remark != null">`remark`,
+            </if>
+            <if test="tenantId != null">`tenant_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},
+            </if>
+            <if test="name != null">#{name},
+            </if>
+            <if test="nameEn != null">#{nameEn},
+            </if>
+            <if test="content != null">#{content},
+            </if>
+            <if test="spaceId != null">#{spaceId},
+            </if>
+            <if test="revision != null">#{revision},
+            </if>
+            <if test="sort != null">#{sort},
+            </if>
+            <if test="deleted != null">#{deleted},
+            </if>
+            <if test="createBy != null">#{createBy},
+            </if>
+            <if test="updateBy != null">#{updateBy},
+            </if>
+            <if test="createTime != null">#{createTime},
+            </if>
+            <if test="updateTime != null">#{updateTime},
+            </if>
+            <if test="remark != null">#{remark},
+            </if>
+            <if test="tenantId != null">#{tenantId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateApitableComponent" parameterType="ApitableComponent">
+        update `apitable_component`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">`name` =
+                #{name},
+            </if>
+            <if test="nameEn != null">`name_en` =
+                #{nameEn},
+            </if>
+            <if test="content != null">`content` =
+                #{content},
+            </if>
+            <if test="spaceId != null">`space_id` =
+                #{spaceId},
+            </if>
+            <if test="revision != null">`revision` =
+                #{revision},
+            </if>
+            <if test="sort != null">`sort` =
+                #{sort},
+            </if>
+            <if test="deleted != null">`deleted` =
+                #{deleted},
+            </if>
+            <if test="createBy != null">`create_by` =
+                #{createBy},
+            </if>
+            <if test="updateBy != null">`update_by` =
+                #{updateBy},
+            </if>
+            <if test="createTime != null">`create_time` =
+                #{createTime},
+            </if>
+            <if test="updateTime != null">`update_time` =
+                #{updateTime},
+            </if>
+            <if test="remark != null">`remark` =
+                #{remark},
+            </if>
+            <if test="tenantId != null">`tenant_id` =
+                #{tenantId},
+            </if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteApitableComponentById" parameterType="String">
+        delete
+        from `apitable_component`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteApitableComponentByIds" parameterType="String">
+        delete from `apitable_component` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

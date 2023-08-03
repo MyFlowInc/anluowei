@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.ApitableNodeShareSettingMapper">
+
+    <resultMap type="ApitableNodeShareSetting" id="ApitableNodeShareSettingResult">
+        <result property="id" column="id"/>
+        <result property="dstId" column="dst_id"/>
+        <result property="nodeId" column="node_id"/>
+        <result property="viewId" column="view_id"/>
+        <result property="shareId" column="share_id"/>
+        <result property="isEnabled" column="is_enabled"/>
+        <result property="allowSave" column="allow_save"/>
+        <result property="allowEdit" column="allow_edit"/>
+        <result property="props" column="props"/>
+        <result property="sort" column="sort"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+    <sql id="selectApitableNodeShareSettingVo">
+        select`id`,`dst_id`,`node_id`,`view_id`,`share_id`,`is_enabled`,`allow_save`,`allow_edit`,`props`,`sort`,`create_by`,`update_by`,`create_time`,`update_time`,`remark`,`tenant_id`
+        from `apitable_node_share_setting`
+    </sql>
+
+    <select id="selectApitableNodeShareSettingList"
+            parameterType="ApitableNodeShareSetting"
+            resultMap="ApitableNodeShareSettingResult">
+        <include refid="selectApitableNodeShareSettingVo"/>
+        <where>
+            <if test="request.dstId != null  and request.dstId != ''">and
+                `dst_id` = #{request.dstId}
+            </if>
+            <if test="request.nodeId != null  and request.nodeId != ''">and
+                `node_id` = #{request.nodeId}
+            </if>
+            <if test="request.viewId != null  and request.viewId != ''">and
+                `view_id` = #{request.viewId}
+            </if>
+            <if test="request.shareId != null  and request.shareId != ''">and
+                `share_id` = #{request.shareId}
+            </if>
+            <if test="request.isEnabled != null ">and
+                `is_enabled` = #{request.isEnabled}
+            </if>
+            <if test="request.allowSave != null ">and
+                `allow_save` = #{request.allowSave}
+            </if>
+            <if test="request.allowEdit != null ">and
+                `allow_edit` = #{request.allowEdit}
+            </if>
+            <if test="request.props != null  and request.props != ''">and
+                `props` = #{request.props}
+            </if>
+            <if test="request.sort != null ">and
+                `sort` = #{request.sort}
+            </if>
+            <if test="request.tenantId != null  and request.tenantId != ''">and
+                `tenant_id` = #{request.tenantId}
+            </if>
+        </where>
+        order by   create_time desc
+    </select>
+
+    <select id="selectApitableNodeShareSettingById" parameterType="String"
+            resultMap="ApitableNodeShareSettingResult">
+        <include refid="selectApitableNodeShareSettingVo"/>
+        where `id` = #{id}
+    </select>
+
+    <insert id="insertApitableNodeShareSetting" parameterType="ApitableNodeShareSetting">
+        insert into `apitable_node_share_setting`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">`id`,
+            </if>
+            <if test="dstId != null">`dst_id`,
+            </if>
+            <if test="nodeId != null and nodeId != ''">`node_id`,
+            </if>
+            <if test="viewId != null">`view_id`,
+            </if>
+            <if test="shareId != null">`share_id`,
+            </if>
+            <if test="isEnabled != null">`is_enabled`,
+            </if>
+            <if test="allowSave != null">`allow_save`,
+            </if>
+            <if test="allowEdit != null">`allow_edit`,
+            </if>
+            <if test="props != null">`props`,
+            </if>
+            <if test="sort != null">`sort`,
+            </if>
+            <if test="createBy != null">`create_by`,
+            </if>
+            <if test="updateBy != null">`update_by`,
+            </if>
+            <if test="createTime != null">`create_time`,
+            </if>
+            <if test="updateTime != null">`update_time`,
+            </if>
+            <if test="remark != null">`remark`,
+            </if>
+            <if test="tenantId != null">`tenant_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},
+            </if>
+            <if test="dstId != null">#{dstId},
+            </if>
+            <if test="nodeId != null and nodeId != ''">#{nodeId},
+            </if>
+            <if test="viewId != null">#{viewId},
+            </if>
+            <if test="shareId != null">#{shareId},
+            </if>
+            <if test="isEnabled != null">#{isEnabled},
+            </if>
+            <if test="allowSave != null">#{allowSave},
+            </if>
+            <if test="allowEdit != null">#{allowEdit},
+            </if>
+            <if test="props != null">#{props},
+            </if>
+            <if test="sort != null">#{sort},
+            </if>
+            <if test="createBy != null">#{createBy},
+            </if>
+            <if test="updateBy != null">#{updateBy},
+            </if>
+            <if test="createTime != null">#{createTime},
+            </if>
+            <if test="updateTime != null">#{updateTime},
+            </if>
+            <if test="remark != null">#{remark},
+            </if>
+            <if test="tenantId != null">#{tenantId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateApitableNodeShareSetting" parameterType="ApitableNodeShareSetting">
+        update `apitable_node_share_setting`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dstId != null">`dst_id` =
+                #{dstId},
+            </if>
+            <if test="nodeId != null and nodeId != ''">`node_id` =
+                #{nodeId},
+            </if>
+            <if test="viewId != null">`view_id` =
+                #{viewId},
+            </if>
+            <if test="shareId != null">`share_id` =
+                #{shareId},
+            </if>
+            <if test="isEnabled != null">`is_enabled` =
+                #{isEnabled},
+            </if>
+            <if test="allowSave != null">`allow_save` =
+                #{allowSave},
+            </if>
+            <if test="allowEdit != null">`allow_edit` =
+                #{allowEdit},
+            </if>
+            <if test="props != null">`props` =
+                #{props},
+            </if>
+            <if test="sort != null">`sort` =
+                #{sort},
+            </if>
+            <if test="createBy != null">`create_by` =
+                #{createBy},
+            </if>
+            <if test="updateBy != null">`update_by` =
+                #{updateBy},
+            </if>
+            <if test="createTime != null">`create_time` =
+                #{createTime},
+            </if>
+            <if test="updateTime != null">`update_time` =
+                #{updateTime},
+            </if>
+            <if test="remark != null">`remark` =
+                #{remark},
+            </if>
+            <if test="tenantId != null">`tenant_id` =
+                #{tenantId},
+            </if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteApitableNodeShareSettingById" parameterType="String">
+        delete
+        from `apitable_node_share_setting`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteApitableNodeShareSettingByIds" parameterType="String">
+        delete from `apitable_node_share_setting` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

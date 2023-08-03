@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.cms.mapper.CmsContentMapper">
+
+    <!--    <resultMap type="CmsContent" id="CmsContentResult">-->
+    <!--        <result property="contentTitle" column="content_title"/>-->
+    <!--        <result property="contentUrl" column="content_url"/>-->
+    <!--        <result property="contentKeyword" column="content_keyword"/>-->
+    <!--        <result property="contentDescription" column="content_description"/>-->
+    <!--        <result property="contentImg" column="content_img"/>-->
+    <!--        <result property="contentSource" column="content_source"/>-->
+    <!--        <result property="contentAuthor" column="content_author"/>-->
+    <!--        <result property="contentDisplay" column="content_display"/>-->
+    <!--        <result property="contentType" column="content_type"/>-->
+    <!--        <result property="contentDatetime" column="content_datetime"/>-->
+    <!--        <result property="contentSort" column="content_sort"/>-->
+    <!--        <result property="contentHit" column="content_hit"/>-->
+    <!--        <result property="updateDate" column="update_date"/>-->
+    <!--        <result property="updateBy" column="update_by"/>-->
+    <!--        <result property="createDate" column="create_date"/>-->
+    <!--        <result property="createBy" column="create_by"/>-->
+    <!--        <result property="del" column="del"/>-->
+    <!--    </resultMap>-->
+    <select id="selectCmsContentList" resultType="CmsContent">
+        select *,
+        sd.category_title as cate_title
+        from cms_content su
+        left join cms_category sd on sd.id = su.category_id
+        <where>
+            <if test="request.docId != null  and request.docId != ''">and su.`id` = #{request.docId}</if>
+            <if test="request.isHome != null  and request.isHome != ''">and su.`is_home` = #{request.isHome}</if>
+            <if test="request.categoryId != null  and request.categoryId != ''">and su.`category_id` = #{request.categoryId}</if>
+            <if test="request.contentTitle != null  and request.contentTitle != ''">
+                and su.`content_title` like concat('%', #{request.contentTitle}, '%')
+            </if>
+        </where>
+        order by
+        su.content_sort asc
+    </select>
+
+    <!--    <select id="selectCmsContentList" parameterType="CmsContent" resultMap="CmsContentResult">-->
+    <!--        select `id`,`category_id`,`content_details`,`content_title`,`content_url`,`content_keyword`,`content_description`,`content_img`,`content_source`,`content_author`,`content_display`,`content_type`,`content_datetime`,`content_sort`,`content_hit`,`update_date`,`update_by`,`create_date`,`create_by`,`del` from `cms_content`-->
+    <!--        <where>-->
+    <!--             <if test="content_title != null  and content_title != ''"> and `content_title` = #{content_title}</if>-->
+    <!--        </where>-->
+    <!--    </select>-->
+
+</mapper>

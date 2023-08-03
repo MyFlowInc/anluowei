@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.SysCaptchaMapper">
+
+    <resultMap type="SysCaptcha" id="SysCaptchaResult">
+                    <result property="id" column="id"/>
+                    <result property="email" column="email"/>
+                    <result property="phone" column="phone"/>
+                    <result property="captcha" column="captcha"/>
+                    <result property="type" column="type"/>
+                    <result property="validated" column="validated"/>
+                    <result property="expired" column="expired"/>
+                    <result property="deleted" column="deleted"/>
+                    <result property="sort" column="sort"/>
+                    <result property="createBy" column="create_by"/>
+                    <result property="updateBy" column="update_by"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="updateTime" column="update_time"/>
+                    <result property="remark" column="remark"/>
+                    <result property="tenantId" column="tenant_id"/>
+                    </resultMap>
+    
+    <sql id="selectSysCaptchaVo">
+        select`id`,`email`,`phone`,`captcha`,`type`,`validated`,`expired`,`deleted`,`sort`,`create_by`,`update_by`,`create_time`,`update_time`,`remark`,`tenant_id`        from `sys_captcha`
+    </sql>
+
+    <select id="selectSysCaptchaList" parameterType="SysCaptcha" resultMap="SysCaptchaResult">
+        <include refid="selectSysCaptchaVo"/>
+        <where>
+                                                                                                    <if test="request.email != null  and request.email != ''">and
+                            `email` = #{request.email}
+                        </if>
+                                                                                                            <if test="request.phone != null  and request.phone != ''">and
+                            `phone` = #{request.phone}
+                        </if>
+                                                                                                            <if test="request.captcha != null  and request.captcha != ''">and
+                            `captcha` = #{request.captcha}
+                        </if>
+                                                                                                            <if test="request.type != null ">and
+                            `type` = #{request.type}
+                        </if>
+                                                                                                            <if test="request.validated != null ">and
+                            `validated` = #{request.validated}
+                        </if>
+                                                                                                            <if test="request.expired != null ">and
+                            `expired` = #{request.expired}
+                        </if>
+                                                                                                            <if test="request.deleted != null ">and
+                            `deleted` = #{request.deleted}
+                        </if>
+                                                                                                            <if test="request.sort != null ">and
+                            `sort` = #{request.sort}
+                        </if>
+                                                                                                                                                                                                                                                        <if test="request.tenantId != null  and request.tenantId != ''">and
+                            `tenant_id` = #{request.tenantId}
+                        </if>
+                                                        </where>
+            </select>
+
+    <select id="selectSysCaptchaById" parameterType="Long"
+            resultMap="SysCaptchaResult">
+                    <include refid="selectSysCaptchaVo"/>
+            where `id` = #{id}
+            </select>
+
+    <insert id="insertSysCaptcha" parameterType="SysCaptcha" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into `sys_captcha`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                                                                            <if test="email != null and email != ''">`email`,
+                    </if>
+                                                                <if test="phone != null and phone != ''">`phone`,
+                    </if>
+                                                                <if test="captcha != null and captcha != ''">`captcha`,
+                    </if>
+                                                                <if test="type != null">`type`,
+                    </if>
+                                                                <if test="validated != null">`validated`,
+                    </if>
+                                                                <if test="expired != null">`expired`,
+                    </if>
+                                                                <if test="deleted != null">`deleted`,
+                    </if>
+                                                                <if test="sort != null">`sort`,
+                    </if>
+                                                                <if test="createBy != null">`create_by`,
+                    </if>
+                                                                <if test="updateBy != null">`update_by`,
+                    </if>
+                                                                <if test="createTime != null">`create_time`,
+                    </if>
+                                                                <if test="updateTime != null">`update_time`,
+                    </if>
+                                                                <if test="remark != null">`remark`,
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id`,
+                    </if>
+                                    </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                                                                            <if test="email != null and email != ''">#{email},
+                    </if>
+                                                                <if test="phone != null and phone != ''">#{phone},
+                    </if>
+                                                                <if test="captcha != null and captcha != ''">#{captcha},
+                    </if>
+                                                                <if test="type != null">#{type},
+                    </if>
+                                                                <if test="validated != null">#{validated},
+                    </if>
+                                                                <if test="expired != null">#{expired},
+                    </if>
+                                                                <if test="deleted != null">#{deleted},
+                    </if>
+                                                                <if test="sort != null">#{sort},
+                    </if>
+                                                                <if test="createBy != null">#{createBy},
+                    </if>
+                                                                <if test="updateBy != null">#{updateBy},
+                    </if>
+                                                                <if test="createTime != null">#{createTime},
+                    </if>
+                                                                <if test="updateTime != null">#{updateTime},
+                    </if>
+                                                                <if test="remark != null">#{remark},
+                    </if>
+                                                                <if test="tenantId != null">#{tenantId},
+                    </if>
+                                    </trim>
+    </insert>
+
+    <update id="updateSysCaptcha" parameterType="SysCaptcha">
+        update `sys_captcha`
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="email != null and email != ''">`email` =
+                        #{email},
+                    </if>
+                                                                <if test="phone != null and phone != ''">`phone` =
+                        #{phone},
+                    </if>
+                                                                <if test="captcha != null and captcha != ''">`captcha` =
+                        #{captcha},
+                    </if>
+                                                                <if test="type != null">`type` =
+                        #{type},
+                    </if>
+                                                                <if test="validated != null">`validated` =
+                        #{validated},
+                    </if>
+                                                                <if test="expired != null">`expired` =
+                        #{expired},
+                    </if>
+                                                                <if test="deleted != null">`deleted` =
+                        #{deleted},
+                    </if>
+                                                                <if test="sort != null">`sort` =
+                        #{sort},
+                    </if>
+                                                                <if test="createBy != null">`create_by` =
+                        #{createBy},
+                    </if>
+                                                                <if test="updateBy != null">`update_by` =
+                        #{updateBy},
+                    </if>
+                                                                <if test="createTime != null">`create_time` =
+                        #{createTime},
+                    </if>
+                                                                <if test="updateTime != null">`update_time` =
+                        #{updateTime},
+                    </if>
+                                                                <if test="remark != null">`remark` =
+                        #{remark},
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id` =
+                        #{tenantId},
+                    </if>
+                                    </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteSysCaptchaById" parameterType="Long">
+        delete
+        from `sys_captcha`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteSysCaptchaByIds" parameterType="String">
+        delete from `sys_captcha` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

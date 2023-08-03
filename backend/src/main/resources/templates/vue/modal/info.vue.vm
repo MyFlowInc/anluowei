@@ -1,0 +1,97 @@
+<template>
+  <a-modal
+    :visible="visible"
+    title="查看详情"
+    cancelText="取消"
+    okText="确定"
+    @ok="submit"
+    @cancel="cancel"
+  >
+    <a-form
+       ref="formRef"
+      :model="formState"
+      :rules="formRules"
+      :label-col="labelCol"
+      :wrapper-col="wrapperCol"
+    >
+  #foreach ($column in $columns)
+      #if(!$table.isSuperColumn($column.javaField))
+          #if($column.list)
+              #set($parentheseIndex=$column.columnComment.indexOf("（"))
+              #if($parentheseIndex != -1)
+                  #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+              #else
+                  #set($comment=$column.columnComment)
+              #end
+          #end
+    <a-form-item label="$column.columnComment" name="$column.javaField">
+            <a-input v-model:value="formState.$column.javaField" />
+     </a-form-item>
+
+
+      #end
+  #end
+    </a-form>
+  </a-modal>
+</template>
+<script>
+import { defineComponent, reactive, ref, toRaw, watch } from "vue";
+export default defineComponent({
+  props: {
+    visible: {
+      type: Boolean,
+    },
+    record: {
+      type: Object,
+    }
+  },
+  emit: ["close"],
+  setup(props, context) {
+
+    const formRef = ref();
+    
+    const formState = reactive({});
+
+    watch(props, (props) => {
+    #foreach ($column in $columns)
+        #if(!$table.isSuperColumn($column.javaField))
+            #if($column.list)
+                #set($parentheseIndex=$column.columnComment.indexOf("（"))
+                #if($parentheseIndex != -1)
+                    #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+                #else
+                    #set($comment=$column.columnComment)
+                #end
+            #end
+
+            formState.$column.javaField = props.record.$column.javaField
+        #end
+    #end
+    })
+
+    const formRules = {};
+
+    const submit = (e) => {
+      formRef.value.resetFields();
+      context.emit("close", false);
+    };
+
+    const cancel = (e) => {
+      formRef.value.resetFields();
+      context.emit("close", false);
+    };
+
+    return {
+
+      submit,
+      cancel,
+      formRef,
+      formState,
+      formRules,
+      
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
+  },
+});
+</script>

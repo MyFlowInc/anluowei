@@ -1,0 +1,68 @@
+package ${packageName}.domain;
+
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
+import lombok.Data;
+import com.workflow.pro.common.web.base.domain.BaseDomain;
+import com.baomidou.mybatisplus.annotation.TableName;
+import org.apache.ibatis.type.Alias;
+import lombok.EqualsAndHashCode;
+import java.util.Date;
+#foreach ($import in $importList)
+#end
+#if($table.crud || $table.sub)
+#elseif($table.tree)
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+#if($table.crud || $table.sub)
+    #set($Entity="BaseDomain")
+#elseif($table.tree)
+    #set($Entity="TreeDomain")
+#end
+
+
+@Alias("${ClassName}")
+@TableName("${tableName}")
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ${ClassName} extends ${Entity}    {
+private static final long serialVersionUID=1L;
+
+#foreach ($column in $columns)
+    #if(!$table.isSuperColumn($column.javaField))
+    /** $column.columnComment */
+        #if($column.list)
+            #set($parentheseIndex=$column.columnComment.indexOf("（"))
+            #if($parentheseIndex != -1)
+                #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+            #else
+                #set($comment=$column.columnComment)
+            #end
+        #end
+
+        #if($column.javaField=="id")
+        /**  @TableId(value = "id", type = IdType.AUTO)*/
+        @TableField(value = "id")
+        #end
+        #if($column.javaField=="deleted")
+        #else
+        private $column.javaType $column.javaField;
+        #end
+
+    #end
+#end
+#if($table.sub)
+/** $table.subTable.functionName信息 */
+private List<${subClassName}> ${subclassName}List;
+
+#end
+        }

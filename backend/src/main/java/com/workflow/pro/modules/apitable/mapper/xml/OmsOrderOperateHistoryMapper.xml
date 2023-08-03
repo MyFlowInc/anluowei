@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.OmsOrderOperateHistoryMapper">
+
+    <resultMap type="OmsOrderOperateHistory" id="OmsOrderOperateHistoryResult">
+                    <result property="id" column="id"/>
+                    <result property="orderId" column="order_id"/>
+                    <result property="operateMan" column="operate_man"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="orderStatus" column="order_status"/>
+                    <result property="note" column="note"/>
+                    <result property="deleted" column="deleted"/>
+                    <result property="createBy" column="create_by"/>
+                    <result property="updateBy" column="update_by"/>
+                    <result property="updateTime" column="update_time"/>
+                    <result property="remark" column="remark"/>
+                    <result property="tenantId" column="tenant_id"/>
+                    </resultMap>
+    
+    <sql id="selectOmsOrderOperateHistoryVo">
+        select`id`,`order_id`,`operate_man`,`create_time`,`order_status`,`note`,`deleted`,`create_by`,`update_by`,`update_time`,`remark`,`tenant_id`        from `oms_order_operate_history`
+    </sql>
+
+    <select id="selectOmsOrderOperateHistoryList" parameterType="OmsOrderOperateHistory" resultMap="OmsOrderOperateHistoryResult">
+        <include refid="selectOmsOrderOperateHistoryVo"/>
+        <where>
+                                                                                                    <if test="request.orderId != null  and request.orderId != ''">and
+                            `order_id` = #{request.orderId}
+                        </if>
+                                                                                                            <if test="request.operateMan != null  and request.operateMan != ''">and
+                            `operate_man` = #{request.operateMan}
+                        </if>
+                                                                                                                                        <if test="request.orderStatus != null ">and
+                            `order_status` = #{request.orderStatus}
+                        </if>
+                                                                                                            <if test="request.note != null  and request.note != ''">and
+                            `note` = #{request.note}
+                        </if>
+                                                                                                            <if test="request.deleted != null ">and
+                            `deleted` = #{request.deleted}
+                        </if>
+                                                                                                                                                                                                                            <if test="request.tenantId != null  and request.tenantId != ''">and
+                            `tenant_id` = #{request.tenantId}
+                        </if>
+                                                        </where>
+            </select>
+
+    <select id="selectOmsOrderOperateHistoryById" parameterType="String"
+            resultMap="OmsOrderOperateHistoryResult">
+                    <include refid="selectOmsOrderOperateHistoryVo"/>
+            where `id` = #{id}
+            </select>
+
+    <insert id="insertOmsOrderOperateHistory" parameterType="OmsOrderOperateHistory">
+        insert into `oms_order_operate_history`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">`id`,
+                    </if>
+                                                                <if test="orderId != null">`order_id`,
+                    </if>
+                                                                <if test="operateMan != null">`operate_man`,
+                    </if>
+                                                                <if test="createTime != null">`create_time`,
+                    </if>
+                                                                <if test="orderStatus != null">`order_status`,
+                    </if>
+                                                                <if test="note != null">`note`,
+                    </if>
+                                                                <if test="deleted != null">`deleted`,
+                    </if>
+                                                                <if test="createBy != null">`create_by`,
+                    </if>
+                                                                <if test="updateBy != null">`update_by`,
+                    </if>
+                                                                <if test="updateTime != null">`update_time`,
+                    </if>
+                                                                <if test="remark != null">`remark`,
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id`,
+                    </if>
+                                    </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">#{id},
+                    </if>
+                                                                <if test="orderId != null">#{orderId},
+                    </if>
+                                                                <if test="operateMan != null">#{operateMan},
+                    </if>
+                                                                <if test="createTime != null">#{createTime},
+                    </if>
+                                                                <if test="orderStatus != null">#{orderStatus},
+                    </if>
+                                                                <if test="note != null">#{note},
+                    </if>
+                                                                <if test="deleted != null">#{deleted},
+                    </if>
+                                                                <if test="createBy != null">#{createBy},
+                    </if>
+                                                                <if test="updateBy != null">#{updateBy},
+                    </if>
+                                                                <if test="updateTime != null">#{updateTime},
+                    </if>
+                                                                <if test="remark != null">#{remark},
+                    </if>
+                                                                <if test="tenantId != null">#{tenantId},
+                    </if>
+                                    </trim>
+    </insert>
+
+    <update id="updateOmsOrderOperateHistory" parameterType="OmsOrderOperateHistory">
+        update `oms_order_operate_history`
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="orderId != null">`order_id` =
+                        #{orderId},
+                    </if>
+                                                                <if test="operateMan != null">`operate_man` =
+                        #{operateMan},
+                    </if>
+                                                                <if test="createTime != null">`create_time` =
+                        #{createTime},
+                    </if>
+                                                                <if test="orderStatus != null">`order_status` =
+                        #{orderStatus},
+                    </if>
+                                                                <if test="note != null">`note` =
+                        #{note},
+                    </if>
+                                                                <if test="deleted != null">`deleted` =
+                        #{deleted},
+                    </if>
+                                                                <if test="createBy != null">`create_by` =
+                        #{createBy},
+                    </if>
+                                                                <if test="updateBy != null">`update_by` =
+                        #{updateBy},
+                    </if>
+                                                                <if test="updateTime != null">`update_time` =
+                        #{updateTime},
+                    </if>
+                                                                <if test="remark != null">`remark` =
+                        #{remark},
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id` =
+                        #{tenantId},
+                    </if>
+                                    </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteOmsOrderOperateHistoryById" parameterType="String">
+        delete
+        from `oms_order_operate_history`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteOmsOrderOperateHistoryByIds" parameterType="String">
+        delete from `oms_order_operate_history` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

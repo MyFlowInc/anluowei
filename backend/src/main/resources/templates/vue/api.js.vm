@@ -1,0 +1,64 @@
+import request from '../request'
+
+const Api = {
+    page: '/api/sys/${className}/page',
+    list: '/api/sys/${className}/list',
+    remove: '/api/sys/${className}/remove',
+    removeBatch: '/api/sys/${className}/removeBatch',
+    save: '/api/sys/${className}/save',
+    edit: '/api/sys/${className}/edit',
+}
+
+/** ${functionName}列表 */
+export const page = data => {
+    return request.request({
+        url: Api.page,
+        params: data,
+        method: 'GET'
+    })
+}
+
+/** ${functionName}列表 */
+export const list = data => {
+    return request.request({
+        url: Api.list,
+        params: data,
+        method: 'GET'
+    })
+}
+
+/** ${functionName}岗位 */
+export const save = data => {
+    return request.request({
+        url: Api.save,
+        data: data,
+        method: 'POST'
+    })
+}
+
+/** ${functionName}岗位 */
+export const edit = data => {
+    return request.request({
+        url: Api.edit,
+        data: data,
+        method: 'PUT'
+    })
+}
+
+/** ${functionName}岗位 */
+export const remove = data => {
+    return request.request({
+        url: Api.remove,
+        params: data,
+        method: 'DELETE'
+    })
+}
+
+/** 批量删除 */
+export const removeBatch = data => {
+    return request.request({
+        url: Api.removeBatch,
+        params: data,
+        method: 'DELETE'
+    })
+}

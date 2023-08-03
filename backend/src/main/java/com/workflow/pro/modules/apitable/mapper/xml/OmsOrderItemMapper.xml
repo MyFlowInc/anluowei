@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.OmsOrderItemMapper">
+
+    <resultMap type="OmsOrderItem" id="OmsOrderItemResult">
+                    <result property="id" column="id"/>
+                    <result property="orderId" column="order_id"/>
+                    <result property="orderSn" column="order_sn"/>
+                    <result property="productId" column="product_id"/>
+                    <result property="productPic" column="product_pic"/>
+                    <result property="productName" column="product_name"/>
+                    <result property="productBrand" column="product_brand"/>
+                    <result property="productSn" column="product_sn"/>
+                    <result property="productPrice" column="product_price"/>
+                    <result property="productQuantity" column="product_quantity"/>
+                    <result property="productSkuId" column="product_sku_id"/>
+                    <result property="productSkuCode" column="product_sku_code"/>
+                    <result property="productCategoryId" column="product_category_id"/>
+                    <result property="promotionName" column="promotion_name"/>
+                    <result property="promotionAmount" column="promotion_amount"/>
+                    <result property="couponAmount" column="coupon_amount"/>
+                    <result property="integrationAmount" column="integration_amount"/>
+                    <result property="realAmount" column="real_amount"/>
+                    <result property="giftIntegration" column="gift_integration"/>
+                    <result property="giftGrowth" column="gift_growth"/>
+                    <result property="productAttr" column="product_attr"/>
+                    <result property="deleted" column="deleted"/>
+                    <result property="createBy" column="create_by"/>
+                    <result property="updateBy" column="update_by"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="updateTime" column="update_time"/>
+                    <result property="remark" column="remark"/>
+                    <result property="tenantId" column="tenant_id"/>
+                    </resultMap>
+    
+    <sql id="selectOmsOrderItemVo">
+        select`id`,`order_id`,`order_sn`,`product_id`,`product_pic`,`product_name`,`product_brand`,`product_sn`,`product_price`,`product_quantity`,`product_sku_id`,`product_sku_code`,`product_category_id`,`promotion_name`,`promotion_amount`,`coupon_amount`,`integration_amount`,`real_amount`,`gift_integration`,`gift_growth`,`product_attr`,`deleted`,`create_by`,`update_by`,`create_time`,`update_time`,`remark`,`tenant_id`        from `oms_order_item`
+    </sql>
+
+    <select id="selectOmsOrderItemList" parameterType="OmsOrderItem" resultMap="OmsOrderItemResult">
+        <include refid="selectOmsOrderItemVo"/>
+        <where>
+                                                                                                    <if test="request.orderId != null  and request.orderId != ''">and
+                            `order_id` = #{request.orderId}
+                        </if>
+                                                                                                            <if test="request.orderSn != null  and request.orderSn != ''">and
+                            `order_sn` = #{request.orderSn}
+                        </if>
+                                                                                                            <if test="request.productId != null  and request.productId != ''">and
+                            `product_id` = #{request.productId}
+                        </if>
+                                                                                                            <if test="request.productPic != null  and request.productPic != ''">and
+                            `product_pic` = #{request.productPic}
+                        </if>
+                                                                                                            <if test="request.productName != null  and request.productName != ''">and
+                            `product_name` like concat('%', #{request.productName}, '%')
+                        </if>
+                                                                                                            <if test="request.productBrand != null  and request.productBrand != ''">and
+                            `product_brand` = #{request.productBrand}
+                        </if>
+                                                                                                            <if test="request.productSn != null  and request.productSn != ''">and
+                            `product_sn` = #{request.productSn}
+                        </if>
+                                                                                                            <if test="request.productPrice != null ">and
+                            `product_price` = #{request.productPrice}
+                        </if>
+                                                                                                            <if test="request.productQuantity != null ">and
+                            `product_quantity` = #{request.productQuantity}
+                        </if>
+                                                                                                            <if test="request.productSkuId != null  and request.productSkuId != ''">and
+                            `product_sku_id` = #{request.productSkuId}
+                        </if>
+                                                                                                            <if test="request.productSkuCode != null  and request.productSkuCode != ''">and
+                            `product_sku_code` = #{request.productSkuCode}
+                        </if>
+                                                                                                            <if test="request.productCategoryId != null  and request.productCategoryId != ''">and
+                            `product_category_id` = #{request.productCategoryId}
+                        </if>
+                                                                                                            <if test="request.promotionName != null  and request.promotionName != ''">and
+                            `promotion_name` like concat('%', #{request.promotionName}, '%')
+                        </if>
+                                                                                                            <if test="request.promotionAmount != null ">and
+                            `promotion_amount` = #{request.promotionAmount}
+                        </if>
+                                                                                                            <if test="request.couponAmount != null ">and
+                            `coupon_amount` = #{request.couponAmount}
+                        </if>
+                                                                                                            <if test="request.integrationAmount != null ">and
+                            `integration_amount` = #{request.integrationAmount}
+                        </if>
+                                                                                                            <if test="request.realAmount != null ">and
+                            `real_amount` = #{request.realAmount}
+                        </if>
+                                                                                                            <if test="request.giftIntegration != null ">and
+                            `gift_integration` = #{request.giftIntegration}
+                        </if>
+                                                                                                            <if test="request.giftGrowth != null ">and
+                            `gift_growth` = #{request.giftGrowth}
+                        </if>
+                                                                                                            <if test="request.productAttr != null  and request.productAttr != ''">and
+                            `product_attr` = #{request.productAttr}
+                        </if>
+                                                                                                            <if test="request.deleted != null ">and
+                            `deleted` = #{request.deleted}
+                        </if>
+                                                                                                                                                                                                                                                        <if test="request.tenantId != null  and request.tenantId != ''">and
+                            `tenant_id` = #{request.tenantId}
+                        </if>
+                                                        </where>
+            </select>
+
+    <select id="selectOmsOrderItemById" parameterType="String"
+            resultMap="OmsOrderItemResult">
+                    <include refid="selectOmsOrderItemVo"/>
+            where `id` = #{id}
+            </select>
+
+    <insert id="insertOmsOrderItem" parameterType="OmsOrderItem">
+        insert into `oms_order_item`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">`id`,
+                    </if>
+                                                                <if test="orderId != null">`order_id`,
+                    </if>
+                                                                <if test="orderSn != null">`order_sn`,
+                    </if>
+                                                                <if test="productId != null">`product_id`,
+                    </if>
+                                                                <if test="productPic != null">`product_pic`,
+                    </if>
+                                                                <if test="productName != null">`product_name`,
+                    </if>
+                                                                <if test="productBrand != null">`product_brand`,
+                    </if>
+                                                                <if test="productSn != null">`product_sn`,
+                    </if>
+                                                                <if test="productPrice != null">`product_price`,
+                    </if>
+                                                                <if test="productQuantity != null">`product_quantity`,
+                    </if>
+                                                                <if test="productSkuId != null">`product_sku_id`,
+                    </if>
+                                                                <if test="productSkuCode != null">`product_sku_code`,
+                    </if>
+                                                                <if test="productCategoryId != null">`product_category_id`,
+                    </if>
+                                                                <if test="promotionName != null">`promotion_name`,
+                    </if>
+                                                                <if test="promotionAmount != null">`promotion_amount`,
+                    </if>
+                                                                <if test="couponAmount != null">`coupon_amount`,
+                    </if>
+                                                                <if test="integrationAmount != null">`integration_amount`,
+                    </if>
+                                                                <if test="realAmount != null">`real_amount`,
+                    </if>
+                                                                <if test="giftIntegration != null">`gift_integration`,
+                    </if>
+                                                                <if test="giftGrowth != null">`gift_growth`,
+                    </if>
+                                                                <if test="productAttr != null">`product_attr`,
+                    </if>
+                                                                <if test="deleted != null">`deleted`,
+                    </if>
+                                                                <if test="createBy != null">`create_by`,
+                    </if>
+                                                                <if test="updateBy != null">`update_by`,
+                    </if>
+                                                                <if test="createTime != null">`create_time`,
+                    </if>
+                                                                <if test="updateTime != null">`update_time`,
+                    </if>
+                                                                <if test="remark != null">`remark`,
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id`,
+                    </if>
+                                    </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">#{id},
+                    </if>
+                                                                <if test="orderId != null">#{orderId},
+                    </if>
+                                                                <if test="orderSn != null">#{orderSn},
+                    </if>
+                                                                <if test="productId != null">#{productId},
+                    </if>
+                                                                <if test="productPic != null">#{productPic},
+                    </if>
+                                                                <if test="productName != null">#{productName},
+                    </if>
+                                                                <if test="productBrand != null">#{productBrand},
+                    </if>
+                                                                <if test="productSn != null">#{productSn},
+                    </if>
+                                                                <if test="productPrice != null">#{productPrice},
+                    </if>
+                                                                <if test="productQuantity != null">#{productQuantity},
+                    </if>
+                                                                <if test="productSkuId != null">#{productSkuId},
+                    </if>
+                                                                <if test="productSkuCode != null">#{productSkuCode},
+                    </if>
+                                                                <if test="productCategoryId != null">#{productCategoryId},
+                    </if>
+                                                                <if test="promotionName != null">#{promotionName},
+                    </if>
+                                                                <if test="promotionAmount != null">#{promotionAmount},
+                    </if>
+                                                                <if test="couponAmount != null">#{couponAmount},
+                    </if>
+                                                                <if test="integrationAmount != null">#{integrationAmount},
+                    </if>
+                                                                <if test="realAmount != null">#{realAmount},
+                    </if>
+                                                                <if test="giftIntegration != null">#{giftIntegration},
+                    </if>
+                                                                <if test="giftGrowth != null">#{giftGrowth},
+                    </if>
+                                                                <if test="productAttr != null">#{productAttr},
+                    </if>
+                                                                <if test="deleted != null">#{deleted},
+                    </if>
+                                                                <if test="createBy != null">#{createBy},
+                    </if>
+                                                                <if test="updateBy != null">#{updateBy},
+                    </if>
+                                                                <if test="createTime != null">#{createTime},
+                    </if>
+                                                                <if test="updateTime != null">#{updateTime},
+                    </if>
+                                                                <if test="remark != null">#{remark},
+                    </if>
+                                                                <if test="tenantId != null">#{tenantId},
+                    </if>
+                                    </trim>
+    </insert>
+
+    <update id="updateOmsOrderItem" parameterType="OmsOrderItem">
+        update `oms_order_item`
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="orderId != null">`order_id` =
+                        #{orderId},
+                    </if>
+                                                                <if test="orderSn != null">`order_sn` =
+                        #{orderSn},
+                    </if>
+                                                                <if test="productId != null">`product_id` =
+                        #{productId},
+                    </if>
+                                                                <if test="productPic != null">`product_pic` =
+                        #{productPic},
+                    </if>
+                                                                <if test="productName != null">`product_name` =
+                        #{productName},
+                    </if>
+                                                                <if test="productBrand != null">`product_brand` =
+                        #{productBrand},
+                    </if>
+                                                                <if test="productSn != null">`product_sn` =
+                        #{productSn},
+                    </if>
+                                                                <if test="productPrice != null">`product_price` =
+                        #{productPrice},
+                    </if>
+                                                                <if test="productQuantity != null">`product_quantity` =
+                        #{productQuantity},
+                    </if>
+                                                                <if test="productSkuId != null">`product_sku_id` =
+                        #{productSkuId},
+                    </if>
+                                                                <if test="productSkuCode != null">`product_sku_code` =
+                        #{productSkuCode},
+                    </if>
+                                                                <if test="productCategoryId != null">`product_category_id` =
+                        #{productCategoryId},
+                    </if>
+                                                                <if test="promotionName != null">`promotion_name` =
+                        #{promotionName},
+                    </if>
+                                                                <if test="promotionAmount != null">`promotion_amount` =
+                        #{promotionAmount},
+                    </if>
+                                                                <if test="couponAmount != null">`coupon_amount` =
+                        #{couponAmount},
+                    </if>
+                                                                <if test="integrationAmount != null">`integration_amount` =
+                        #{integrationAmount},
+                    </if>
+                                                                <if test="realAmount != null">`real_amount` =
+                        #{realAmount},
+                    </if>
+                                                                <if test="giftIntegration != null">`gift_integration` =
+                        #{giftIntegration},
+                    </if>
+                                                                <if test="giftGrowth != null">`gift_growth` =
+                        #{giftGrowth},
+                    </if>
+                                                                <if test="productAttr != null">`product_attr` =
+                        #{productAttr},
+                    </if>
+                                                                <if test="deleted != null">`deleted` =
+                        #{deleted},
+                    </if>
+                                                                <if test="createBy != null">`create_by` =
+                        #{createBy},
+                    </if>
+                                                                <if test="updateBy != null">`update_by` =
+                        #{updateBy},
+                    </if>
+                                                                <if test="createTime != null">`create_time` =
+                        #{createTime},
+                    </if>
+                                                                <if test="updateTime != null">`update_time` =
+                        #{updateTime},
+                    </if>
+                                                                <if test="remark != null">`remark` =
+                        #{remark},
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id` =
+                        #{tenantId},
+                    </if>
+                                    </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteOmsOrderItemById" parameterType="String">
+        delete
+        from `oms_order_item`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteOmsOrderItemByIds" parameterType="String">
+        delete from `oms_order_item` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

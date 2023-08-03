@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.AliPayRepositoryMapper">
+
+    <resultMap type="ToolAlipayConfig" id="ToolAlipayConfigResult">
+        <result property="configId" column="config_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="charset" column="charset"/>
+        <result property="format" column="format"/>
+        <result property="gatewayUrl" column="gateway_url"/>
+        <result property="notifyUrl" column="notify_url"/>
+        <result property="privateKey" column="private_key"/>
+        <result property="publicKey" column="public_key"/>
+        <result property="returnUrl" column="return_url"/>
+        <result property="signType" column="sign_type"/>
+        <result property="sysServiceProviderId" column="sys_service_provider_id"/>
+    </resultMap>
+
+    <sql id="selectToolAlipayConfigVo">
+        select`config_id`,`app_id`,`charset`,`format`,`gateway_url`,`notify_url`,`private_key`,`public_key`,`return_url`,`sign_type`,`sys_service_provider_id`
+        from `tool_alipay_config`
+    </sql>
+
+    <select id="selectToolAlipayConfigList" parameterType="ToolAlipayConfig"
+            resultMap="ToolAlipayConfigResult">
+        <include refid="selectToolAlipayConfigVo"/>
+        <where>
+            <if test="request.appId != null  and request.appId != ''">and
+                `app_id` = #{request.appId}
+            </if>
+            <if test="request.charset != null  and request.charset != ''">and
+                `charset` = #{request.charset}
+            </if>
+            <if test="request.format != null  and request.format != ''">and
+                `format` = #{request.format}
+            </if>
+            <if test="request.gatewayUrl != null  and request.gatewayUrl != ''">and
+                `gateway_url` = #{request.gatewayUrl}
+            </if>
+            <if test="request.notifyUrl != null  and request.notifyUrl != ''">and
+                `notify_url` = #{request.notifyUrl}
+            </if>
+            <if test="request.privateKey != null  and request.privateKey != ''">and
+                `private_key` = #{request.privateKey}
+            </if>
+            <if test="request.publicKey != null  and request.publicKey != ''">and
+                `public_key` = #{request.publicKey}
+            </if>
+            <if test="request.returnUrl != null  and request.returnUrl != ''">and
+                `return_url` = #{request.returnUrl}
+            </if>
+            <if test="request.signType != null  and request.signType != ''">and
+                `sign_type` = #{request.signType}
+            </if>
+            <if test="request.sysServiceProviderId != null  and request.sysServiceProviderId != ''">
+                and
+                `sys_service_provider_id` = #{request.sysServiceProviderId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectToolAlipayConfigById" parameterType="Long"
+            resultMap="ToolAlipayConfigResult">
+        <include refid="selectToolAlipayConfigVo"/>
+        where `config_id` = #{configId}
+    </select>
+
+    <insert id="insertToolAlipayConfig" parameterType="ToolAlipayConfig">
+        insert into `tool_alipay_config`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configId != null">`config_id`,
+            </if>
+            <if test="appId != null">`app_id`,
+            </if>
+            <if test="charset != null">`charset`,
+            </if>
+            <if test="format != null">`format`,
+            </if>
+            <if test="gatewayUrl != null">`gateway_url`,
+            </if>
+            <if test="notifyUrl != null">`notify_url`,
+            </if>
+            <if test="privateKey != null">`private_key`,
+            </if>
+            <if test="publicKey != null">`public_key`,
+            </if>
+            <if test="returnUrl != null">`return_url`,
+            </if>
+            <if test="signType != null">`sign_type`,
+            </if>
+            <if test="sysServiceProviderId != null">`sys_service_provider_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configId != null">#{configId},
+            </if>
+            <if test="appId != null">#{appId},
+            </if>
+            <if test="charset != null">#{charset},
+            </if>
+            <if test="format != null">#{format},
+            </if>
+            <if test="gatewayUrl != null">#{gatewayUrl},
+            </if>
+            <if test="notifyUrl != null">#{notifyUrl},
+            </if>
+            <if test="privateKey != null">#{privateKey},
+            </if>
+            <if test="publicKey != null">#{publicKey},
+            </if>
+            <if test="returnUrl != null">#{returnUrl},
+            </if>
+            <if test="signType != null">#{signType},
+            </if>
+            <if test="sysServiceProviderId != null">#{sysServiceProviderId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateToolAlipayConfig" parameterType="ToolAlipayConfig">
+        update `tool_alipay_config`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appId != null">`app_id` =
+                #{appId},
+            </if>
+            <if test="charset != null">`charset` =
+                #{charset},
+            </if>
+            <if test="format != null">`format` =
+                #{format},
+            </if>
+            <if test="gatewayUrl != null">`gateway_url` =
+                #{gatewayUrl},
+            </if>
+            <if test="notifyUrl != null">`notify_url` =
+                #{notifyUrl},
+            </if>
+            <if test="privateKey != null">`private_key` =
+                #{privateKey},
+            </if>
+            <if test="publicKey != null">`public_key` =
+                #{publicKey},
+            </if>
+            <if test="returnUrl != null">`return_url` =
+                #{returnUrl},
+            </if>
+            <if test="signType != null">`sign_type` =
+                #{signType},
+            </if>
+            <if test="sysServiceProviderId != null">`sys_service_provider_id` =
+                #{sysServiceProviderId},
+            </if>
+        </trim>
+        where `config_id` = #{configId}
+    </update>
+
+    <delete id="deleteToolAlipayConfigById" parameterType="Long">
+        delete
+        from `tool_alipay_config`
+        where `config_id` = #{configId}
+    </delete>
+
+    <delete id="deleteToolAlipayConfigByIds" parameterType="String">
+        delete from `tool_alipay_config` where `config_id` in
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+            #{configId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,129 @@
+<template>
+  <a-modal
+    :visible="visible"
+    title="新增${functionName}"
+    cancelText="取消"
+    okText="提交"
+    @ok="submit"
+    @cancel="cancel"
+  >
+    <a-form
+       ref="formRef"
+      :model="formState"
+      :rules="formRules"
+      :label-col="labelCol"
+      :wrapper-col="wrapperCol"
+    >
+    #foreach ($column in $columns)
+        #if(!$table.isSuperColumn($column.javaField))
+            #if($column.list)
+                #set($parentheseIndex=$column.columnComment.indexOf("（"))
+                #if($parentheseIndex != -1)
+                    #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+                #else
+                    #set($comment=$column.columnComment)
+                #end
+            #end
+          #if($column.htmlType == "image")
+          <a-form-item label="$column.columnComment" name="$column.javaField">
+             <Base-Upload v-model ="formState.$column.javaField" :limit="1" />
+          </a-form-item>
+          #elseif($column.htmlType == "imageList")
+          <a-form-item label="$column.columnComment" name="$column.javaField">
+             <Base-Upload v-model ="formState.$column.javaField" :limit="5" />
+           </a-form-item>
+           #else
+          <a-form-item label="$column.columnComment" name="$column.javaField">
+             <a-input v-model:value ="formState.$column.javaField" />
+          </a-form-item>
+           #end
+        #end
+    #end
+
+    </a-form>
+  </a-modal>
+</template>
+<script>
+import { message } from 'ant-design-vue';
+import { edit } from "@/api/module/${className}";
+import { defineComponent, reactive, ref, toRaw, watch } from "vue";
+export default defineComponent({
+  props: {
+    visible: {
+      type: Boolean,
+    },
+    record: {
+      type: Object,
+    }
+  },
+  emit: ["close"],
+  setup(props, context) {
+
+    const formRef = ref();
+    
+    const formState = reactive({});
+
+    watch(props, (props) => {
+  #foreach ($column in $columns)
+      #if(!$table.isSuperColumn($column.javaField))
+          #if($column.list)
+              #set($parentheseIndex=$column.columnComment.indexOf("（"))
+              #if($parentheseIndex != -1)
+                  #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+              #else
+                  #set($comment=$column.columnComment)
+              #end
+          #end
+          formState.$column.javaField = props.record.$column.javaField
+          #end
+      #end
+    })
+
+    const formRules = {
+      name: [ { required: true, message: '请输入名称', trigger: 'blur'} ],
+      code: [ { required: true, message: '请输入编号', trigger: 'blur'} ]
+    };
+
+    const editKey = "add";
+
+    const submit = (e) => {
+      message.loading({ content: '提交中...', key: editKey });
+      formRef.value
+        .validate()
+        .then(() => {
+          edit(toRaw(formState)).then((response)=>{
+              if(response.success){
+                message.success({ content: '保存成功', key: editKey, duration: 1 }).then(()=>{
+                  cancel();
+                });
+              }else{
+                message.success({ content: '保存失败', key: editKey, duration: 1 }).then(()=>{
+                  cancel();
+                });
+              }
+          });
+        })
+        .catch(error => {
+          console.log('error', error);
+        });
+    };
+
+    const cancel = (e) => {
+      formRef.value.resetFields();
+      context.emit("close", false);
+    };
+
+    return {
+
+      submit,
+      cancel,
+      formRef,
+      formState,
+      formRules,
+      
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
+  },
+});
+</script>

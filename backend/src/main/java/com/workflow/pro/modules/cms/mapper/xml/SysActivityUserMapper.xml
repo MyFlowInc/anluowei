@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.cms.mapper.SysActivityUserMapper">
+    <select id="selectSysActivityUserList" resultType="SysActivityUser">
+        select *,
+        sd.name as activity_title
+        from sys_activity_user su
+        left join sys_activity sd on sd.id = su.activity_id
+        <where>
+            <if test="request.userId != null  and request.userId != ''">and `user_id` = #{request.userId}</if>
+            <if test="request.userName != null  and request.userName != ''">and `user_name` like concat('%',
+                #{request.userName}, '%')
+            </if>
+            <if test="request.activityId != null  and request.activityId != ''">and `activity_id` =
+                #{request.activityId}
+            </if>
+            <if test="request.activityName != null  and request.activityName != ''">and `activity_name` like concat('%',
+                #{request.activityName}, '%')
+            </if>
+        </where>
+        order by
+        su.create_time desc
+    </select>
+
+</mapper>

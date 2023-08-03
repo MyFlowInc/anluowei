@@ -1,0 +1,121 @@
+## tomcat 配置
+server:
+  ## 监听端口
+  port: 9293
+  ## 服务配置
+  tomcat:
+    ## 超时时间
+    connection-timeout: 10000
+
+## Spring 配置
+spring:
+  servlet:
+    multipart:
+      # 设置 上传文件的大小
+      max-file-size: 1000MB
+      # 设置 整个请求的大小
+      max-request-size: 300MB
+  ## 动态配置
+  profiles:
+    ## 状态
+    active: dev
+  # 路 径 匹 配 机 制
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  ## 邮件
+  mail:
+    ## 协议
+    protocol: smtp
+    ## 地址
+    host: smtp.qq.com
+    ## 端口
+    port: 587
+    ## 账户
+    username: 854085467@qq.com
+    ## 密钥
+    password:
+    ## 字符集
+    default-encoding: UTF-8
+    ## 测试
+    test-connection: false
+    ## 来源
+    from: 854085467@qq.com
+
+## mybatis 配置
+mybatis-plus:
+  ## 文件位置
+  mapper-locations: classpath*:com/workflow/pro/modules/**/xml/**.xml
+  ## 实体别名
+  type-aliases-package: com.workflow
+  ## 日志打印
+  configuration:
+    ## 日志实现
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+## Helper 配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+## oss 配置
+## oss 配置
+oss:
+  enable: qiniu
+  qiniu:
+    accessKey: 2y9GnYh6aBPTS3bfTnAWELrEnjh87_W7azNJk6-p
+    secretKey: aX0oNPlE_R_pf1_osjx6NC9eLxrswA_A1Mi8-rSf
+    bucketName: oneitfarm
+    endpoint: //s2-cdn.oneitfarm.com/
+    srv: qiniu
+    upload_host: up.qiniup.com
+    base-path: /
+    slice-config:
+      task-num: 8
+      part-size: 104857600
+  aws:
+    region: ap-northeast-1
+    bucketName: somebuckets3
+    accessKey: AKIAX5FB23HO6PTZVMDG
+    secretKey: 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
+    endpoint: s3.ap-northeast-1.amazonaws.com
+  #    aws中国
+  awscn:
+    region: cn-north-1
+    bucketName: cms-bucket-nonprod
+    accessKey: AKIASU2SCXMQQZCUVEN3
+    secretKey: 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
+    endpoint: s3.cn-north-1.amazonaws.com.cn
+
+  aliyun:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    accessKeyId: anything
+    accessKeySecret: anything
+    bucketName: cms-admin
+  ## 短信发送
+#  sms:
+#    accessKeyId: anything
+#    accessKeySecret: anything
+#    domain: dysmsapi.aliyuncs.com
+#    regionId: cn-hangzhou
+#    templateCode: template-name
+#    signName: sign-name
+
+#wecom:
+#  #corp-id: wx0b46fb7077331b9f
+#  #secret: _-PI0X720XDR1d_sapbVvMNk7DEJ0JSHj0m1LjqSokc
+#  corp-id: ww28c3a0756e7f680a
+#  secret: U2qcsrl-NeYzCgPoyjOEntlGMgBdw71ziTcisVWeZnE
+#  redirect-url:
+#
+#wx:
+#  appid: ww28c3a0756e7f680a
+#  secret: U2qcsrl-NeYzCgPoyjOEntlGMgBdw71ziTcisVWeZnE
+
+# 消息队列定义
+rabbitmq:
+  queue:
+    name:
+      cancelOrder: cancelOrderQueue

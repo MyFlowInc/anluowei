@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.apitable.mapper.OmsOrderReturnApplyMapper">
+
+    <resultMap type="OmsOrderReturnApply" id="OmsOrderReturnApplyResult">
+                    <result property="id" column="id"/>
+                    <result property="orderId" column="order_id"/>
+                    <result property="companyAddressId" column="company_address_id"/>
+                    <result property="productId" column="product_id"/>
+                    <result property="orderSn" column="order_sn"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="memberUsername" column="member_username"/>
+                    <result property="returnAmount" column="return_amount"/>
+                    <result property="returnName" column="return_name"/>
+                    <result property="returnPhone" column="return_phone"/>
+                    <result property="status" column="status"/>
+                    <result property="handleTime" column="handle_time"/>
+                    <result property="productPic" column="product_pic"/>
+                    <result property="productName" column="product_name"/>
+                    <result property="productBrand" column="product_brand"/>
+                    <result property="productAttr" column="product_attr"/>
+                    <result property="productCount" column="product_count"/>
+                    <result property="productPrice" column="product_price"/>
+                    <result property="productRealPrice" column="product_real_price"/>
+                    <result property="reason" column="reason"/>
+                    <result property="description" column="description"/>
+                    <result property="proofPics" column="proof_pics"/>
+                    <result property="handleNote" column="handle_note"/>
+                    <result property="handleMan" column="handle_man"/>
+                    <result property="receiveMan" column="receive_man"/>
+                    <result property="receiveTime" column="receive_time"/>
+                    <result property="receiveNote" column="receive_note"/>
+                    <result property="deleted" column="deleted"/>
+                    <result property="createBy" column="create_by"/>
+                    <result property="updateBy" column="update_by"/>
+                    <result property="updateTime" column="update_time"/>
+                    <result property="remark" column="remark"/>
+                    <result property="tenantId" column="tenant_id"/>
+                    </resultMap>
+    
+    <sql id="selectOmsOrderReturnApplyVo">
+        select`id`,`order_id`,`company_address_id`,`product_id`,`order_sn`,`create_time`,`member_username`,`return_amount`,`return_name`,`return_phone`,`status`,`handle_time`,`product_pic`,`product_name`,`product_brand`,`product_attr`,`product_count`,`product_price`,`product_real_price`,`reason`,`description`,`proof_pics`,`handle_note`,`handle_man`,`receive_man`,`receive_time`,`receive_note`,`deleted`,`create_by`,`update_by`,`update_time`,`remark`,`tenant_id`        from `oms_order_return_apply`
+    </sql>
+
+    <select id="selectOmsOrderReturnApplyList" parameterType="OmsOrderReturnApply" resultMap="OmsOrderReturnApplyResult">
+        <include refid="selectOmsOrderReturnApplyVo"/>
+        <where>
+                                                                                                    <if test="request.orderId != null  and request.orderId != ''">and
+                            `order_id` = #{request.orderId}
+                        </if>
+                                                                                                            <if test="request.companyAddressId != null  and request.companyAddressId != ''">and
+                            `company_address_id` = #{request.companyAddressId}
+                        </if>
+                                                                                                            <if test="request.productId != null  and request.productId != ''">and
+                            `product_id` = #{request.productId}
+                        </if>
+                                                                                                            <if test="request.orderSn != null  and request.orderSn != ''">and
+                            `order_sn` = #{request.orderSn}
+                        </if>
+                                                                                                                                        <if test="request.memberUsername != null  and request.memberUsername != ''">and
+                            `member_username` like concat('%', #{request.memberUsername}, '%')
+                        </if>
+                                                                                                            <if test="request.returnAmount != null ">and
+                            `return_amount` = #{request.returnAmount}
+                        </if>
+                                                                                                            <if test="request.returnName != null  and request.returnName != ''">and
+                            `return_name` like concat('%', #{request.returnName}, '%')
+                        </if>
+                                                                                                            <if test="request.returnPhone != null  and request.returnPhone != ''">and
+                            `return_phone` = #{request.returnPhone}
+                        </if>
+                                                                                                            <if test="request.status != null ">and
+                            `status` = #{request.status}
+                        </if>
+                                                                                                            <if test="request.handleTime != null ">and
+                            `handle_time` = #{request.handleTime}
+                        </if>
+                                                                                                            <if test="request.productPic != null  and request.productPic != ''">and
+                            `product_pic` = #{request.productPic}
+                        </if>
+                                                                                                            <if test="request.productName != null  and request.productName != ''">and
+                            `product_name` like concat('%', #{request.productName}, '%')
+                        </if>
+                                                                                                            <if test="request.productBrand != null  and request.productBrand != ''">and
+                            `product_brand` = #{request.productBrand}
+                        </if>
+                                                                                                            <if test="request.productAttr != null  and request.productAttr != ''">and
+                            `product_attr` = #{request.productAttr}
+                        </if>
+                                                                                                            <if test="request.productCount != null ">and
+                            `product_count` = #{request.productCount}
+                        </if>
+                                                                                                            <if test="request.productPrice != null ">and
+                            `product_price` = #{request.productPrice}
+                        </if>
+                                                                                                            <if test="request.productRealPrice != null ">and
+                            `product_real_price` = #{request.productRealPrice}
+                        </if>
+                                                                                                            <if test="request.reason != null  and request.reason != ''">and
+                            `reason` = #{request.reason}
+                        </if>
+                                                                                                            <if test="request.description != null  and request.description != ''">and
+                            `description` = #{request.description}
+                        </if>
+                                                                                                            <if test="request.proofPics != null  and request.proofPics != ''">and
+                            `proof_pics` = #{request.proofPics}
+                        </if>
+                                                                                                            <if test="request.handleNote != null  and request.handleNote != ''">and
+                            `handle_note` = #{request.handleNote}
+                        </if>
+                                                                                                            <if test="request.handleMan != null  and request.handleMan != ''">and
+                            `handle_man` = #{request.handleMan}
+                        </if>
+                                                                                                            <if test="request.receiveMan != null  and request.receiveMan != ''">and
+                            `receive_man` = #{request.receiveMan}
+                        </if>
+                                                                                                            <if test="request.receiveTime != null ">and
+                            `receive_time` = #{request.receiveTime}
+                        </if>
+                                                                                                            <if test="request.receiveNote != null  and request.receiveNote != ''">and
+                            `receive_note` = #{request.receiveNote}
+                        </if>
+                                                                                                            <if test="request.deleted != null ">and
+                            `deleted` = #{request.deleted}
+                        </if>
+                                                                                                                                                                                                                            <if test="request.tenantId != null  and request.tenantId != ''">and
+                            `tenant_id` = #{request.tenantId}
+                        </if>
+                                                        </where>
+            </select>
+
+    <select id="selectOmsOrderReturnApplyById" parameterType="String"
+            resultMap="OmsOrderReturnApplyResult">
+                    <include refid="selectOmsOrderReturnApplyVo"/>
+            where `id` = #{id}
+            </select>
+
+    <insert id="insertOmsOrderReturnApply" parameterType="OmsOrderReturnApply">
+        insert into `oms_order_return_apply`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">`id`,
+                    </if>
+                                                                <if test="orderId != null">`order_id`,
+                    </if>
+                                                                <if test="companyAddressId != null">`company_address_id`,
+                    </if>
+                                                                <if test="productId != null">`product_id`,
+                    </if>
+                                                                <if test="orderSn != null">`order_sn`,
+                    </if>
+                                                                <if test="createTime != null">`create_time`,
+                    </if>
+                                                                <if test="memberUsername != null">`member_username`,
+                    </if>
+                                                                <if test="returnAmount != null">`return_amount`,
+                    </if>
+                                                                <if test="returnName != null">`return_name`,
+                    </if>
+                                                                <if test="returnPhone != null">`return_phone`,
+                    </if>
+                                                                <if test="status != null">`status`,
+                    </if>
+                                                                <if test="handleTime != null">`handle_time`,
+                    </if>
+                                                                <if test="productPic != null">`product_pic`,
+                    </if>
+                                                                <if test="productName != null">`product_name`,
+                    </if>
+                                                                <if test="productBrand != null">`product_brand`,
+                    </if>
+                                                                <if test="productAttr != null">`product_attr`,
+                    </if>
+                                                                <if test="productCount != null">`product_count`,
+                    </if>
+                                                                <if test="productPrice != null">`product_price`,
+                    </if>
+                                                                <if test="productRealPrice != null">`product_real_price`,
+                    </if>
+                                                                <if test="reason != null">`reason`,
+                    </if>
+                                                                <if test="description != null">`description`,
+                    </if>
+                                                                <if test="proofPics != null">`proof_pics`,
+                    </if>
+                                                                <if test="handleNote != null">`handle_note`,
+                    </if>
+                                                                <if test="handleMan != null">`handle_man`,
+                    </if>
+                                                                <if test="receiveMan != null">`receive_man`,
+                    </if>
+                                                                <if test="receiveTime != null">`receive_time`,
+                    </if>
+                                                                <if test="receiveNote != null">`receive_note`,
+                    </if>
+                                                                <if test="deleted != null">`deleted`,
+                    </if>
+                                                                <if test="createBy != null">`create_by`,
+                    </if>
+                                                                <if test="updateBy != null">`update_by`,
+                    </if>
+                                                                <if test="updateTime != null">`update_time`,
+                    </if>
+                                                                <if test="remark != null">`remark`,
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id`,
+                    </if>
+                                    </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                                                <if test="id != null">#{id},
+                    </if>
+                                                                <if test="orderId != null">#{orderId},
+                    </if>
+                                                                <if test="companyAddressId != null">#{companyAddressId},
+                    </if>
+                                                                <if test="productId != null">#{productId},
+                    </if>
+                                                                <if test="orderSn != null">#{orderSn},
+                    </if>
+                                                                <if test="createTime != null">#{createTime},
+                    </if>
+                                                                <if test="memberUsername != null">#{memberUsername},
+                    </if>
+                                                                <if test="returnAmount != null">#{returnAmount},
+                    </if>
+                                                                <if test="returnName != null">#{returnName},
+                    </if>
+                                                                <if test="returnPhone != null">#{returnPhone},
+                    </if>
+                                                                <if test="status != null">#{status},
+                    </if>
+                                                                <if test="handleTime != null">#{handleTime},
+                    </if>
+                                                                <if test="productPic != null">#{productPic},
+                    </if>
+                                                                <if test="productName != null">#{productName},
+                    </if>
+                                                                <if test="productBrand != null">#{productBrand},
+                    </if>
+                                                                <if test="productAttr != null">#{productAttr},
+                    </if>
+                                                                <if test="productCount != null">#{productCount},
+                    </if>
+                                                                <if test="productPrice != null">#{productPrice},
+                    </if>
+                                                                <if test="productRealPrice != null">#{productRealPrice},
+                    </if>
+                                                                <if test="reason != null">#{reason},
+                    </if>
+                                                                <if test="description != null">#{description},
+                    </if>
+                                                                <if test="proofPics != null">#{proofPics},
+                    </if>
+                                                                <if test="handleNote != null">#{handleNote},
+                    </if>
+                                                                <if test="handleMan != null">#{handleMan},
+                    </if>
+                                                                <if test="receiveMan != null">#{receiveMan},
+                    </if>
+                                                                <if test="receiveTime != null">#{receiveTime},
+                    </if>
+                                                                <if test="receiveNote != null">#{receiveNote},
+                    </if>
+                                                                <if test="deleted != null">#{deleted},
+                    </if>
+                                                                <if test="createBy != null">#{createBy},
+                    </if>
+                                                                <if test="updateBy != null">#{updateBy},
+                    </if>
+                                                                <if test="updateTime != null">#{updateTime},
+                    </if>
+                                                                <if test="remark != null">#{remark},
+                    </if>
+                                                                <if test="tenantId != null">#{tenantId},
+                    </if>
+                                    </trim>
+    </insert>
+
+    <update id="updateOmsOrderReturnApply" parameterType="OmsOrderReturnApply">
+        update `oms_order_return_apply`
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="orderId != null">`order_id` =
+                        #{orderId},
+                    </if>
+                                                                <if test="companyAddressId != null">`company_address_id` =
+                        #{companyAddressId},
+                    </if>
+                                                                <if test="productId != null">`product_id` =
+                        #{productId},
+                    </if>
+                                                                <if test="orderSn != null">`order_sn` =
+                        #{orderSn},
+                    </if>
+                                                                <if test="createTime != null">`create_time` =
+                        #{createTime},
+                    </if>
+                                                                <if test="memberUsername != null">`member_username` =
+                        #{memberUsername},
+                    </if>
+                                                                <if test="returnAmount != null">`return_amount` =
+                        #{returnAmount},
+                    </if>
+                                                                <if test="returnName != null">`return_name` =
+                        #{returnName},
+                    </if>
+                                                                <if test="returnPhone != null">`return_phone` =
+                        #{returnPhone},
+                    </if>
+                                                                <if test="status != null">`status` =
+                        #{status},
+                    </if>
+                                                                <if test="handleTime != null">`handle_time` =
+                        #{handleTime},
+                    </if>
+                                                                <if test="productPic != null">`product_pic` =
+                        #{productPic},
+                    </if>
+                                                                <if test="productName != null">`product_name` =
+                        #{productName},
+                    </if>
+                                                                <if test="productBrand != null">`product_brand` =
+                        #{productBrand},
+                    </if>
+                                                                <if test="productAttr != null">`product_attr` =
+                        #{productAttr},
+                    </if>
+                                                                <if test="productCount != null">`product_count` =
+                        #{productCount},
+                    </if>
+                                                                <if test="productPrice != null">`product_price` =
+                        #{productPrice},
+                    </if>
+                                                                <if test="productRealPrice != null">`product_real_price` =
+                        #{productRealPrice},
+                    </if>
+                                                                <if test="reason != null">`reason` =
+                        #{reason},
+                    </if>
+                                                                <if test="description != null">`description` =
+                        #{description},
+                    </if>
+                                                                <if test="proofPics != null">`proof_pics` =
+                        #{proofPics},
+                    </if>
+                                                                <if test="handleNote != null">`handle_note` =
+                        #{handleNote},
+                    </if>
+                                                                <if test="handleMan != null">`handle_man` =
+                        #{handleMan},
+                    </if>
+                                                                <if test="receiveMan != null">`receive_man` =
+                        #{receiveMan},
+                    </if>
+                                                                <if test="receiveTime != null">`receive_time` =
+                        #{receiveTime},
+                    </if>
+                                                                <if test="receiveNote != null">`receive_note` =
+                        #{receiveNote},
+                    </if>
+                                                                <if test="deleted != null">`deleted` =
+                        #{deleted},
+                    </if>
+                                                                <if test="createBy != null">`create_by` =
+                        #{createBy},
+                    </if>
+                                                                <if test="updateBy != null">`update_by` =
+                        #{updateBy},
+                    </if>
+                                                                <if test="updateTime != null">`update_time` =
+                        #{updateTime},
+                    </if>
+                                                                <if test="remark != null">`remark` =
+                        #{remark},
+                    </if>
+                                                                <if test="tenantId != null">`tenant_id` =
+                        #{tenantId},
+                    </if>
+                                    </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteOmsOrderReturnApplyById" parameterType="String">
+        delete
+        from `oms_order_return_apply`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteOmsOrderReturnApplyByIds" parameterType="String">
+        delete from `oms_order_return_apply` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

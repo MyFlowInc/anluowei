@@ -1,0 +1,20 @@
+2023-06-16 18:22:35,943 - Could not load resource 'VM_global_library.vm' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource VM_global_library.vm
+2023-06-16 18:22:35,943 - Velocimacro : Default library not found.
+2023-06-16 18:22:35,943 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2023-06-16 18:22:35,943 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2023-06-16 18:22:35,943 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2023-06-16 18:22:35,943 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2023-06-16 18:22:35,943 - Velocimacro : Velocimacro : initialization complete.
+2023-06-16 18:22:35,943 - RuntimeInstance successfully initialized.
+2023-06-16 18:22:36,074 - ResourceManager : found templates/java/domain.java.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,107 - ResourceManager : found templates/java/mapper.java.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,114 - ResourceManager : found templates/java/service.java.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,128 - ResourceManager : found templates/java/serviceImpl.java.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,139 - ResourceManager : found templates/java/controller.java.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,147 - ResourceManager : found templates/java/request.java.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,171 - ResourceManager : found templates/xml/mapper.xml.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,197 - ResourceManager : found templates/vue/index.vue.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,203 - ResourceManager : found templates/vue/api.js.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,218 - ResourceManager : found templates/vue/modal/edit.vue.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,227 - ResourceManager : found templates/vue/modal/save.vue.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2023-06-16 18:22:36,243 - ResourceManager : found templates/vue/modal/info.vue.vm with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader

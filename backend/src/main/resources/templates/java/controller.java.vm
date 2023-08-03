@@ -1,0 +1,104 @@
+package ${packageName}.controller;
+
+
+import com.workflow.pro.common.constant.ControllerConstant;
+import io.swagger.annotations.Api;
+import org.springframework.web.bind.annotation.*;
+
+import ${packageName}.service.I${ClassName}Service;
+
+import ${packageName}.param.${ClassName}Request;
+import ${packageName}.domain.${ClassName};
+
+import javax.annotation.Resource;
+import java.util.List;
+
+import io.swagger.annotations.ApiOperation;
+import com.workflow.pro.common.web.base.BaseController;
+import com.workflow.pro.common.aop.annotation.Log;
+import com.workflow.pro.common.web.domain.Result;
+
+/**
+ * ${functionName}Controller
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Api(tags = {"${functionName}"})
+@RestController
+@RequestMapping(ControllerConstant.PREFIX_SYS + "${className}")
+public class ${ClassName}Controller extends BaseController {
+
+    @Resource
+    private I${ClassName}Service ${className}Service;
+
+    /**
+     * 查询${functionName}列表
+     * @param request 查询参数
+     */
+    @GetMapping("/list")
+    @Log(title = "${functionName}")
+    @ApiOperation(value = "${functionName}")
+    public Result list(${ClassName}Request request) {
+     return success(${className}Service.list(request));
+    }
+
+    /**
+     * 查询${functionName}分页列表
+     * @param request 查询参数
+     */
+    @GetMapping("/page")
+    @Log(title = "${functionName}列表")
+    @ApiOperation(value = "${functionName}列表")
+    public Result page(${ClassName}Request request) {
+     return success(${className}Service.page(request));
+    }
+
+
+    /**
+     * 新增${functionName}类型
+     *
+     * @param ${className} ${className} 实体
+     */
+    @PostMapping("save")
+    @Log(title = "新增${functionName}")
+    @ApiOperation(value = "${functionName}")
+    public Result save(@RequestBody ${ClassName} ${className}) {
+        return auto(${className}Service.save(${className}));
+    }
+
+    /**
+     * 修改${functionName}
+     * @param ${className} ${className} 实体
+     */
+    @PutMapping("edit")
+    @Log(title = "修改${functionName}")
+    @ApiOperation(value = "修改${functionName}")
+    public Result edit(@RequestBody ${ClassName} ${className}) {
+        return auto(${className}Service.updateById(${className}));
+    }
+
+    /**
+     * 删除${functionName}类型
+     *
+     * @param id ${className}编号
+     */
+    @DeleteMapping("remove")
+    @Log(title = "删除${functionName}")
+    @ApiOperation(value = "删除${functionName}")
+    public Result remove(@RequestParam String id) {
+        return auto(${className}Service.removeById(id));
+    }
+
+    /**
+     * 删除${functionName}类型
+     *
+     * @param ids ${className} 实体
+     */
+    @DeleteMapping("removeBatch")
+    @Log(title = "批量删除")
+    @ApiOperation(value = "批量删除")
+    public Result removeBatch(@RequestParam List<String> ids) {
+        return auto(${className}Service.removeByIds(ids));
+    }
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.workflow.mapper.WorkFlowFieldMapper">
+    <select id="selectWorkFlowFieldList" resultType="WorkFlowField" >
+        select `id`,`name`,`flow_id`,`type`,`sort`,`create_by`,`create_time`,`update_by`,`update_time`,`deleted`,`remark`,`tenant_id` from `work_flow_field`
+        <where>
+             <if test="request.name != null  and request.name != ''"> and `name` like concat('%', #{request.name}, '%')</if>
+             <if test="request.flowId != null  and request.flowId != 0 "> and `flow_id` = #{request.flowId}</if>
+             <if test="request.type != null  and request.type != ''"> and `type` = #{request.type}</if>
+        </where>
+    </select>
+
+</mapper>

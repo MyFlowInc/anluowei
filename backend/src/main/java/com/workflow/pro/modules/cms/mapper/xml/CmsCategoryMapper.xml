@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workflow.pro.modules.cms.mapper.CmsCategoryMapper">
+
+    <select id="selectCmsCategoryList" resultType="CmsCategory">
+        select * from cms_category
+        <where>
+            <if test="request.categoryTitle != null and request.categoryTitle !='' ">
+                and cms_category.category_title like concat('%', #{request.categoryTitle}, '%')
+            </if>
+        </where>
+         order by create_date desc
+    </select>
+
+    <select id="selectCate" resultType="CmsCategory">
+        select * from cms_category order by  category_sort asc
+    </select>
+    <select id="selectCateByParentId" resultType="CmsCategory">
+        select * from cms_category sd
+        where parent = #{parentId}
+    </select>
+
+</mapper>
