@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import logoSvg from "../../assets/logo_1.png";
+import logoSvg from "../../assets/anku_logo.png";
 import logoLoginSvg from "../../assets/logo_login.svg";
 
 export const Logo: React.FC<any> = (props: any) => {
@@ -13,8 +13,9 @@ const LogoUIRoot = styled.div`
 
   .logo_img {
     margin-left: 44px;
-    height: 26px;
-    width: 26px;
+    max-height: 100%;
+    width: auto;
+    padding: 4px 0px;
   }
   .title {
     margin-left: 16px;
@@ -32,7 +33,7 @@ export const LogoUI: React.FC = (props) => {
   return (
     <LogoUIRoot>
       <Logo className="logo_img" />
-      <div className="title">HIFLOW平台</div>
+      {/* <div className="title">HIFLOW平台</div> */}
     </LogoUIRoot>
   );
 };
