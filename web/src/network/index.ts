@@ -69,7 +69,7 @@ export class AxiosFactory {
   }
 }
 
-const baseURL = "http://47.101.172.25:9293";
+const baseURL = process.env.REACT_APP_BASE_SERVER_URL;
 
 const flowConfig: CreateAxiosDefaults = {
   timeout: 5000,

@@ -106,7 +106,7 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
   };
 
   const DiscussBar = (
-    <Form form={form} name="discussForm" onFinish={onFinish}>
+    <Form form={form} onFinish={onFinish}>
       <Form.Item
         name="content"
         preserve={false}
@@ -144,8 +144,8 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
           <List
             itemLayout="horizontal"
             dataSource={comments}
-            renderItem={(item: CommentType, index) => (
-              <List.Item>
+            renderItem={(item: CommentType, index: number) => (
+              <List.Item key={`item-${index}`}>
                 <List.Item.Meta
                   avatar={<Avatar src={item.avatar} />}
                   title={item.username}

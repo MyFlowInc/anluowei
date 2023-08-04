@@ -22,20 +22,25 @@ const TypeDateTime: React.FC<TypeDateTimeProps> = (
 ) => {
   const {   cell, form, setForm } = props
 
-  const value = form[cell.fieldId] || null
+  const value =
+    (dayjs(form[cell.fieldId]).isValid() && dayjs(form[cell.fieldId])) || null;
 
-  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
     setForm({
       ...form,
       [cell.fieldId]: dateString,
-    })
+    });
   };
- 
 
   return (
-    <DatePicker value={dayjs(value)} onChange={onChange} />
-  )
+    <DatePicker
+      value={value}
+      showTime={{ format: "HH:mm" }}
+      format="YYYY-MM-DD HH:mm"
+      onChange={onChange}
+    />
+  );
   
 }
 
