@@ -50,6 +50,9 @@ interface FlowTableProps {
   modalType: string;
   setModalType?: (v: string) => void;
   setOpen?: (v: boolean) => void;
+  reader: boolean;
+  writer: boolean;
+  manager: boolean;
 }
 
 export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
@@ -62,8 +65,10 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     setEditFlowItemRecord,
     statusId,
     statusFieldId,
+    reader,
+    writer,
+    manager,
   } = props;
-
   const { confirm } = Modal;
   const tableData = useAppSelector(selectCurTableRows);
   const dstColumns = useAppSelector(selectCurTableColumn);
@@ -105,16 +110,16 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   };
 
   useEffect(() => {
-    const temp = dstColumns.map((item) => {
+    const temp = dstColumns.map((item: any) => {
       return {
         ...item,
         ellipsis: true,
         render: TableColumnRender(item.type, item.fieldId, item.fieldConfig),
       };
     });
-    const columns = [
-      ...temp,
-      {
+
+    const action =
+      (writer && {
         title: "操作",
         dataIndex: "actions",
         render: (
@@ -130,17 +135,20 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                 editHandle(text, record, index);
               }}
             />
-            <Button
-              type="text"
-              icon={<img src={deleteSvg} />}
-              onClick={() => {
-                delHandle(text, record, index);
-              }}
-            />
+            {manager && (
+              <Button
+                type="text"
+                icon={<img src={deleteSvg} />}
+                onClick={() => {
+                  delHandle(text, record, index);
+                }}
+              />
+            )}
           </Space>
         ),
-      },
-    ];
+      }) ||
+      {};
+    const columns = [...temp, action];
     columns.forEach((item: any, index: number) => {
       switch (index) {
         case 0:
@@ -155,7 +163,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
       }
     });
     setTableColumn(columns);
-  }, [dstColumns]);
+  }, [dstColumns, reader, writer, manager]);
 
   const filterTableData = (records: any[]) => {
     if (!statusId) {

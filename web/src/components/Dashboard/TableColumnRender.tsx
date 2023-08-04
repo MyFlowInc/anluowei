@@ -288,7 +288,7 @@ const MemberSelect = (fieldConfig: any) => {
                   color="blue"
                   icon={<Avatar src={member.avatar} />}
                 >
-                  {member.username}
+                  {member.nickname}
                 </Tag>
               )
           )}

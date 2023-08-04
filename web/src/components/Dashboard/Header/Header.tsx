@@ -122,6 +122,7 @@ interface HeaderProps {
   modalType: string;
   setModalType: (v: string) => void;
   editFlowItemRecord: FlowItemTableDataType | undefined;
+  manager: boolean;
 }
 
 const Header: React.FC<HeaderProps> = (props) => {
@@ -132,6 +133,7 @@ const Header: React.FC<HeaderProps> = (props) => {
     open,
     setOpen,
     editFlowItemRecord,
+    manager,
   } = props;
 
   const fetchInviteList = async (options: any = {}) => {
@@ -179,19 +181,21 @@ const Header: React.FC<HeaderProps> = (props) => {
   return (
     <HeaderContainer>
       {contextHolder}
-      <Button
-        id="add_flow_item"
-        ref={ref}
-        onClick={() => {
-          setOpen(true);
-          setModalType("add");
-        }}
-        style={{ background: "#2845D4" }}
-        type="primary"
-        icon={<PlusOutlined />}
-      >
-        新建工单
-      </Button>
+      {manager && (
+        <Button
+          id="add_flow_item"
+          ref={ref}
+          onClick={() => {
+            setOpen(true);
+            setModalType("add");
+          }}
+          style={{ background: "#2845D4" }}
+          type="primary"
+          icon={<PlusOutlined />}
+        >
+          新建工单
+        </Button>
+      )}
       <div className="header-right">
         <ShowMode className="show-mode" />
         <FilterArea className="filter-area" />

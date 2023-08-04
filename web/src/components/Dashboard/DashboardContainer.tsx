@@ -20,7 +20,12 @@ import {
   deleteDSCells,
 } from '../../api/apitable/ds-record'
 
-interface ContainerProps {}
+interface ContainerProps {
+  reader: boolean;
+  writer: boolean;
+  manager: boolean;
+  children?: React.ReactNode;
+}
 
 const DashboardRoot = styled.div`
   width: 100%;
@@ -43,64 +48,68 @@ const DashboardRoot = styled.div`
       }
     }
   }
-`
+`;
 
-const DashboardContainer: React.FC<ContainerProps> = () => {
-  const curShowMode = useAppSelector(selectCurShowMode)
-  const statusList = useAppSelector(selectCurTableStatusList) || []
-  const curStatusFieldId =  useAppSelector(selectCurStatusFieldId) || ''
+const DashboardContainer: React.FC<ContainerProps> = ({
+  reader,
+  writer,
+  manager,
+}) => {
+  // console.log("reader", reader, "writer", writer, "manager", manager);
+  const curShowMode = useAppSelector(selectCurShowMode);
+  const statusList = useAppSelector(selectCurTableStatusList) || [];
+  const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || "";
   const [editFlowItemRecord, setEditFlowItemRecord] = useState<
     FlowItemTableDataType | undefined
-  >(undefined)
-
-  const history = useHistory()
-  const { dstId } = useParams<{ dstId: string }>()
-  const [loading, setLoading] = useState(true)
+  >(undefined);
+  const history = useHistory();
+  const { dstId } = useParams<{ dstId: string }>();
+  const [loading, setLoading] = useState(true);
   // for modal
-  const [open, setOpen] = useState(false)
-  const [modalType, setModalType] = useState('add')
+  const [open, setOpen] = useState(false);
+  const [modalType, setModalType] = useState("add");
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const deleteFlowItemHandler = async (recordId: string) => {
     const params = {
       dstId,
       recordIds: [recordId],
-    }
-    await deleteDSCells(params)
-    dispatch(freshCurTableRows(dstId!))
-  }
+    };
+    await deleteDSCells(params);
+    dispatch(freshCurTableRows(dstId!));
+  };
 
   const freshFlowItem = async () => {
-    setLoading(true)
-    await delay()
-    setLoading(false)
-    setModalType('add')
-  }
+    setLoading(true);
+    await delay();
+    setLoading(false);
+    setModalType("add");
+  };
 
   const initTable = async (dstId: string) => {
     dispatch(freshCurMetaData(dstId)).then(() => {
-      dispatch(freshCurTableRows(dstId))
-    })
-  }
+      dispatch(freshCurTableRows(dstId));
+    });
+  };
 
   // init table data
   const fetchDatas = async (dstId: string) => {
-    await initTable(dstId)
-    setLoading(false)
-  }
+    await initTable(dstId);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    dstId && fetchDatas(dstId)
-  }, [dstId])
+    dstId && fetchDatas(dstId);
+  }, [dstId]);
 
   const jumpToAdd = (id: string) => {
     if (id) {
       // TODO:
-      const path = '/dashboard/workflow-edit/' + dstId
-      history.push(path)
+      const path = "/dashboard/workflow-edit/" + dstId;
+      history.push(path);
     }
-  }
+  };
 
   const StatusView = () => {
     return (
@@ -108,29 +117,32 @@ const DashboardContainer: React.FC<ContainerProps> = () => {
         {statusList.length > 0 ? (
           statusList.map((item) => {
             return (
-              <div key={'FlowTable_' + item.id} className="table-item">
-                <h3 className='mt-2'>{item.name}</h3>
+              <div key={"FlowTable_" + item.id} className="table-item">
+                <h3 className="mt-2">{item.name}</h3>
                 <FlowTable
                   className="mb-2 card-table"
                   title={item.name}
                   dstId={dstId}
                   statusId={item.id}
-                  statusFieldId = {curStatusFieldId}
+                  statusFieldId={curStatusFieldId}
                   deleteFlowItem={deleteFlowItemHandler}
                   modalType={modalType}
                   setModalType={setModalType}
                   setOpen={setOpen}
                   setEditFlowItemRecord={setEditFlowItemRecord}
+                  reader={reader}
+                  writer={writer}
+                  manager={manager}
                 />
               </div>
-            )
+            );
           })
         ) : (
           <NoStatusData dstId={dstId} clickHandler={jumpToAdd} />
         )}
       </>
-    )
-  }
+    );
+  };
   return (
     <DashboardRoot>
       <Header
@@ -140,23 +152,28 @@ const DashboardContainer: React.FC<ContainerProps> = () => {
         modalType={modalType}
         setModalType={setModalType}
         editFlowItemRecord={editFlowItemRecord}
+        manager={manager}
       />
       {loading && <BaseLoading />}
       <div className="table-list">
-        {curShowMode == 'list' && (
+        {curShowMode == "list" && (
           <FlowTable
+            dstId={dstId}
             show-mode={curShowMode}
             deleteFlowItem={deleteFlowItemHandler}
             modalType={modalType}
             setModalType={setModalType}
             setOpen={setOpen}
             setEditFlowItemRecord={setEditFlowItemRecord}
+            reader={reader}
+            writer={writer}
+            manager={manager}
           />
         )}
-        {curShowMode == 'status' && <StatusView />}
+        {curShowMode == "status" && <StatusView />}
       </div>
     </DashboardRoot>
-  )
-}
+  );
+};
 
 export default DashboardContainer
