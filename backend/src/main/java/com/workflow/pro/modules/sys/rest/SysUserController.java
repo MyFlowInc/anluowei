@@ -11,6 +11,7 @@ import com.workflow.pro.modules.apitable.domain.SysUserGrade;
 import com.workflow.pro.modules.apitable.exception.BusinessExceptionNew;
 import com.workflow.pro.modules.apitable.service.ISysCaptchaService;
 import com.workflow.pro.modules.apitable.service.ISysUserGradeService;
+import com.workflow.pro.modules.sys.domain.SysRole;
 import com.workflow.pro.modules.sys.domain.SysUser;
 import com.workflow.pro.modules.sys.param.LoginSuccess;
 import com.workflow.pro.modules.sys.param.SysUserPasswordRequest;
@@ -184,6 +185,8 @@ public class SysUserController extends BaseController {
             SysUserGrade byId1 = sysUserGradeService.getById(byId.getGradeId());
             byId.setGradeName(byId1.getName());
         }
+        List<SysRole> role = sysUserService.role(byId.getId());
+        byId.setRoles(role);
         return success(byId);
     }
 
@@ -195,6 +198,7 @@ public class SysUserController extends BaseController {
     @GetMapping("info")
     @Log(title = "用户详情")
     @ApiOperation(value = "用户详情")
+
     public Result info(String userId) {
         return success(sysUserService.getById(userId));
     }
