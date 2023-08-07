@@ -3,26 +3,25 @@ import DashboardContainer from "../../components/Dashboard/DashboardContainer";
 import { User, selectUser } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { createWebSocket } from "../../api/apitable/room-server";
-import { selectCurFlowDstId } from "../../store/workflowSlice";
-import { selectWorkflowList } from "../../store/workflowSlice";
 import { apitableDeveloperUserList } from "../../api/apitable/ds-share";
+import {
+  selectCurFlowDstId,
+  selectWorkflowList,
+} from "../../store/workflowSlice";
 import _ from "lodash";
+import type { WorkFlowInfo } from "../../store/workflowSlice";
 
 const Page: React.FC = () => {
   const curDstId = useAppSelector(selectCurFlowDstId);
   const user = useAppSelector(selectUser);
   const flowList = useAppSelector(selectWorkflowList);
-  const curWorkflow = _.get(
-    flowList.filter((item: any) => item.dstId === curDstId),
-    "0"
-  );
 
   const [isReader, setIsReader] = useState<boolean>(false);
   const [isWriter, setIsWriter] = useState<boolean>(false);
   const [isManager, setIsManager] = useState<boolean>(false);
 
   const fetchUserList = async () => {
-    if (curWorkflow && curDstId === curWorkflow.dstId) {
+    if (flowList.some((flow: WorkFlowInfo) => flow.dstId === curDstId)) {
       setIsReader(true);
       setIsWriter(true);
       setIsManager(true);
