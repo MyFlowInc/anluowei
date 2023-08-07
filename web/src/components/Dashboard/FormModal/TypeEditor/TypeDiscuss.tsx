@@ -98,7 +98,7 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
       username: user.nickname,
       avatar: user.avatar,
       content: values.content,
-      create_time: moment().format("YYYY-MM-DD hh:mm:ss"),
+      create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
     updateComments(comment);
     form.resetFields();

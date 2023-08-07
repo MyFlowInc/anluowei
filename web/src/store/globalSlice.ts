@@ -5,14 +5,15 @@ import { userGradeList } from '../api/shop'
 import _ from 'lodash'
 
 export interface User {
-  id: string
-  username: string
-  nickname: string
-  avatar: string
-  phone:string
-  gradeId:string
-  gradeName: string
-  endTime: string
+  id: string;
+  username: string;
+  nickname: string;
+  avatar: string;
+  phone: string;
+  gradeId: string;
+  gradeName: string;
+  endTime: string;
+  roles: [];
 }
 
 export interface globalState {

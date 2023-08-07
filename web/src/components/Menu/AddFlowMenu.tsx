@@ -5,6 +5,7 @@ import iconSvg from "./assets/compute.svg";
 import addSvg from "./assets/add-icon.svg";
 import { Menu, Tooltip } from "antd";
 
+import { selectUser } from "../../store/globalSlice";
 import TourContext from "../../context/tour";
 import { useAppSelector } from "../../store/hooks";
 import { selectCollapsed } from "../../store/globalSlice";
@@ -47,13 +48,23 @@ const RootUI = styled.div`
 
 const MenuItemLabel = (props: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const user = useAppSelector(selectUser);
+  const isAdmin = user?.roles.some((item: any) => item.code === "fe-admin");
   return (
-    <ItemRootUI >
+    <ItemRootUI>
       <div className="title">项目列表</div>
-      <Tooltip title={"新建工作流"} placement="right">
-        <img src={addSvg} onClick={()=>{setIsModalOpen(true)}} className="icon_add" />
-      </Tooltip>
-      <AddFlowModal {...{isModalOpen, setIsModalOpen}}/>
+      {isAdmin && (
+        <Tooltip title={"新建工作流"} placement="right">
+          <img
+            src={addSvg}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            className="icon_add"
+          />
+        </Tooltip>
+      )}
+      <AddFlowModal {...{ isModalOpen, setIsModalOpen }} />
     </ItemRootUI>
   );
 };
@@ -61,27 +72,20 @@ const MenuItemLabel = (props: any) => {
 const AddFlowMenu: React.FC<any> = (props: any) => {
   const ref = useRef(null);
   const { tourRefs, setTourRefs } = useContext(TourContext);
-  const collapsed = useAppSelector(selectCollapsed)
+  const collapsed = useAppSelector(selectCollapsed);
   const item = {
     key: "add",
     icon: <img src={iconSvg} className="icon_1" />,
-    label: !collapsed ?  <MenuItemLabel {...props } /> : null,
-  }
+    label: !collapsed ? <MenuItemLabel {...props} /> : null,
+  };
 
   useEffect(() => {
-    if (tourRefs && setTourRefs && !tourRefs.includes(ref))
-      tourRefs?.push(ref);
+    if (tourRefs && setTourRefs && !tourRefs.includes(ref)) tourRefs?.push(ref);
   }, []);
 
   return (
     <RootUI ref={ref} id="add_flow_menu">
-        <Menu
-          mode="inline"
-          selectable={false}
-          items={[
-            item
-          ]}
-        />
+      <Menu mode="inline" selectable={false} items={[item]} />
     </RootUI>
   );
 };
