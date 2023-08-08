@@ -132,7 +132,9 @@ public class ApitableDeveloperController extends BaseController {
         record.setDstId(apitableDeveloper.getDstId());
         record.setCreateBy(userId);
         inviteRecordService.saveOrUpdate(record);
-        apitableDeveloper.setEnable(0);
+        if (apitableDeveloper.getEnable() == null) {
+            apitableDeveloper.setEnable(0);
+        }
         return auto(apitableDeveloperService.saveOrUpdate(apitableDeveloper));
     }
 
