@@ -6,6 +6,7 @@ import React from "react";
 /** all page */
 import MyTest from "./pages/Test/MyTest";
 import Login from "./pages/User/Login";
+import Invite from './pages/Interview/Invite'
 import DashboardRouterOutlet from "./routes/DashboardRouterOutlet";
 import Register from "./pages/User/Register";
 import Preview from "./pages/Preview";
@@ -63,6 +64,9 @@ const App: React.FC = () => {
             </Route>
             <Route path="/login" exact={true}>
               <Login />
+            </Route>
+            <Route path="/invite" exact={true}>
+              <Invite />
             </Route>
             <Route path="/register" exact={true}>
               <Register />
