@@ -11,7 +11,7 @@ const LogoRoot = styled.div`
   .hiflow {
     display: flex;
     width: 109px;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bold;
     letter-spacing: 0em;
     color: #3b4faf;
@@ -21,6 +21,8 @@ const LogoRoot = styled.div`
   }
   .menu-logo {
     margin-left: 2px !important;
+    width: 43px;
+    height: 39px;
   }
   // 覆盖样式
   .ant-menu-item {
@@ -41,7 +43,7 @@ const HiFlowPic: React.FC<{ rootStyle?: any }> = ({ rootStyle }) => {
     icon: <MenuLogo className={'menu-logo'} />,
     label: !collapsed ? (
       <LogoRoot>
-        <div className="hiflow">Myflow</div>
+        <div className="hiflow">安酷智芯</div>
       </LogoRoot>
     ) : null,
   }

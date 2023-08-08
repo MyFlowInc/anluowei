@@ -14,8 +14,8 @@ const BeiAnUIRoot = styled.div`
 export const BeiAnUI: React.FC = (props) => {
   return (
     <BeiAnUIRoot>
+      由MyFlow驱动
       © 2022 弗络科技(苏州)有限公司.All rights reserved. ｜
-      备案号：苏ICP备19106018号 ｜ 公安备案号：41230000099999
     </BeiAnUIRoot>
   );
 };
