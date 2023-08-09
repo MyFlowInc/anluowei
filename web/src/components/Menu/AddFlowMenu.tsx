@@ -52,9 +52,9 @@ const MenuItemLabel = (props: any) => {
   const isAdmin = user?.roles.some((item: any) => item.code === "fe-admin");
   return (
     <ItemRootUI>
-      <div className="title">项目列表</div>
+      <div className="title">岗位列表</div>
       {isAdmin && (
-        <Tooltip title={"新建工作流"} placement="right">
+        <Tooltip title={"新建岗位"} placement="right">
           <img
             src={addSvg}
             onClick={() => {

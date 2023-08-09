@@ -133,8 +133,10 @@ const DashboardRouterOutlet: React.FC = () => {
     }
     const handle = async () => {
       await delay(1000)
-      if (tourRefs.length > 0) {
+      const isShowTour = localStorage.getItem('isShowTour') 
+      if (isShowTour !== '1' &&  tourRefs.length > 0) {
         setOpen(true)
+        localStorage.setItem('isShowTour', '1')
         dispatch(setIsShowTour(true))
       }
     }

@@ -56,6 +56,7 @@ export const FormRoot = styled.div`
   flex: 1;
   height: 460px;
   min-width: 370px;
+  max-width: 40%;
   display: flex;
   flex-direction: column;
   align-items: center;

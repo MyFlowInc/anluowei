@@ -117,6 +117,8 @@ const UIROOT = styled.div`
   .list-content {
     margin-top: 12px;
     width: 100%;
+    height: 400px;
+    overflow-y: auto;
   }
   .divider {
     border-bottom: 1px solid #e5e6eb;
@@ -163,7 +165,7 @@ const Invite = (props: any) => {
 
   return (
     <Modal
-      title="协作"
+      title="邀请成员"
       open={isInviteModalOpen}
       width={566}
       onOk={handleOk}

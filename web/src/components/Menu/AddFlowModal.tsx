@@ -153,7 +153,7 @@ const AddFlowModal = (props: any) => {
             }}
           >
             <PlusOutlined />
-            <span style={{ marginLeft: '12px' }}>空白工作流</span>
+            <span style={{ marginLeft: '12px' }}>默认岗位</span>
           </div>
           <div className="template-title">选择模板</div>
           <div className="template-content">

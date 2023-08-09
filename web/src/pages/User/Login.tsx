@@ -81,7 +81,7 @@ const Login: React.FC = () => {
       <TopBarUI />
 
       <Container>
-        <LogoUI2 className="logo_2" />
+        {/* <LogoUI2 className="logo_2" /> */}
         <FormRoot>
           <div className="login_tilte">登录</div>
           <Form

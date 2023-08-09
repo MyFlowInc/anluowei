@@ -14,7 +14,7 @@ const genDropItems: (isCreator: boolean)=> MenuProps['items'] = (isCreator: bool
     return  [
       {
         key: 'edit',
-        label: <div>状态流设置</div>,
+        label: <div>岗位设置</div>,
       },
       {
         key: 'rename',
@@ -22,7 +22,7 @@ const genDropItems: (isCreator: boolean)=> MenuProps['items'] = (isCreator: bool
       },
       {
         key: 'invite',
-        label: <div>邀请协作</div>,
+        label: <div>邀请成员</div>,
       },
       {
         key: 'cooperation',
@@ -37,7 +37,7 @@ const genDropItems: (isCreator: boolean)=> MenuProps['items'] = (isCreator: bool
     return [
       {
         key: 'edit',
-        label: <div>状态流设置</div>,
+        label: <div>岗位设置</div>,
       }
     ]
   }
