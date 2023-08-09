@@ -61,7 +61,7 @@ const ListItem = (props: any) => {
   const { useInfo, editDstId,freshUserList } = props;
   
   const clickHandler = async () => {
-    const temp = { dstId: editDstId, userId: useInfo.id + "" };
+    const temp = { dstId: editDstId, userId: useInfo.id + "" , enable:1};
     try {
       const res = await userInvite(temp);
       console.log("clickHandler", useInfo.id, editDstId, res);
