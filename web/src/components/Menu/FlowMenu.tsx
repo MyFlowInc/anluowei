@@ -5,6 +5,7 @@ import HiFlowLogo from '../../BaseUI/HiFlowLogo/HiFlowLogo'
 import { useEffect, useState } from 'react'
 import {
   IAttachedWorkflowList,
+  removeWorkflowList,
   selectAllWorkflowList,
   selectAttachedWorkflowList,
   selectCurFlowDstId,
@@ -122,27 +123,29 @@ const FlowMenu = forwardRef<
   }
   // delete work flow
   const deleteWorkFlowHandler = async (id: string) => {
-    console.log('deleteHandler:', id)
-    const res1 = await deleteWorkFlow(id)
-    console.log('onFinish', res1)
+    try {
+      await deleteWorkFlow(id)
+      dispatch(removeWorkflowList(id))
+      // update flow list
+      const list = await freshWorkFlowList()
+      const curFlowId = _.find(flowList, { dstId: curFlowDstId })?.id
 
-    messageApi
-      .open({
+      if (list.length > 0 ) {
+        if(curFlowId === id) {
+          const item0 = list[0]
+          history.push(item0.url)
+          dispatch(updateCurFlowDstId(item0.dstId))
+        }
+   
+      }
+      messageApi.open({
         type: 'success',
         content: '删除成功成功!',
         duration: 1,
       })
-      .then(async () => {
-        // update flow list
-        const list = await freshWorkFlowList()
-        const curFlowId = _.find(flowList, { dstId: curFlowDstId })?.id
-
-        if (list.length > 0 && curFlowId === id) {
-          const item0 = list[list.length - 1]
-          history.push(item0.url)
-          dispatch(updateCurFlowDstId(item0.dstId))
-        }
-      })
+    } catch (error) {
+      console.log('error', error)
+    }
   }
   // 刷新列表
   const freshWorkFlowList = async () => {
@@ -205,7 +208,6 @@ const FlowMenu = forwardRef<
   const OtherMenuItemList = generateOtherMenuItemList(attachedFlowList)
   // menu router jump
   const routerJumpHandler = (key: string) => {
-
     if (key === 'notification') {
       setCurFlowDstId('')
       history.push('/dashboard/notification')
@@ -216,7 +218,7 @@ const FlowMenu = forwardRef<
       history.push('/dashboard/setting')
       return
     }
-    
+
     const item: WorkFlowInfo | undefined = _.find(allFlowList, { id: key })
     if (!item || !item.id) {
       return

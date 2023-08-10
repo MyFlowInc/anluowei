@@ -142,7 +142,14 @@ export const workflowSlice = createSlice({
       state.curShowMode = action.payload
       console.log('updateCurShowMode', state.curShowMode)
     },
+    removeWorkflowList: (state, action: PayloadAction<string>) => {
+       const list = [...state.WorkflowList]
+        const id = action.payload
+        const idx = _.findIndex(list, { id  })
+        list.splice(idx, 1)
+        state.WorkflowList = list
 
+    },
     setWorkflowList: (state, action: PayloadAction<WorkFlowInfo[]>) => {
       const oldList = [...state.WorkflowList]
       const newList = action.payload
@@ -223,6 +230,7 @@ export const workflowSlice = createSlice({
 export const {
   updateCurFlowDstId,
   updateCurShowMode,
+  removeWorkflowList,
   setWorkflowList,
   renameWorkflow,
   setCurFieldList,

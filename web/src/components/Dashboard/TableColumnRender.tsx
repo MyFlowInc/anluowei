@@ -58,7 +58,7 @@ export const NumFieldType = {
   CreatedBy: 23,
   LastModifiedBy: 24,
   Cascader: 25,
-  OptionStatus: 26,
+  OptionStatus: 26, // 状态
   discuss: 27,
   DeniedField: 999, // no permission column
 };
