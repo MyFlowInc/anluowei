@@ -1,57 +1,77 @@
-import styled from 'styled-components'
-import { Menu, Tooltip } from 'antd'
-import pkgJSON from '../../../package.json'
-import { MenuLogo } from '../Welcome/LogoIcon'
-import { useEffect } from 'react'
-import { useAppSelector } from '../../store/hooks'
-import { selectCollapsed } from '../../store/globalSlice'
-const LogoRoot = styled.div`
-  display: flex;
-  align-items: center;
-  .hiflow {
-    display: flex;
-    width: 109px;
-    font-size: 28px;
-    font-weight: bold;
-    letter-spacing: 0em;
-    color: #3b4faf;
-  }
-  .ant-menu-item:hover {
-    background-color: unset !important;
-  }
-  .menu-logo {
-    margin-left: 2px !important;
-    width: 43px;
-    height: 39px;
-  }
-  // 覆盖样式
-  .ant-menu-item {
-    padding-left: unset !important;
-    user-select: none !important;
-  }
-`
+import React from "react";
+import styled from "styled-components";
+import { Avatar } from "antd";
+import { useAppSelector } from "../../store/hooks";
+import { selectCollapsed } from "../../store/globalSlice";
+import LogoSvg from "../../assets/menu_logo_32.png";
 
-const HiFlowPic: React.FC<{ rootStyle?: any }> = ({ rootStyle }) => {
-  const collapsed = useAppSelector(selectCollapsed)
-
-  useEffect(() => {
-    console.log('version:' + pkgJSON.version)
-  }, [])
-
-  const item = {
-    key: 'hiflowLogo',
-    icon: <MenuLogo className={'menu-logo'} />,
-    label: !collapsed ? (
-      <LogoRoot>
-        <div className="hiflow">安酷智芯</div>
-      </LogoRoot>
-    ) : null,
-  }
-  return (
-    <LogoRoot style={rootStyle}>
-      <Menu mode="inline" selectable={false} items={[item]} />
-    </LogoRoot>
-  )
+interface LogoTagProps {
+  collapsed: boolean;
 }
 
-export default HiFlowPic
+const LogoTag = styled.div<LogoTagProps>`
+  position: relative;
+  display: flex;
+  justify-content: ${(props) => (props.collapsed ? "center" : "start")};
+  align-items: center;
+  height: 64px;
+  padding: 8px 16px;
+  transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  .logo-text {
+    position: absolute;
+    left: 64px;
+    display: ${(props) => (props.collapsed ? "none" : "block")};
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    white-space: nowrap;
+
+    animation-name: animationLogo;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in;
+
+    @keyframes animationLogo {
+      0% {
+        opacity: 0.6;
+      }
+      15% {
+        opacity: 0.7;
+      }
+      30% {
+        opacity: 0.8;
+      }
+      45% {
+        opacity: 0.9;
+      }
+      50% {
+        opacity: 1;
+      }
+      65% {
+        opacity: 0.9;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      95% {
+        opacity: 0.7;
+      }
+      100% {
+        opacity: 0.6;
+      }
+    }
+  }
+`;
+
+const HiFlowPic: React.FC = () => {
+  const collapsed = useAppSelector(selectCollapsed);
+  return (
+    <LogoTag collapsed={collapsed}>
+      <Avatar shape="square" size="large" src={LogoSvg} />
+      <div className="logo-text">安酷智芯</div>
+    </LogoTag>
+  );
+};
+
+export default HiFlowPic;

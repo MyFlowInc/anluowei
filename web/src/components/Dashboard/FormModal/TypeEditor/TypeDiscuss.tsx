@@ -37,6 +37,9 @@ interface DiscussModalProps {
   open: boolean;
   close: () => void;
   children?: React.ReactNode;
+  reader: boolean;
+  writer: boolean;
+  manager: boolean;
 }
 
 interface CommentType {
@@ -52,6 +55,9 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
   close,
   fieldId,
   record,
+  reader,
+  writer,
+  manager,
 }) => {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
@@ -137,7 +143,7 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
       open={open}
       onCancel={close}
       width={620}
-      footer={DiscussBar}
+      footer={writer || manager ? DiscussBar : null}
     >
       {comments ? (
         <div style={{ height: 450, overflow: "auto" }}>
@@ -207,6 +213,9 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
           record={form}
           open={open}
           close={() => setOpen(false)}
+          reader={true}
+          writer={true}
+          manager={true}
         />
       )}
     </>

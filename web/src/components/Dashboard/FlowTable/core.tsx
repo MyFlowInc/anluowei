@@ -114,7 +114,14 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
       return {
         ...item,
         ellipsis: true,
-        render: TableColumnRender(item.type, item.fieldId, item.fieldConfig),
+        render: TableColumnRender(
+          item.type,
+          item.fieldId,
+          item.fieldConfig,
+          reader || false,
+          writer || false,
+          manager || false
+        ),
       };
     });
 

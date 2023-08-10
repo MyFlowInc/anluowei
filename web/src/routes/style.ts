@@ -21,7 +21,7 @@ export const RouterContainer = styled.div<RouterContainerProps>`
   overflow-x: hidden;
   transition: all;
   transition-duration: 0.5s;
-  background: #EDEFF3;
+  background: #edeff3;
 
   .router-content {
     flex: 1;
@@ -29,26 +29,21 @@ export const RouterContainer = styled.div<RouterContainerProps>`
     overflow: auto;
     transition: all;
     transition-duration: 0.5s;
-    background: #EDEFF3;
-
+    background: #edeff3;
   }
 
   .flow-sider {
-    padding-top: 16px;
-    padding-left:8px ;
-    padding-right: 8px;
     overflow: hidden;
-    background: #EDEFF3;
-
+    background: #edeff3;
   }
-  .trigger{
+  .trigger {
     margin-left: 8px;
   }
   //cover
-  .ant-menu-light{
-    background: #EDEFF3;
+  .ant-menu-light {
+    background: #edeff3;
   }
-  .ant-menu-root.ant-menu-inline{
+  .ant-menu-root.ant-menu-inline {
     border: unset !important;
   }
 
