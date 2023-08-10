@@ -6,7 +6,7 @@ import AvatarSetting from '../components/Setting/AvatarSetting'
 import NameSetting from '../components/Setting/NameSetting'
 import PhoneSetting from '../components/Setting/PhoneSetting'
 import PwdSetting from '../components/Setting/PwdSetting'
-import AccountSetting from '../components/Setting/AccountSetting'
+import AccountType from '../components/Setting/AccountType'
 import SubScription from '../components/Setting/SubScription'
 import { useHistory } from 'react-router'
 import { logout } from '../api/user'
@@ -73,12 +73,13 @@ const Setting = () => {
       <BuyCard className="buy-card" {...{ isModalOpen, setIsModalOpen }} />
       <AvatarSetting className="avator-setting divider" />
       <NameSetting className="name-setting divider" />
+      <AccountType className="name-setting divider" />
       <PhoneSetting className="phone-setting divider" />
       <PwdSetting className="pwd-setting divider" />
-      <AccountSetting
+      {/* <AccountSetting
         className="account-setting divider"
         {...{ isModalOpen, setIsModalOpen }}
-      />
+      /> */}
       <Button className="login-out" type="default" onClick={logoutHandler}>
         退出登录
       </Button>
