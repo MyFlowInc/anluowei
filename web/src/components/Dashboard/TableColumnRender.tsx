@@ -100,7 +100,10 @@ export const ReverSedNumFieldType = {
 export function TableColumnRender(
   type: number,
   fieldId: string,
-  fieldConfig: any
+  fieldConfig: any,
+  reader: boolean,
+  writer: boolean,
+  manager: boolean
 ) {
   // console.log(
   //   'TableColumnRender- type - fieldid - fieldMap',
@@ -139,7 +142,7 @@ export function TableColumnRender(
     case NumFieldType.Member:
       return MemberSelect(fieldConfig);
     case NumFieldType.discuss:
-      return DiscussComment(fieldConfig);
+      return DiscussComment(fieldConfig, reader, writer, manager);
     default:
       return StringifyTextRender;
   }
@@ -301,7 +304,10 @@ const DiscussModalWrap: React.FC<{
   children?: React.ReactNode;
   fieldId: string;
   record: any;
-}> = ({ fieldId, record }) => {
+  reader: boolean;
+  writer: boolean;
+  manager: boolean;
+}> = ({ fieldId, record, reader, writer, manager }) => {
   const [open, setOpen] = React.useState<boolean>(false);
   return (
     <div>
@@ -314,15 +320,31 @@ const DiscussModalWrap: React.FC<{
         record={record}
         open={open}
         close={() => setOpen(false)}
+        reader={reader}
+        writer={writer}
+        manager={manager}
       />
     </div>
   );
 };
 
-const DiscussComment = (fieldConfig: any) => {
+const DiscussComment = (
+  fieldConfig: any,
+  reader: boolean,
+  writer: boolean,
+  manager: boolean
+) => {
   const fieldId = fieldConfig.id;
   return (value: any, record: any) => {
-    return <DiscussModalWrap fieldId={fieldId} record={record} />;
+    return (
+      <DiscussModalWrap
+        fieldId={fieldId}
+        record={record}
+        reader={reader}
+        writer={writer}
+        manager={manager}
+      />
+    );
   };
 };
 
