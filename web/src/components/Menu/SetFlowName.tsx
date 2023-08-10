@@ -51,6 +51,7 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
       }
      const res = await addWorkFlow(table)
      console.log('addWorkFlow', res)
+     const dstId = _.get(res, 'data.dstId')
      messageApi
        .open({
          type: 'success',
@@ -66,8 +67,9 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
              ...item
            }))
            dispatch(setWorkflowList(list))
-           if (list.length > 0) {
-             const item0 = list[list.length - 1]
+           const item = list.find((item) => item.dstId === dstId)
+           if (item) {
+             const item0 = item
              history.push(item0.url)
              dispatch(updateCurFlowDstId(item0.dstId))
            }
