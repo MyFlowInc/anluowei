@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Button, Tabs } from 'antd'
 import styled from 'styled-components'
-import BuyCard from '../components/Setting/BuyCard'
 import AvatarSetting from '../components/Setting/AvatarSetting'
 import NameSetting from '../components/Setting/NameSetting'
 import PhoneSetting from '../components/Setting/PhoneSetting'
 import PwdSetting from '../components/Setting/PwdSetting'
 import AccountType from '../components/Setting/AccountType'
-import SubScription from '../components/Setting/SubScription'
+// import SubScription from '../components/Setting/SubScription'
 import { useHistory } from 'react-router'
 import { logout } from '../api/user'
 import { freshGradeList } from '../store/globalSlice'
@@ -31,7 +30,7 @@ const UIROOT = styled.div`
     margin-top: 32px;
   }
   .avator-setting {
-    margin-top: 20px;
+    margin-top: 40px;
   }
   .name-setting {
     margin-top: 20px;
@@ -55,7 +54,7 @@ const UIROOT = styled.div`
 `
 
 const Setting = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  // const [isModalOpen, setIsModalOpen] = useState(false)
   const history = useHistory()
   const dispatch = useAppDispatch()
 
@@ -70,21 +69,17 @@ const Setting = () => {
 
   return (
     <UIROOT className="setting">
-      <BuyCard className="buy-card" {...{ isModalOpen, setIsModalOpen }} />
       <AvatarSetting className="avator-setting divider" />
       <NameSetting className="name-setting divider" />
       <AccountType className="name-setting divider" />
       <PhoneSetting className="phone-setting divider" />
       <PwdSetting className="pwd-setting divider" />
-      {/* <AccountSetting
-        className="account-setting divider"
-        {...{ isModalOpen, setIsModalOpen }}
-      /> */}
+    
       <Button className="login-out" type="default" onClick={logoutHandler}>
         退出登录
       </Button>
       {/* 购买modal */}
-      <SubScription {...{ isModalOpen, setIsModalOpen }} />
+      {/* <SubScription {...{ isModalOpen, setIsModalOpen }} /> */}
     </UIROOT>
   )
 }
