@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { FlowTableContainer } from "./style";
-import { Modal, Table, Space, Button } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { useAppSelector } from "../../../store/hooks";
+import React, { useEffect, useState } from 'react'
+import { FlowTableContainer } from './style'
+import { Modal, Table, Space, Button } from 'antd'
+import { ExclamationCircleFilled, LinkOutlined } from '@ant-design/icons'
+import { useAppSelector } from '../../../store/hooks'
 import {
   selectCurTableColumn,
   selectCurTableRows,
-} from "../../../store/workflowSlice";
-import _ from "lodash";
-import { ColumnsType } from "antd/es/table";
-import { TableColumnRender } from "../TableColumnRender";
-import deleteSvg from "../assets/table/delete-bin.svg";
-import editSvg from "../assets/table/edit.svg";
+} from '../../../store/workflowSlice'
+import _ from 'lodash'
+import { ColumnsType } from 'antd/es/table'
+import { TableColumnRender } from '../TableColumnRender'
+import deleteSvg from '../assets/table/delete-bin.svg'
+import editSvg from '../assets/table/edit.svg'
 
 export interface FlowItemTableDataType {
-  key: string;
-  flowItemId: number;
-  statusId: string;
-  [propName: string]: any;
+  key: string
+  flowItemId: number
+  statusId: string
+  [propName: string]: any
 }
 
 // rowSelection object indicates the need for row selection
@@ -28,31 +28,31 @@ const rowSelection = {
   ) => {
     console.log(
       `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
+      'selectedRows: ',
       selectedRows
-    );
+    )
   },
   getCheckboxProps: (record: FlowItemTableDataType) => ({
-    disabled: record.name === "Disabled User", // Column configuration not to be checked
+    disabled: record.name === 'Disabled User', // Column configuration not to be checked
     name: record.name,
   }),
-};
+}
 
 interface FlowTableProps {
-  className?: string;
-  showMode?: "list" | "status";
-  title?: string;
-  dstId: string;
-  statusId?: string;
-  statusFieldId?: string;
-  setEditFlowItemRecord: (v: FlowItemTableDataType) => void;
-  deleteFlowItem: (recordId: string) => void;
-  modalType: string;
-  setModalType?: (v: string) => void;
-  setOpen?: (v: boolean) => void;
-  reader: boolean;
-  writer: boolean;
-  manager: boolean;
+  className?: string
+  showMode?: 'list' | 'status'
+  title?: string
+  dstId: string
+  statusId?: string
+  statusFieldId?: string
+  setEditFlowItemRecord: (v: FlowItemTableDataType) => void
+  deleteFlowItem: (recordId: string) => void
+  modalType: string
+  setModalType?: (v: string) => void
+  setOpen?: (v: boolean) => void
+  reader: boolean
+  writer: boolean
+  manager: boolean
 }
 
 export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
@@ -68,46 +68,46 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     reader,
     writer,
     manager,
-  } = props;
-  const { confirm } = Modal;
-  const tableData = useAppSelector(selectCurTableRows);
-  const dstColumns = useAppSelector(selectCurTableColumn);
+  } = props
+  const { confirm } = Modal
+  const tableData = useAppSelector(selectCurTableRows)
+  const dstColumns = useAppSelector(selectCurTableColumn)
   const [tableColumn, setTableColumn] = useState<
     ColumnsType<FlowItemTableDataType>
-  >([]);
+  >([])
 
   const delHandle = async (
     text: string,
     record: FlowItemTableDataType,
     index: number
   ) => {
-    console.log("delHandle", record);
+    console.log('delHandle', record)
     confirm({
-      title: "是否确认删除?",
+      title: '是否确认删除?',
       icon: <ExclamationCircleFilled />,
-      okText: "确认",
-      okType: "danger",
-      cancelText: "取消",
+      okText: '确认',
+      okType: 'danger',
+      cancelText: '取消',
       onOk() {
-        console.log(222, record);
+        console.log(222, record)
         // TODO change name
-        deleteFlowItem?.(record.recordId);
+        deleteFlowItem?.(record.recordId)
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
   const editHandle = async (
     text: string,
     record: FlowItemTableDataType,
     index: number
   ) => {
-    console.log("editHandle", record);
-    setEditFlowItemRecord?.(record);
-    setModalType?.("edit");
-    setOpen?.(true);
-  };
+    console.log('editHandle', record)
+    setEditFlowItemRecord?.(record)
+    setModalType?.('edit')
+    setOpen?.(true)
+  }
 
   useEffect(() => {
     const temp = dstColumns.map((item: any) => {
@@ -115,13 +115,13 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
         ...item,
         ellipsis: true,
         render: TableColumnRender(item.type, item.fieldId, item.fieldConfig),
-      };
-    });
+      }
+    })
 
     const action =
       (writer && {
-        title: "操作",
-        dataIndex: "actions",
+        title: '操作',
+        dataIndex: 'actions',
         render: (
           text: string,
           record: FlowItemTableDataType,
@@ -132,7 +132,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
               type="text"
               icon={<img src={editSvg} />}
               onClick={() => {
-                editHandle(text, record, index);
+                editHandle(text, record, index)
               }}
             />
             {manager && (
@@ -140,49 +140,50 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                 type="text"
                 icon={<img src={deleteSvg} />}
                 onClick={() => {
-                  delHandle(text, record, index);
+                  delHandle(text, record, index)
                 }}
               />
             )}
+            <Button type="text" icon={<LinkOutlined />} onClick={() => {}} />
           </Space>
         ),
       }) ||
-      {};
-    const columns = [...temp, action];
+      {}
+    const columns = [...temp, action]
     columns.forEach((item: any, index: number) => {
       switch (index) {
         case 0:
-          item.fixed = "left";
-          return;
+          item.fixed = 'left'
+          return
         case columns.length - 1:
-          item.fixed = "right";
-          item.align = "center";
-          return;
+          item.fixed = 'right'
+          item.align = 'center'
+          return
         default:
-          item.width = 200;
+          item.width = 200
       }
-    });
-    setTableColumn(columns);
-  }, [dstColumns, reader, writer, manager]);
+    })
+    setTableColumn(columns)
+  }, [dstColumns, reader, writer, manager])
 
   const filterTableData = (records: any[]) => {
     if (!statusId) {
-      return records;
+      return records
     }
     if (!statusFieldId) {
-      return [];
+      return []
     }
     return records.filter((item) => {
-      return item[statusFieldId] === statusId;
-    });
-  };
+      return item[statusFieldId] === statusId
+    })
+  }
   return (
-    <FlowTableContainer className={"card-table-container" + " " + className}>
+    <FlowTableContainer className={'card-table-container' + ' ' + className}>
       <Table
         rowSelection={
           tableData.length > 0
             ? {
-                type: "checkbox",
+                type: 'checkbox',
                 ...rowSelection,
               }
             : undefined
@@ -193,7 +194,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
         dataSource={filterTableData(tableData)}
       />
     </FlowTableContainer>
-  );
-};
+  )
+}
 
-export default FlowTable;
+export default FlowTable

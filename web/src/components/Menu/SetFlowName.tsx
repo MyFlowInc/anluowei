@@ -50,7 +50,7 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
         ...data,
       }
      const res = await addWorkFlow(table)
-     console.log(res)
+     console.log('addWorkFlow', res)
      messageApi
        .open({
          type: 'success',

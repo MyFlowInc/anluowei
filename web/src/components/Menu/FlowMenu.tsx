@@ -126,14 +126,17 @@ const FlowMenu = forwardRef<
     try {
       await deleteWorkFlow(id)
       dispatch(removeWorkflowList(id))
-
       // update flow list
       const list = await freshWorkFlowList()
       const curFlowId = _.find(flowList, { dstId: curFlowDstId })?.id
+
       if (list.length > 0 ) {
-        const item0 = list[list.length - 1]
-        history.push(item0.url)
-        dispatch(updateCurFlowDstId(item0.dstId))
+        if(curFlowId === id) {
+          const item0 = list[0]
+          history.push(item0.url)
+          dispatch(updateCurFlowDstId(item0.dstId))
+        }
+   
       }
       messageApi.open({
         type: 'success',
