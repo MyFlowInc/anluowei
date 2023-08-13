@@ -123,29 +123,33 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
 
         int initLength = 4;
         for (int i = 0; i < initLength; i++) {
-            String fieldId = IdUtil.createFieldId();
-            // template binding dynamic parameters
-            metaMap.put("fieldId" + i, fieldId);
             String recordId = IdUtil.createRecordId();
             metaMap.put("recordId" + i, recordId);
             String optionId = IdUtil.createOptionId();
             metaMap.put("optionId" + i, optionId);
         }
 
+        for(int i =0 ; i < 9; i++) {
+            String fieldId = IdUtil.createFieldId();
+            // template binding dynamic parameters
+            metaMap.put("fieldId" + i, fieldId);
+        }
+
         String viewId = IdUtil.createViewId();
         metaMap.put("viewId", viewId);
         String defaultViewName = StrUtil.isNotBlank(viewName) ? viewName : "视图";
         metaMap.put("defaultView", defaultViewName);
-        // Datasheet title column
-        metaMap.put("defaultDatasheetTitle", "标题");
-        // Datasheet options column
-        // Datasheet attachments column
-        metaMap.put("defaultDatasheetAttachments", "附件");
-
-        metaMap.put("defaultDatasheetOptions", "状态栏");
+        metaMap.put("HRResumeTemplateName", "姓名");
+        metaMap.put("HRResumeTemplateOptions", "状态");
+        metaMap.put("HRResumeTemplateGender", "性别");
+        metaMap.put("HRResumeTemplateExperience", "从业时间");
+        metaMap.put("HRResumeTemplateEducation", "最高学历");
+        metaMap.put("HRResumeTemplatePhone", "电话");
+        metaMap.put("HRResumeTemplateComment", "评论");
+        metaMap.put("HRResumeTemplateResume", "简历");
 
         // internationalization elements
-        String snapshotJson = beetlTemplate.render("datasheet/datasheet-meta-blank-tpl.btl", metaMap);
+        String snapshotJson = beetlTemplate.render("datasheet/datasheet-meta-hr-resume.btl", metaMap);
         return new JSONObject(snapshotJson).toBean(SnapshotMapRo.class);
     }
 }
