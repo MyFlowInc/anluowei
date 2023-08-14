@@ -5,13 +5,17 @@ import _ from 'lodash'
 import {
   freshCurMetaData,
   selectCurFlowDstId,
-  setCurFieldList,
+  selectCurFlowId,
+  selectCurMetaData,
+  selectCurMetaId,
+  setCurTableColumn,
+  syncCurMetaDataColumn,
   WorkFlowFieldInfo,
 } from '../../../store/workflowSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { Modal } from 'antd'
 import { ExclamationCircleFilled } from '@ant-design/icons'
-import { UpdateDSMetaParams, deleteDSMeta, updateDSMeta } from '../../../api/apitable/ds-meta'
+import { UpdateDSMetaParams, deleteDSMeta, saveDSMeta, updateDSMeta } from '../../../api/apitable/ds-meta'
 
 // 重新记录数组顺序
 const reorder = (
@@ -68,33 +72,51 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
 
   const dispatch = useAppDispatch()
   const curDstId = useAppSelector(selectCurFlowDstId)
+  const curFlowId =useAppSelector(selectCurFlowId) 
+  const metaId =useAppSelector(selectCurMetaId) 
+  const curMetaData = useAppSelector(selectCurMetaData)
 
   const onDragEnd = async (result: any) => {
     console.log('onDragEnd', result)
     if (!result.destination) {
       return
     }
-    const res = reorder(
+    const res:WorkFlowFieldInfo[] = reorder(
       dstColumns,
       result.source.index,
       result.destination.index
     )
-
-    await updateSort(res)
-  }
-
-  const updateSort = async (list: WorkFlowFieldInfo[]) => {
-    const temp = list.map((item, index) => {
-      return {
-        id: item.fieldId,
-        dstId: item.dstId, //TODO: 这个不应该传
-        sort: index,
-      }
-    })
-    dispatch(setCurFieldList(list))
     // TODO update 
+    try {
+      const meta_data =  _.cloneDeep(curMetaData)
+      let temp  = _.get(meta_data, 'views.0') as any
+      if(temp && meta_data){
+        temp.columns = res.map((item: any) =>{
+          return {
+            fieldId: item.fieldId,
+          }
+        })
+      }
+      await saveDSMeta({
+        id: metaId!,
+        dstId: curDstId!,
+        metaData: JSON.stringify(meta_data),
+        "revision": 0,
+        "deleted": false,
+        "sort": null,
+        "tenantId": null
+      })
+      // 同步状态
+      dispatch(setCurTableColumn(res))
+      dispatch(syncCurMetaDataColumn(res))
+    } catch (error) {
+        console.log('onDragEnd error', error)
+    }
+
+
   }
-  
+
+
   const updateFieldHandler = async (item: UpdateDSMetaParams) => {
     try {
       const res = await updateDSMeta(item)
