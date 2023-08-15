@@ -65,7 +65,7 @@ public class ApitableInviteRecordController extends BaseController {
     @Log(title = "邀请同意记录列表")
     @ApiOperation(value = "邀请同意记录列表")
     public Result page(ApitableInviteRecordRequest request) {
-        if (Objects.equals(userContext.getFromAgent(), "web")) {
+        if (!Objects.equals(userContext.getUsername(), "admin")) {
             request.setAccepter(userContext.getUserId());
         }
         return success(apitableInviteRecordService.page(request));

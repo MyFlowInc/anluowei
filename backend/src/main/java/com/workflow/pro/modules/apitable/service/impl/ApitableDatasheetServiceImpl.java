@@ -139,10 +139,9 @@ public class ApitableDatasheetServiceImpl extends ServiceImpl<ApitableDatasheetM
     @Override
     public PageResponse<ApitableDatasheet> page(ApitableDatasheetRequest request) {
 
-        if (Objects.equals(userContext.getFromAgent(), "web")) {
+        if (!Objects.equals(userContext.getUsername(), "admin")) {
             request.setCreateBy(userContext.getUserId());
         }
-
         List<String> ids = new ArrayList<>();
         if (request.getIsDeveloper() != null && request.getIsDeveloper() == 1) {
             ApitableDeveloperRequest apitableDeveloperRequest = new ApitableDeveloperRequest();
@@ -167,7 +166,7 @@ public class ApitableDatasheetServiceImpl extends ServiceImpl<ApitableDatasheetM
         List<ApitableDatasheet> list = new ArrayList<>();
         for (ApitableDatasheet datasheet : page.getRecord()) {
             //如果此人在 协作表里就是协作者 如果不是就是创建者
-            ApitableDeveloper one = developerService.getOne(new QueryWrapper<ApitableDeveloper>().eq("dst_id", datasheet.getDstId()).eq("user_id", userContext.getUserId()));
+            ApitableDeveloper one = developerService.getOne(new QueryWrapper<ApitableDeveloper>().eq("dst_id", datasheet.getDstId()).eq("user_id", userContext.getUserId()),false);
             if (one == null) {//为创建者
                 datasheet.setIsCreator(true);
                 one = new ApitableDeveloper();

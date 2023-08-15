@@ -143,7 +143,7 @@ public class OmsOrderController extends BaseController {
     @ApiOperation(value = "订单列表")
     public Result page(OmsOrderRequest request) {
         UserContext userContext = BeanContext.getBean(UserContext.class);
-        if (Objects.equals(userContext.getFromAgent(), "web")) {
+        if (!Objects.equals(userContext.getUsername(), "admin")) {
             request.setCreateBy(userContext.getUserId());
         }
         return success(omsOrderService.page(request));

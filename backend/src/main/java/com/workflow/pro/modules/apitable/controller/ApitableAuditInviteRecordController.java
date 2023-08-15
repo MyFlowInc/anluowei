@@ -64,7 +64,7 @@ public class ApitableAuditInviteRecordController extends BaseController {
         if (request.getIgnoreMsg() == null) {
             request.setIgnoreMsg(1);
         }
-        if (Objects.equals(userContext.getFromAgent(), "web")) {
+        if (!Objects.equals(userContext.getUsername(), "admin")) {
             request.setAccepter(userContext.getUserId());
         }
         return success(apitableAuditInviteRecordService.page(request));
