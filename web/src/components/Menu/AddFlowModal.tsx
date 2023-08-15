@@ -136,7 +136,7 @@ const AddFlowModal = (props: any) => {
 
   return (
     <Modal
-      title="创建工作流"
+      title="创建岗位"
       open={isModalOpen}
       width={680}
       onCancel={handleCancel}

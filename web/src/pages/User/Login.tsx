@@ -130,14 +130,14 @@ const Login: React.FC = () => {
                 登录
               </Button>
             </Form.Item>
-            <Form.Item>
+            {/* <Form.Item>
               <div>
                 暂无账号,
                 <div className="login-form-forgot" onClick={jump2Register}>
                   <> </>点击注册
                 </div>
               </div>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </FormRoot>
       </Container>

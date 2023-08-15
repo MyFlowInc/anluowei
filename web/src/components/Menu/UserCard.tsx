@@ -1,11 +1,7 @@
 import styled from 'styled-components'
 import DefaultAvatarSvg from './assets/avatar.svg'
-import { IonIcon } from '@ionic/react'
-import { logOutOutline } from 'ionicons/icons'
-import { Menu, Modal, Avatar, Button } from "antd";
-import { useState } from "react";
+import { Modal, Avatar,  } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
 import { selectCollapsed } from "../../store/globalSlice";
@@ -85,13 +81,14 @@ const UserTag = styled.div<UserTagProps>`
     white-space: nowrap;
   }
 `;
+const DefaultAvatar =()=> <img src={DefaultAvatarSvg} ></img>
 
 function UserCard() {
   const user = useAppSelector(selectUser);
   const collapsed = useAppSelector(selectCollapsed);
   return (
     <UserTag collapsed={collapsed}>
-      <Avatar icon={<DefaultAvatarSvg />} src={user.avatar} />
+      <Avatar icon={<DefaultAvatar />} src={user.avatar} />
       <div className="user-info">{user.nickname}</div>
     </UserTag>
   );

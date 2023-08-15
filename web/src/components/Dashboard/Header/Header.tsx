@@ -193,7 +193,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           type="primary"
           icon={<PlusOutlined />}
         >
-          新建工单
+          录入候选人
         </Button>
       )}
       <div className="header-right">
