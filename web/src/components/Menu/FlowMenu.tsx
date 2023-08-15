@@ -29,10 +29,10 @@ import {
 import AddFlowMenu from "./AddFlowMenu";
 import {
   deleteWorkFlow,
-  fetchWorkflowList,
   updateWorkFlow,
 } from "../../api/apitable/ds-table";
 import RenameModal from "./FlowMenuItem/RenameModal";
+import { fetchAllWorkflowList } from "../../controller/dsTable";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -149,13 +149,9 @@ const FlowMenu = forwardRef<
   };
   // 刷新列表
   const freshWorkFlowList = async () => {
-    const response = await fetchWorkflowList({ pageNum: 1, pageSize: 999 });
-    const data = response.data.record as WorkFlowInfo[];
-    const list = data.map((item) => ({
-      name: item.dstName,
-      url: "/dashboard/workflow-view/" + item.dstId,
-      ...item,
-    }));
+ 
+    const list = await fetchAllWorkflowList()
+
     dispatch(setWorkflowList(list));
     return list;
   };

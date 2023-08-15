@@ -151,21 +151,7 @@ export const workflowSlice = createSlice({
       state.WorkflowList = list;
     },
     setWorkflowList: (state, action: PayloadAction<WorkFlowInfo[]>) => {
-      const oldList = [...state.WorkflowList];
-      const newList = action.payload;
-      newList.forEach((item) => {
-        const idx = _.findIndex(oldList, { id: item.id });
-        // 不存在 新增
-        if (idx === -1) {
-          oldList.push(item);
-        }
-        // 存在 则 替换
-        if (idx > -1) {
-          oldList.splice(idx, 1, item);
-        }
-      });
-
-      state.WorkflowList = oldList;
+      state.WorkflowList =action.payload;
     },
     renameWorkflow: (state, action: PayloadAction<Partial<WorkFlowInfo>>) => {
       const { id, dstName } = action.payload;
@@ -245,7 +231,7 @@ export const {
   updateCurFlowDstId,
   updateCurShowMode,
   removeWorkflowList,
-  setWorkflowList, // update
+  setWorkflowList,  
   renameWorkflow,
   setCurMetaData,
   setCurTableColumn,
