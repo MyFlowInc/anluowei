@@ -1,7 +1,7 @@
 #!/bin/bash
 #这里可替换为你自己的执行程序，其他代码无需更改
-  chmod 777 workflow-pro-0.2.0-SNAPSHOT.jar
-WORKFLOW_NAME=workflow-pro-0.2.0-SNAPSHOT.jar
+chmod 777 workflow-anluowei-pro-0.2.0-SNAPSHOT.jar
+WORKFLOW_NAME=workflow-anluowei-pro-0.2.0-SNAPSHOT.jar
 
 #使用说明，用来提示输入参数
 usage() {
@@ -28,7 +28,7 @@ start(){
  if [ $? -eq "0" ]; then
  echo "${WORKFLOW_NAME} is already running. pid=${pid} ."
  else
- nohup java -jar /opt/www/html/workflow/$WORKFLOW_NAME> /opt/www/html/workflow/logFileName1.file 2>&1 &
+ nohup java -jar /opt/www/html/workflow/anluowei/$WORKFLOW_NAME> /opt/www/html/workflow/anluowei/logFileName1.file 2>&1 &
  echo "${WORKFLOW_NAME} start success"
  fi
 }

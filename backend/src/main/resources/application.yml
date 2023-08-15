@@ -1,7 +1,7 @@
 ## tomcat 配置
 server:
   ## 监听端口
-  port: 9293
+  port: 9294
   ## 服务配置
   tomcat:
     ## 超时时间
