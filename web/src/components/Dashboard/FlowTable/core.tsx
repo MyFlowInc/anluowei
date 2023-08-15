@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FlowTableContainer } from './style'
-import { Modal, Table, Space, Button } from 'antd'
+import { Modal, Table, Space, Button, Tooltip } from 'antd'
 import { ExclamationCircleFilled, LinkOutlined } from '@ant-design/icons'
 import { useAppSelector } from '../../../store/hooks'
 import {
@@ -122,8 +122,8 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           writer || false,
           manager || false
         ),
-      };
-    });
+      }
+    })
 
     const action =
       (writer && {
@@ -135,23 +135,30 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           index: number
         ) => (
           <Space>
-            <Button
-              type="text"
-              icon={<img src={editSvg} />}
-              onClick={() => {
-                editHandle(text, record, index)
-              }}
-            />
-            {manager && (
+            <Tooltip placement="top" title={'编辑'}>
               <Button
                 type="text"
-                icon={<img src={deleteSvg} />}
+                icon={<img src={editSvg} />}
                 onClick={() => {
-                  delHandle(text, record, index)
+                  editHandle(text, record, index)
                 }}
               />
+            </Tooltip>
+
+            {manager && (
+              <Tooltip placement="top" title={'删除'}>
+                <Button
+                  type="text"
+                  icon={<img src={deleteSvg} />}
+                  onClick={() => {
+                    delHandle(text, record, index)
+                  }}
+                />
+              </Tooltip>
             )}
-            <Button type="text" icon={<LinkOutlined />} onClick={() => {}} />
+            <Tooltip placement="top" title={'邀请链接'}>
+              <Button type="text" icon={<LinkOutlined />} onClick={() => {}} />
+            </Tooltip>
           </Space>
         ),
       }) ||
