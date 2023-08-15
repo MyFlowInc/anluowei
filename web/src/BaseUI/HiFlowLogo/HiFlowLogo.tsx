@@ -26,6 +26,7 @@ const LogoTag = styled.div<LogoTagProps>`
     font-weight: 600;
     letter-spacing: 3px;
     white-space: nowrap;
+    color: #2b6aa9;
 
     animation-name: animationLogo;
     animation-duration: 3s;

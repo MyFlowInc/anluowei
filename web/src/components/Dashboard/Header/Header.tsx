@@ -10,6 +10,7 @@ import { Button, notification } from "antd";
 import ShowMode from "./ShowMode";
 import TourContext from "../../../context/tour";
 import FilterArea from "./FilterArea";
+import FunArea from "./FunArea";
 import notifySvg from "./assets/notify.svg";
 import { useAppSelector } from "../../../store/hooks";
 import { selectUser } from "../../../store/globalSlice";
@@ -198,7 +199,7 @@ const Header: React.FC<HeaderProps> = (props) => {
       )}
       <div className="header-right">
         <ShowMode className="show-mode" />
-        <FilterArea className="filter-area" />
+        <FunArea />
       </div>
       <AddRecordModal
         open={open}

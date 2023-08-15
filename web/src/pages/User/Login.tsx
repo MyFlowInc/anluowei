@@ -95,7 +95,7 @@ const Login: React.FC = () => {
           >
             <Form.Item
               name="email"
-              rules={[{ required: true, message: '用户名不能为空!' }]}
+              rules={[{ required: true, message: "用户名不能为空!" }]}
             >
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
@@ -104,7 +104,7 @@ const Login: React.FC = () => {
             </Form.Item>
             <Form.Item
               name="password"
-              rules={[{ required: true, message: '密码不能为空!' }]}
+              rules={[{ required: true, message: "密码不能为空!" }]}
             >
               <Input
                 prefix={<LockOutlined className="site-form-item-icon" />}
@@ -130,21 +130,13 @@ const Login: React.FC = () => {
                 登录
               </Button>
             </Form.Item>
-            {/* <Form.Item>
-              <div>
-                暂无账号,
-                <div className="login-form-forgot" onClick={jump2Register}>
-                  <> </>点击注册
-                </div>
-              </div>
-            </Form.Item> */}
           </Form>
         </FormRoot>
       </Container>
 
       <BeiAnUI />
     </LoginRoot>
-  )
+  );
 }
 
 export default Login

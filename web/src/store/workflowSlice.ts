@@ -50,6 +50,7 @@ export interface workflowState {
   curFlowDstId: string | undefined; // 当前展示的dstId
   curShowMode: "list" | "status";
   WorkflowList: WorkFlowInfo[]; //
+  curFieldList: WorkFlowFieldInfo[]; // 被替换
   curMetaData: MetaData | null; // 当前的表格定义
   metaId: string;
   curTableStatusList: {
@@ -60,6 +61,7 @@ export interface workflowState {
   curStatusFieldId: string; // 当前的状态字段id
   curTableColumn: TableColumnItem[];
   curTableRows: any[]; //  当前表格的行数据
+  curTableRecords: any[];
   status: "idle" | "loading" | "failed"; // 接口状态
 }
 const initialState: workflowState = {
@@ -72,6 +74,7 @@ const initialState: workflowState = {
   curStatusFieldId: "",
   curTableColumn: [], // 当前的列视图  可能切换
   curTableRows: [], //  当前表格的行数据
+  curTableRecords: [],
   status: "idle",
 };
 
@@ -209,6 +212,7 @@ export const workflowSlice = createSlice({
       const item = state.curTableRows[idx];
       newData.splice(idx, 1, { ...item, ...row });
       state.curTableRows = newData;
+      state.curTableRecords = newData;
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -222,6 +226,7 @@ export const workflowSlice = createSlice({
     });
     builder.addCase(freshCurTableRows.fulfilled, (state, action) => {
       state.curTableRows = action.payload;
+      state.curTableRecords = action.payload;
       // console.log('addCase---', action)
     });
   },
@@ -276,6 +281,7 @@ export const selectCurFlowId = (state: RootState) => {
   return "";
 };
 
+
 export const selectCurFlowName = (state: RootState) => {
   const dstId = state.workflow.curFlowDstId;
   const list = state.workflow.WorkflowList;
@@ -309,6 +315,9 @@ export const selectCurStatusFieldId = (state: RootState) =>
 
 export const selectCurTableRows = (state: RootState) =>
   state.workflow.curTableRows;
+
+export const selectCurTableRecords = (state: RootState) =>
+  state.workflow.curTableRecords;
 
 export const selectCurMetaData = (state: RootState) =>
   state.workflow.curMetaData;
