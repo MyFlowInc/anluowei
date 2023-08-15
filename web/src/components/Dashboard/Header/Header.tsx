@@ -155,8 +155,8 @@ const Header: React.FC<HeaderProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    // TODO: 演示通知
-    fetchInviteList();
+    // TODO: 取消功能
+    // fetchInviteList();  
   }, []);
 
   // 通知
@@ -194,7 +194,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           type="primary"
           icon={<PlusOutlined />}
         >
-          新建工单
+          录入候选人
         </Button>
       )}
       <div className="header-right">

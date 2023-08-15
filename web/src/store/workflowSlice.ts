@@ -1,50 +1,50 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '.'
-import _ from 'lodash'
-import { DBApitableDatasheet } from '../interface/db_datasheet'
-import { fetchDSMeta } from '../api/apitable/ds-meta'
-import { fetchRecords } from '../api/apitable/ds-record'
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from ".";
+import _ from "lodash";
+import { DBApitableDatasheet } from "../interface/db_datasheet";
+import { fetchDSMeta } from "../api/apitable/ds-meta";
+import { fetchRecords } from "../api/apitable/ds-record";
 
 export interface TableRow {
-  key: string
-  [key: string]: any
+  key: string;
+  [key: string]: any;
 }
 
 export interface FlowItemField {
-  id: number
-  fieldId: number
-  flowItemId: number
-  flowValue: string
+  id: number;
+  fieldId: number;
+  flowItemId: number;
+  flowValue: string;
 }
-export type WorkFlowInfo = DBApitableDatasheet
+export type WorkFlowInfo = DBApitableDatasheet;
 
 export interface WorkFlowStatusInfo {
-  id: string
-  name: string
-  color: number
-  type?: 'add' | 'edit' // 业务状态: 新增还是编辑
+  id: string;
+  name: string;
+  color: number;
+  type?: "add" | "edit"; // 业务状态: 新增还是编辑
 }
 
-export type WorkFlowFieldInfo = TableColumnItem
+export type WorkFlowFieldInfo = TableColumnItem;
 
 export interface TableColumnItem {
-  dstId: string // 助记属于哪个表
-  fieldId: string
-  statType: number
-  type: number
-  name: string
-  dataIndex: string
-  fieldConfig: any // 当前field的配置
+  dstId: string; // 助记属于哪个表
+  fieldId: string;
+  statType: number;
+  type: number;
+  name: string;
+  dataIndex: string;
+  fieldConfig: any; // 当前field的配置
 }
 
 export interface MetaData {
   fieldMap: {
-    [propName: string]: any
-  }
+    [propName: string]: any;
+  };
   view: Array<{
-    columns: Array<{ fieldId: string }>
-    rows: Array<{ recordId: string }>
-  }>
+    columns: Array<{ fieldId: string }>;
+    rows: Array<{ recordId: string }>;
+  }>;
 }
 export interface workflowState {
   curFlowDstId: string | undefined; // 当前展示的dstId
@@ -52,6 +52,7 @@ export interface workflowState {
   WorkflowList: WorkFlowInfo[]; //
   curFieldList: WorkFlowFieldInfo[]; // 被替换
   curMetaData: MetaData | null; // 当前的表格定义
+  metaId: string;
   curTableStatusList: {
     id: string;
     name: string;
@@ -67,7 +68,7 @@ const initialState: workflowState = {
   curFlowDstId: undefined,
   curShowMode: "list",
   WorkflowList: [],
-  curFieldList: [],
+  metaId: "",
   curMetaData: null,
   curTableStatusList: [],
   curStatusFieldId: "",
@@ -87,6 +88,7 @@ export const freshCurMetaData = createAsyncThunk(
       item.metaData = JSON.parse(item.metaData);
     });
     const metaData = res[0].metaData;
+    const metaId = res[0].id;
     let columns = _.get(metaData, "views.0.columns");
     const fieldMap = _.get(metaData, "fieldMap");
     if (!columns) {
@@ -107,7 +109,7 @@ export const freshCurMetaData = createAsyncThunk(
       };
     });
     // The value we return becomes the `fulfilled` action payload
-    return [metaData, columns];
+    return [metaId, metaData, columns];
   }
 );
 
@@ -152,21 +154,7 @@ export const workflowSlice = createSlice({
       state.WorkflowList = list;
     },
     setWorkflowList: (state, action: PayloadAction<WorkFlowInfo[]>) => {
-      const oldList = [...state.WorkflowList];
-      const newList = action.payload;
-      newList.forEach((item) => {
-        const idx = _.findIndex(oldList, { id: item.id });
-        // 不存在 新增
-        if (idx === -1) {
-          oldList.push(item);
-        }
-        // 存在 则 替换
-        if (idx > -1) {
-          oldList.splice(idx, 1, item);
-        }
-      });
-
-      state.WorkflowList = oldList;
+      state.WorkflowList =action.payload;
     },
     renameWorkflow: (state, action: PayloadAction<Partial<WorkFlowInfo>>) => {
       const { id, dstName } = action.payload;
@@ -176,10 +164,6 @@ export const workflowSlice = createSlice({
       console.log("renameWorkflow", action);
     },
 
-    setCurFieldList: (state, action) => {
-      console.log("setCurFieldList", action);
-      state.curFieldList = action.payload;
-    },
     setCurMetaData: (state, action) => {
       console.log("setCurMetaData", action);
       state.curMetaData = action.payload;
@@ -196,8 +180,25 @@ export const workflowSlice = createSlice({
     setCurTableColumn: (state, action) => {
       console.log("setCurTableColumn", action);
       const columns = action.payload;
-
       initCurTableColumn(state, columns);
+    },
+    // column 变化后状态同步
+    syncCurMetaDataColumn: (state, action) => {
+      const newColumns = action.payload;
+      const metaData = _.cloneDeep(state.curMetaData);
+      const columns = _.get(metaData, "views.0.columns");
+      if (columns && metaData) {
+        _.set(
+          metaData,
+          "views.0.columns",
+          newColumns.map((item: any) => {
+            return {
+              fieldId: item.fieldId,
+            };
+          })
+        );
+      }
+      state.curMetaData = metaData;
     },
     setCurTableRows: (state, action) => {
       console.log("setCurTableRows", action);
@@ -218,8 +219,9 @@ export const workflowSlice = createSlice({
   // including actions generated by createAsyncThunk or in other slices.
   extraReducers: (builder) => {
     builder.addCase(freshCurMetaData.fulfilled, (state, action) => {
-      state.curMetaData = action.payload[0];
-      initCurTableColumn(state, action.payload[1]);
+      state.metaId = action.payload[0];
+      state.curMetaData = action.payload[1];
+      initCurTableColumn(state, action.payload[2]);
       // console.log('addCase---', action)
     });
     builder.addCase(freshCurTableRows.fulfilled, (state, action) => {
@@ -234,11 +236,11 @@ export const {
   updateCurFlowDstId,
   updateCurShowMode,
   removeWorkflowList,
-  setWorkflowList,
+  setWorkflowList,  
   renameWorkflow,
-  setCurFieldList,
   setCurMetaData,
   setCurTableColumn,
+  syncCurMetaDataColumn,
   setCurTableRows,
   updateTableRow,
   setCurTableStatusList,
@@ -268,6 +270,17 @@ export const selectCurFlowDstId = (state: RootState) =>
 
 export const selectCurShowMode = (state: RootState) =>
   state.workflow.curShowMode;
+
+export const selectCurFlowId = (state: RootState) => {
+  const dstId = state.workflow.curFlowDstId;
+  const list = state.workflow.WorkflowList;
+  const item = _.find(list, { dstId });
+  if (item) {
+    return item.id;
+  }
+  return "";
+};
+
 
 export const selectCurFlowName = (state: RootState) => {
   const dstId = state.workflow.curFlowDstId;
@@ -307,6 +320,10 @@ export const selectCurTableRecords = (state: RootState) =>
   state.workflow.curTableRecords;
 
 export const selectCurMetaData = (state: RootState) =>
-  state.workflow.curMetaData
+  state.workflow.curMetaData;
 
-export default workflowSlice.reducer
+
+export const selectCurMetaId = (state: RootState) =>
+  state.workflow.metaId;
+
+export default workflowSlice.reducer;

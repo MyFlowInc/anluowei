@@ -9,15 +9,15 @@ export const MenuRoot = styled.div<MenuRootProps>`
   flex-direction: column;
   transition: transform;
   transition-duration: 0.5s;
+  flex-flow: column;
 
-  @media (max-width: 720px) {
+  /* @media (max-width: 720px) {
     position: absolute;
     transform: translate(
       ${(props) => (props.display === 'none' ? '-100%' : '0')},
       0
     );
-  }
-
+  } */
   .menu-header {
     display: flex;
     flex-direction: column;
@@ -28,8 +28,12 @@ export const MenuRoot = styled.div<MenuRootProps>`
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
+    overflow: hidden;
     .menu-content-list {
-      /* flex: 1; */
+      flex: 1;
+      overflow: overlay;
+      display: flex;
+      flex-direction: column;
     }
   }
  

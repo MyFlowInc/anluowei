@@ -28,7 +28,7 @@ export interface UpdateDSMetaParams {
   }
 }
 
-// 新增 or  更新
+// 新增 or 更新
 export function updateDSMeta(data: UpdateDSMetaParams) {
   const {dstId, ...rest} = data
   return apiCall({
@@ -39,6 +39,25 @@ export function updateDSMeta(data: UpdateDSMetaParams) {
       dstId
     },
     data:rest
+  })
+}
+
+export interface SaveDSMetaParams {
+  id: string
+  dstId: string 
+  metaData: any
+  "revision": number,
+  "deleted": boolean,
+  "sort": null,
+  "tenantId": null
+}
+
+// 修改
+export function saveDSMeta(data: SaveDSMetaParams) {
+  return apiCall({
+    url: 'api/sys/apitableDatasheetMeta/edit',
+    method: 'put',
+    data
   })
 }
 

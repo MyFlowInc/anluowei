@@ -33,7 +33,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = (
   const statusList = useAppSelector(selectCurTableStatusList) || []
   const dstColumns = useAppSelector(selectCurTableColumn) || []
  
-  const title = modalType === 'add' ? '新建工单' : '编辑工单'
+  const title = modalType === 'add' ? '录入候选人' : '编辑候选人'
   const params = {
     title,
     open,

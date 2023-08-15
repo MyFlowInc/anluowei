@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Button,   Form, Input, message } from 'antd'
-import { useHistory,  } from 'react-router'
+import { Button, Form, Input, message } from 'antd'
+import { useHistory } from 'react-router'
 import _ from 'lodash'
- 
 
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {
@@ -12,6 +11,7 @@ import {
   WorkFlowInfo,
 } from '../../store/workflowSlice'
 import { addWorkFlow, fetchWorkflowList } from '../../api/apitable/ds-table'
+import { fetchAllWorkflowList } from '../../controller/dsTable'
 
 interface WorkFlowFormProps {}
 const FormRoot = styled.div`
@@ -25,7 +25,7 @@ const FormRoot = styled.div`
   }
 `
 const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
-  const {handleCancel}= props
+  const { handleCancel } = props
   const [messageApi, contextHolder] = message.useMessage()
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -42,57 +42,44 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
   }
   const handleCreate = () => {
     setLoading(true)
-    form
-    .validateFields()
-    .then(async () => {
-      const data = form.getFieldsValue(["dstName"]);
-      const table = {
-        ...data,
+    form.validateFields().then(async () => {
+      try {
+        const data = form.getFieldsValue(['dstName'])
+        const table = {
+          ...data,
+        }
+        const res = await addWorkFlow(table)
+        const dstId = _.get(res, 'data.dstId')
+        messageApi
+          .open({
+            type: 'success',
+            content: '创建成功!',
+            duration: 1,
+          })
+          .then(() => {
+            cancle()
+          })
+        const list = await fetchAllWorkflowList()
+        dispatch(setWorkflowList(list))
+        const item = list.find((item) => item.dstId === dstId)
+        if (item) {
+          const item0 = item
+          history.push(item0.url)
+          dispatch(updateCurFlowDstId(item0.dstId))
+        }
+      } catch (error) {
+        console.log('error', error)
       }
-     const res = await addWorkFlow(table)
-     console.log('addWorkFlow', res)
-     const dstId = _.get(res, 'data.dstId')
-     messageApi
-       .open({
-         type: 'success',
-         content: '创建成功!',
-         duration: 1,
-       })
-       .then(() => {
-         fetchWorkflowList({ pageNum: 1, pageSize: 999 }).then((response) => {
-           const data = response.data.record as WorkFlowInfo[]
-           const list = data.map((item) => ({
-             name: item.dstName,
-             url: '/dashboard/workflow-view/' + item.dstId,
-             ...item
-           }))
-           dispatch(setWorkflowList(list))
-           const item = list.find((item) => item.dstId === dstId)
-           if (item) {
-             const item0 = item
-             history.push(item0.url)
-             dispatch(updateCurFlowDstId(item0.dstId))
-           }
-         })
-       })
-       .then(()=>{
-        cancle()
-       })
     })
   }
   useEffect(() => {
     initForm()
   }, [])
 
-
   return (
     <FormRoot>
       {contextHolder}
-      <Form
-        layout={'horizontal'}
-        form={form}
-        style={{ width: '100%' }}
-      >
+      <Form layout={'horizontal'} form={form} style={{ width: '100%' }}>
         <Form.Item
           label="名称"
           name="dstName"
@@ -102,7 +89,6 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
         </Form.Item>
         <Form.Item>
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      
             <Button
               className="ml-16"
               style={{

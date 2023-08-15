@@ -30,10 +30,8 @@ import AppHeader from '../components/layout/AppHeader'
 import Notify from '../pages/Notify'
 import Setting from '../pages/Setting'
 import TourContext from '../context/tour'
-import {
-  fetchInviteWorkflowList,
-  fetchWorkflowList,
-} from '../api/apitable/ds-table'
+ 
+import { fetchAllWorkflowList } from '../controller/dsTable'
 
 const { Sider, Content } = Layout
 
@@ -86,29 +84,20 @@ const DashboardRouterOutlet: React.FC = () => {
     menuRef.current?.showMenuHandle()
     setShowMenu('block')
   }
-
   const getFlowList = async () => {
     try {
-      const p1 = fetchWorkflowList({ pageNum: 1, pageSize: 999 })
-      const p2 = fetchInviteWorkflowList({ pageNum: 1, pageSize: 999 })
-      const [response, response2] = await Promise.all([p1, p2])
-      const data = response.data.record as WorkFlowInfo[]
-      const data2 = response2.data.record as WorkFlowInfo[]
-
-      const list = [...data, ...data2].map((item: WorkFlowInfo) => ({
-        name: item.dstName,
-        url: '/dashboard/workflow-view/' + item.dstId,
-        ...item,
-      }))
+      const list = await fetchAllWorkflowList()
       dispatch(setWorkflowList(list))
       if (list.length > 0) {
         const item0 = list[0]
         dispatch(updateCurFlowDstId(item0.dstId))
         history.push(item0.url)
       }
-      setLoading(false)
     } catch (error) {
       console.log('error', error)
+      dispatch(setWorkflowList([]))
+    } finally{
+      setLoading(false)
     }
   }
   const checkUser = async () => {
