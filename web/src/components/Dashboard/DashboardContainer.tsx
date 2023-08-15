@@ -11,14 +11,12 @@ import {
   selectCurShowMode,
   selectCurStatusFieldId,
   selectCurTableStatusList,
-} from '../../store/workflowSlice'
-import { NoStatusData } from './NoStatus'
-import { BaseLoading } from '../../BaseUI/BaseLoading'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { delay } from '../../util/delay'
-import {
-  deleteDSCells,
-} from '../../api/apitable/ds-record'
+} from "../../store/workflowSlice";
+import { NoStatusData } from "./NoStatus";
+import { BaseLoading } from "../../BaseUI/BaseLoading";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { delay } from "../../util/delay";
+import { deleteDSCells } from "../../api/apitable/ds-record";
 
 interface ContainerProps {
   reader: boolean;
@@ -62,9 +60,11 @@ const DashboardContainer: React.FC<ContainerProps> = ({
   const [editFlowItemRecord, setEditFlowItemRecord] = useState<
     FlowItemTableDataType | undefined
   >(undefined);
+
   const history = useHistory();
   const { dstId } = useParams<{ dstId: string }>();
   const [loading, setLoading] = useState(true);
+
   // for modal
   const [open, setOpen] = useState(false);
   const [modalType, setModalType] = useState("add");
