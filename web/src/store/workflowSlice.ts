@@ -50,7 +50,6 @@ export interface workflowState {
   curFlowDstId: string | undefined; // 当前展示的dstId
   curShowMode: "list" | "status";
   WorkflowList: WorkFlowInfo[]; //
-  curFieldList: WorkFlowFieldInfo[]; // 被替换
   curMetaData: MetaData | null; // 当前的表格定义
   metaId: string;
   curTableStatusList: {

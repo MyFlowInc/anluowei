@@ -49,7 +49,8 @@ const RootUI = styled.div`
 const MenuItemLabel = (props: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const user = useAppSelector(selectUser);
-  const isAdmin = user?.roles.some((item: any) => item.code === "fe-admin");
+  const isAdmin =
+    user.roles && user.roles.some((item: any) => item.code === "fe-admin");
   return (
     <ItemRootUI>
       <div className="title">岗位列表</div>
