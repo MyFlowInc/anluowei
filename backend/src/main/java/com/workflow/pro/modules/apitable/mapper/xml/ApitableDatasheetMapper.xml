@@ -12,6 +12,8 @@
         <result property="spaceId" column="space_id"/>
         <result property="revision" column="revision"/>
         <result property="deleted" column="deleted"/>
+        <result property="archive" column="archive"/>
+        <result property="enable" column="enable"/>
         <result property="sort" column="sort"/>
         <result property="createBy" column="create_by"/>
         <result property="updateBy" column="update_by"/>
@@ -22,7 +24,7 @@
     </resultMap>
 
     <sql id="selectApitableDatasheetVo">
-        select`id`,`dst_id`,`node_id`,`dst_name`,`space_id`,`revision`,`deleted`,`sort`,`create_by`,`update_by`,`create_time`,`update_time`,`remark`,`tenant_id`
+        select`id`,`dst_id`,`node_id`,`archive`,`enable`,`dst_name`,`space_id`,`revision`,`deleted`,`sort`,`create_by`,`update_by`,`create_time`,`update_time`,`remark`,`tenant_id`
         from `apitable_datasheet`
     </sql>
 
@@ -32,7 +34,8 @@
         <where>
             <if test="request.ids != null  and request.ids != ''">and
                 `dst_id` in
-                <foreach item="id" collection="request.ids" open="(" separator="," close=")">
+                <foreach item="id" collection="request.ids" open="(" separator=","
+                         close=")">
                     #{id}
                 </foreach>
             </if>
@@ -61,11 +64,17 @@
             <if test="request.sort != null ">and
                 `sort` = #{request.sort}
             </if>
+            <if test="request.archive != null ">and
+                `archive` = #{request.archive}
+            </if>
+            <if test="request.enable != null ">and
+                `enable` = #{request.enable}
+            </if>
             <if test="request.tenantId != null  and request.tenantId != ''">and
                 `tenant_id` = #{request.tenantId}
             </if>
         </where>
-        order by   create_time desc
+        order by create_time desc
     </select>
 
     <select id="selectApitableDatasheetById" parameterType="String"
@@ -133,6 +142,12 @@
             </if>
             <if test="remark != null">#{remark},
             </if>
+            <if test="request.archive != null ">and
+                `archive` = #{request.archive}
+            </if>
+            <if test="request.enable != null ">and
+                `enable` = #{request.enable}
+            </if>
             <if test="tenantId != null">#{tenantId},
             </if>
         </trim>
@@ -179,6 +194,12 @@
             </if>
             <if test="tenantId != null">`tenant_id` =
                 #{tenantId},
+            </if>
+            <if test="request.archive != null ">and
+                `archive` = #{request.archive}
+            </if>
+            <if test="request.enable != null ">and
+                `enable` = #{request.enable}
             </if>
         </trim>
         where `id` = #{id}

@@ -62,6 +62,18 @@ public class ApitableDatasheet extends BaseDomain {
 
     /** 删除表示(0:No,1:Yes) */
 
+    /**
+     * 是否启用
+     * */
+    @TableField("archive")
+    private Integer archive;
+
+
+    /**
+     * 是否启用
+     * */
+    @TableField("enable")
+    private boolean enable;
 
     /** 排序 */
 

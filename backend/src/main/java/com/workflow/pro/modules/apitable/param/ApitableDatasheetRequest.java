@@ -1,5 +1,6 @@
 package com.workflow.pro.modules.apitable.param;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.workflow.pro.common.web.base.page.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -51,4 +52,9 @@ public class ApitableDatasheetRequest extends PageRequest {
     private String createBy;
 
     private Integer isDeveloper;
+
+    private Integer archive = 0;
+
+    private Integer enable;
+
 }
