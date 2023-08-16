@@ -140,7 +140,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                 type="text"
                 icon={<img src={editSvg} />}
                 onClick={() => {
-                  delHandle(text, record, index);
+                  editHandle(text, record, index);
                 }}
               />
             </Tooltip>
