@@ -6,18 +6,19 @@ import { useAppSelector } from '../../../store/hooks'
 import {
   selectCurTableColumn,
   selectCurTableRows,
-} from '../../../store/workflowSlice'
-import _ from 'lodash'
-import { ColumnsType } from 'antd/es/table'
-import { TableColumnRender } from '../TableColumnRender'
-import deleteSvg from '../assets/table/delete-bin.svg'
-import editSvg from '../assets/table/edit.svg'
+  selectSearchText,
+} from "../../../store/workflowSlice";
+import _ from "lodash";
+import { ColumnsType } from "antd/es/table";
+import TableColumnRender from "../TableColumnRender";
+import deleteSvg from "../assets/table/delete-bin.svg";
+import editSvg from "../assets/table/edit.svg";
 
 export interface FlowItemTableDataType {
-  key: string
-  flowItemId: number
-  statusId: string
-  [propName: string]: any
+  key: string;
+  flowItemId: number;
+  statusId: string;
+  [propName: string]: any;
 }
 
 // rowSelection object indicates the need for row selection
@@ -28,15 +29,15 @@ const rowSelection = {
   ) => {
     console.log(
       `selectedRowKeys: ${selectedRowKeys}`,
-      'selectedRows: ',
+      "selectedRows: ",
       selectedRows
-    )
+    );
   },
   getCheckboxProps: (record: FlowItemTableDataType) => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    disabled: record.name === "Disabled User", // Column configuration not to be checked
     name: record.name,
   }),
-}
+};
 
 interface FlowTableProps {
   className?: string;
@@ -70,8 +71,9 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     manager,
   } = props;
   const { confirm } = Modal;
-  const tableData = useAppSelector(selectCurTableRows)
+  const tableData = useAppSelector(selectCurTableRows);
   const dstColumns = useAppSelector(selectCurTableColumn);
+  const searchText = useAppSelector(selectSearchText);
   const [tableColumn, setTableColumn] = useState<
     ColumnsType<FlowItemTableDataType>
   >([]);
@@ -110,20 +112,22 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   };
 
   useEffect(() => {
-    const temp = dstColumns.map((item: any) => {
+    const temp = dstColumns.map((item: any, cIndex: any) => {
       return {
         ...item,
         ellipsis: true,
-        render: TableColumnRender(
-          item.type,
-          item.fieldId,
-          item.fieldConfig,
-          reader || false,
-          writer || false,
-          manager || false
-        ),
-      }
-    })
+        onCell: (record: any, rIndex: number) => ({
+          rIndex,
+          cIndex,
+          record,
+          column: item,
+          reader,
+          writer,
+          manager,
+          searchText,
+        }),
+      };
+    });
 
     const action =
       (writer && {
@@ -134,8 +138,8 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           record: FlowItemTableDataType,
           index: number
         ) => (
-          <Space>                
-            <Tooltip placement="top" title={'编辑'}>
+          <Space>
+            <Tooltip placement="top" title={"编辑"}>
               <Button
                 type="text"
                 icon={<img src={editSvg} />}
@@ -145,17 +149,17 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
               />
             </Tooltip>
             {manager && (
-              <Tooltip placement="top" title={'删除'}>
+              <Tooltip placement="top" title={"删除"}>
                 <Button
                   type="text"
                   icon={<img src={deleteSvg} />}
                   onClick={() => {
-                    delHandle(text, record, index)
+                    delHandle(text, record, index);
                   }}
                 />
               </Tooltip>
             )}
-            <Tooltip placement="top" title={'邀请链接'}>
+            <Tooltip placement="top" title={"邀请链接"}>
               <Button type="text" icon={<LinkOutlined />} onClick={() => {}} />
             </Tooltip>
           </Space>
@@ -177,7 +181,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
       }
     });
     setTableColumn(columns);
-  }, [dstColumns, reader, writer, manager]);
+  }, [dstColumns, reader, writer, manager, searchText]);
 
   const filterTableData = (records: any[]) => {
     if (!statusId) {
@@ -193,6 +197,11 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   return (
     <FlowTableContainer className={"card-table-container" + " " + className}>
       <Table
+        components={{
+          body: {
+            cell: TableColumnRender,
+          },
+        }}
         rowSelection={
           tableData.length > 0
             ? {
