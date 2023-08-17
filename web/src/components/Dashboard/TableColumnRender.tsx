@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { DiscussModal } from "./FormModal/TypeEditor/TypeDiscuss";
 
-import _ from "lodash";
+import _, { StringChain } from "lodash";
 /**
  * The type of field returned by the interface	The type of the corresponding field
       SingleText	single-line text
@@ -93,76 +93,153 @@ export const ReverSedNumFieldType = {
   "999": "DeniedField",
 };
 
-// const reversedObj = Object.fromEntries(
-//   Object.entries(NumFieldType).map(([key, value]) => [value, key])
-// )
-
-export function TableColumnRender(
-  type: number,
-  fieldId: string,
-  fieldConfig: any,
-  reader: boolean,
-  writer: boolean,
-  manager: boolean
-) {
-  // console.log(
-  //   'TableColumnRender- type - fieldid - fieldMap',
-  //   type,
-  //   fieldId,
-  //   fieldConfig
-  // )
-  switch (type) {
-    case NumFieldType.Text:
-      return MultipleText;
-
-    case NumFieldType.SingleText:
-      return SingleText;
-
-    case NumFieldType.OptionStatus:
-      return SingleSelect(fieldConfig);
-
-    case NumFieldType.Attachment:
-      return Attachment;
-    case NumFieldType.DateTime:
-      return SingleDateTime;
-    case NumFieldType.SingleSelect:
-      return SingleSelect(fieldConfig);
-
-    case NumFieldType.MultiSelect:
-      return MultiSelect(fieldConfig);
-
-    case NumFieldType.Number:
-      return SingleNumber;
-    case NumFieldType.Link:
-      return NetAddress;
-    case NumFieldType.Email:
-      return SingleText;
-    case NumFieldType.Phone:
-      return SingleText;
-    case NumFieldType.Member:
-      return MemberSelect(fieldConfig);
-    case NumFieldType.discuss:
-      return DiscussComment(fieldConfig, reader, writer, manager);
-    default:
-      return StringifyTextRender;
-  }
+interface TableColumnRenderProps {
+  rIndex: number;
+  cIndex: number;
+  record: any;
+  column: any;
+  reader: boolean;
+  writer: boolean;
+  manager: boolean;
+  searchText: string;
+  children: React.ReactNode;
 }
 
-const SingleText = (value: any, record: any) => {
-  // console.log('SingleText=', value, 'record= ', record)
-  if (typeof value === "string") {
-    return <div>{value}</div>;
+const TableColumnRender: React.FC<TableColumnRenderProps> = ({
+  rIndex,
+  cIndex,
+  record,
+  column,
+  reader,
+  writer,
+  manager,
+  searchText,
+  children,
+  ...restProps
+}) => {
+  if (column === undefined || record === undefined) {
+    return <td {...restProps}>{children}</td>;
   }
+
+  const { type, fieldId, fieldConfig } = column;
+  let childNode = children;
+  switch (type) {
+    case NumFieldType.Text:
+      childNode = <MultipleText value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.SingleText:
+      childNode = <SingleText value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.OptionStatus:
+      childNode = (
+        <SingleSelect value={record[fieldId]} fieldConfig={fieldConfig} />
+      );
+      break;
+
+    case NumFieldType.Attachment:
+      childNode = <Attachment value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.DateTime:
+      childNode = <SingleDateTime value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.SingleSelect:
+      childNode = (
+        <SingleSelect value={record[fieldId]} fieldConfig={fieldConfig} />
+      );
+      break;
+
+    case NumFieldType.MultiSelect:
+      childNode = (
+        <MultiSelect value={record[fieldId]} fieldConfig={fieldConfig} />
+      );
+      break;
+
+    case NumFieldType.Number:
+      childNode = <SingleNumber value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.Link:
+      childNode = <NetAddress value={record[fieldId]} record={record} />;
+      break;
+
+    case NumFieldType.Email:
+      childNode = <SingleText value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.Phone:
+      childNode = <SingleText value={record[fieldId]} />;
+      break;
+
+    case NumFieldType.Member:
+      childNode = (
+        <MemberSelect value={record[fieldId]} fieldConfig={fieldConfig} />
+      );
+      break;
+
+    case NumFieldType.discuss:
+      childNode = (
+        <DiscussModalWrap
+          fieldId={fieldId}
+          record={record}
+          reader={reader}
+          writer={writer}
+          manager={manager}
+        />
+      );
+      break;
+
+    default:
+      childNode = <StringifyTextRender value={record[fieldId]} />;
+  }
+
+  // console.log("field value>>", record[fieldId]);
+  const reg: RegExp = new RegExp(searchText, "gi");
+  const isMatch =
+    searchText && searchText !== "" ? reg.test(record[fieldId]) : false;
+
+  let styles: React.CSSProperties = {};
+  if (isMatch) {
+    styles = {
+      ...styles,
+      backgroundColor: "#B0E0E6",
+      border: "2px solid blue",
+    };
+  }
+  if (cIndex === 0) {
+    styles = { ...styles, position: "sticky", left: "32px" };
+  }
+  return (
+    <td {...restProps} style={styles}>
+      {childNode}
+    </td>
+  );
+};
+
+export default TableColumnRender;
+
+const SingleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
+  value,
+}) => {
   if (_.isArray(value)) {
     return (
       <div>
-        {value && value.map && value.map((item: any) => <div>{item.text}</div>)}
+        {value &&
+          value.map &&
+          value.map((item: any, i: number) => <div key={i}>{item.text}</div>)}
       </div>
     );
+  } else {
+    return <div>{value}</div>;
   }
-  return;
 };
-const MultipleText = (value: any, record: any) => {
+
+const MultipleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
+  value,
+}) => {
   return (
     <div>
       {value && value.map && value.map((item: any) => <div>{item.text}</div>)}
@@ -170,13 +247,15 @@ const MultipleText = (value: any, record: any) => {
   );
 };
 
-const SingleSelect = (fieldConfig: any) => {
+const SingleSelect: React.FC<{
+  value: any;
+  fieldConfig: any;
+  children?: React.ReactNode;
+}> = ({ value, fieldConfig }) => {
   const temp = _.get(fieldConfig, "property.options") || [];
-  // console.log('temp', temp)
+
   if (temp.length === 0) {
-    return () => {
-      return <div></div>;
-    };
+    return <div></div>;
   }
 
   const item0 = temp[0];
@@ -196,31 +275,32 @@ const SingleSelect = (fieldConfig: any) => {
     }));
   }
 
-  return (value: any, record: any) => {
-    // console.log('SingleSelect', value, record)
-    const text = _.find(options, { value: value })?.label || "";
-    if (text) {
-      return <Tag color="default">{text}</Tag>;
-    } else {
-      return <div></div>;
-    }
-  };
+  const text = _.find(options, { value: value })?.label || "";
+  if (text) {
+    return <Tag color="default">{text}</Tag>;
+  } else {
+    return <div></div>;
+  }
 };
-const MultiSelect = (fieldConfig: any) => {
+
+const MultiSelect: React.FC<{
+  value: any;
+  fieldConfig: any;
+  children?: React.ReactNode;
+}> = ({ value, fieldConfig }) => {
   const list = _.get(fieldConfig, "property.options") || [];
   const options = list.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
-  return (value: any, record: any) => {
-    return (
-      <div>
-        {value &&
-          value.map &&
-          value.map((item: any) => <Tag color="cyan">{item}</Tag>)}
-      </div>
-    );
-  };
+
+  return (
+    <div>
+      {value &&
+        value.map &&
+        value.map((item: any) => <Tag color="cyan">{item}</Tag>)}
+    </div>
+  );
 };
 
 const getFileName = (url: string) => {
@@ -229,7 +309,10 @@ const getFileName = (url: string) => {
   return fileName;
 };
 
-const Attachment = (value: any, record: any) => {
+const Attachment: React.FC<{
+  value: any;
+  children?: React.ReactNode;
+}> = ({ value }) => {
   if (value) {
     const suffix = value.substring(value.lastIndexOf(".") + 1).toLowerCase();
 
@@ -246,17 +329,29 @@ const Attachment = (value: any, record: any) => {
         </a>
       );
     }
+  } else {
+    return <></>;
   }
 };
 
-const SingleNumber = (value: any, record: any) => {
+const SingleNumber: React.FC<{
+  value: any;
+  children?: React.ReactNode;
+}> = ({ value }) => {
   return <div> {(value && value) || "未输入"}</div>;
 };
 
-const SingleDateTime = (value: any, record: any) => {
+const SingleDateTime: React.FC<{
+  value: any;
+  children?: React.ReactNode;
+}> = ({ value }) => {
   return <div> {(value && value) || "未输入"}</div>;
 };
-const NetAddress = (value: any, record: any) => {
+const NetAddress: React.FC<{
+  value: any;
+  record: any;
+  children?: React.ReactNode;
+}> = ({ value, record }) => {
   return (
     <div key={record.key}>
       {value && (
@@ -268,45 +363,47 @@ const NetAddress = (value: any, record: any) => {
   );
 };
 
-const MemberSelect = (fieldConfig: any) => {
+const MemberSelect: React.FC<{
+  value: any;
+  fieldConfig: any;
+  children?: React.ReactNode;
+}> = ({ value, fieldConfig }) => {
   const list = _.get(fieldConfig, "property.options") || [];
 
-  return (value: any, record: any) => {
-    if (typeof value === `undefined` || !(value instanceof Array)) {
-      return <></>;
-    }
+  if (typeof value === `undefined` || !(value instanceof Array)) {
+    return <></>;
+  }
 
-    const memberList = value.map((item: string) => {
-      return list.filter((m: any) => m.id === item)[0];
-    });
+  const memberList = value.map((item: string) => {
+    return list.filter((m: any) => m.id === item)[0];
+  });
 
-    return (
-      <div>
-        {memberList &&
-          memberList.map(
-            (member: any) =>
-              member && (
-                <Tag
-                  key={member.id}
-                  color="blue"
-                  icon={<Avatar src={member.avatar} />}
-                >
-                  {member.nickname}
-                </Tag>
-              )
-          )}
-      </div>
-    );
-  };
+  return (
+    <div>
+      {memberList &&
+        memberList.map(
+          (member: any) =>
+            member && (
+              <Tag
+                key={member.id}
+                color="blue"
+                icon={<Avatar src={member.avatar} />}
+              >
+                {member.nickname}
+              </Tag>
+            )
+        )}
+    </div>
+  );
 };
 
 const DiscussModalWrap: React.FC<{
-  children?: React.ReactNode;
   fieldId: string;
   record: any;
   reader: boolean;
   writer: boolean;
   manager: boolean;
+  children?: React.ReactNode;
 }> = ({ fieldId, record, reader, writer, manager }) => {
   const [open, setOpen] = React.useState<boolean>(false);
   return (
@@ -328,26 +425,9 @@ const DiscussModalWrap: React.FC<{
   );
 };
 
-const DiscussComment = (
-  fieldConfig: any,
-  reader: boolean,
-  writer: boolean,
-  manager: boolean
-) => {
-  const fieldId = fieldConfig.id;
-  return (value: any, record: any) => {
-    return (
-      <DiscussModalWrap
-        fieldId={fieldId}
-        record={record}
-        reader={reader}
-        writer={writer}
-        manager={manager}
-      />
-    );
-  };
-};
-
-const StringifyTextRender = (value: any, record: any) => {
+const StringifyTextRender: React.FC<{
+  value: any;
+  children?: React.ReactNode;
+}> = ({ value }) => {
   return <div>{JSON.stringify(value)}</div>;
 };
