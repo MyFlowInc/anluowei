@@ -122,7 +122,6 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
     setModalType,
     editFlowItemRecord,
   } = props;
-
   const [form, setForm] = useState<{ [id: string]: string }>({});
   const [inputForm] = Form.useForm();
   const user = useAppSelector(selectUser);
@@ -149,10 +148,10 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
     if (!open) {
       return;
     }
+    inputForm.resetFields();
     if (modalType === "edit" && editFlowItemRecord) {
       const { key, flowItemId, statusId, ...temp } = editFlowItemRecord;
       setForm(temp);
-      inputForm.setFieldsValue(temp);
     }
     if (modalType === "add") {
       if (statusList && statusList.length > 0) {

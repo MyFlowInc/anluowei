@@ -6,7 +6,7 @@
                 "id":"${fieldId0}",
                 "type":19,
                 "property":{
-                    "defaultValue":""
+                    "isRequired":true
                 }
             },
             "${fieldId1}":{
@@ -38,19 +38,22 @@
                 "name":"${HRResumeTemplateGender}",
                 "id":"${fieldId2}",
                 "type":3,
+                 "property":{
+                    "options":['男','女']
+                }
             },
              "${fieldId3}":{
                 "name":"${HRResumeTemplateExperience}",
                 "id":"${fieldId3}",
                 "type":19,
-                "property":{
-                    "defaultValue":""
-                }
             },
             "${fieldId4}":{
                 "name":"${HRResumeTemplateEducation}",
                 "id":"${fieldId4}",
-                "type":3
+                "type":3,
+                "property":{
+                    "options":['研究生','本科','大专','高中','高中中专','初中中专']
+                }
             },
              "${fieldId5}":{
                 "name":"${HRResumeTemplatePhone}",
@@ -58,14 +61,19 @@
                 "type":10
             },
             "${fieldId6}":{
-                "name":"${HRResumeTemplateComment}",
+                "name":"${HRResumeTemplateNextInterviewDate}",
                 "id":"${fieldId6}",
-                "type":27
+                "type":5
             },
            "${fieldId7}":{
                 "name":"${HRResumeTemplateResume}",
                 "id":"${fieldId7}",
                 "type":6,
+            },
+            "${fieldId8}":{
+                "name":"${HRResumeTemplateComment}",
+                "id":"${fieldId6}",
+                "type":27
             },
         },
         "views":[
@@ -99,6 +107,9 @@
                     },
                     {
                         "fieldId":"${fieldId7}"
+                    },
+                    {
+                        "fieldId":"${fieldId8}"
                     },
                 ],
                 "name":"${defaultView}",
