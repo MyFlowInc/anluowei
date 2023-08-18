@@ -26,13 +26,12 @@ const TypeSingleText: React.FC<TypeMultiSelectEditorProps> = (
   }, [form])
 
   const onChangeContent = (event: SyntheticEvent) => {
-    const target = event.target as HTMLInputElement
-    const value = target.value
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
     setForm({
       ...form,
       [cell.fieldId]: value,
-    })
-    console.log('onChangeContent', form)
+    });
   }
 
   const forceSetValue = () => {

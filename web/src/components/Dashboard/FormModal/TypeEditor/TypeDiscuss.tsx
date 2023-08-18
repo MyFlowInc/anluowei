@@ -30,42 +30,69 @@ const DiscussAvatar = styled(({ src, ...rest }) => (
   padding-right: 16px;
 `;
 
-interface DiscussModalProps {
+interface DiscussListWrapProps {
   fieldId: string;
   record: any;
-  dstId?: any;
-  open: boolean;
-  close: () => void;
   children?: React.ReactNode;
-  reader: boolean;
-  writer: boolean;
-  manager: boolean;
 }
 
-interface CommentType {
-  userId: string;
-  username: string;
-  avatar: string;
-  content: string;
-  create_time: string;
-}
-
-export const DiscussModal: React.FC<DiscussModalProps> = ({
-  open,
-  close,
+const DiscussListWrap: React.FC<DiscussListWrapProps> = ({
   fieldId,
   record,
-  reader,
-  writer,
-  manager,
 }) => {
+  let comments = record[fieldId] || undefined;
+  return (
+    <>
+      {comments ? (
+        <div style={{ height: 450, overflow: "auto" }}>
+          <List
+            itemLayout="horizontal"
+            dataSource={comments}
+            renderItem={(item: CommentType, index: number) => (
+              <List.Item key={`item-${index}`}>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.avatar} />}
+                  title={item.username}
+                  description={
+                    <>
+                      {item.content}
+                      <br />
+                      {item.create_time}
+                    </>
+                  }
+                />
+              </List.Item>
+            )}
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            height: 350,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Empty description="暂无评论" />
+        </div>
+      )}
+    </>
+  );
+};
+
+interface DiscussBarProps {
+  fieldId: string;
+  record: any;
+  children?: React.ReactNode;
+}
+
+const DiscussBar: React.FC<DiscussBarProps> = ({ fieldId, record }) => {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const user = useAppSelector(selectUser);
   const curDstId = useAppSelector(selectCurFlowDstId);
   let comments = record[fieldId] || undefined;
-
-  // console.log("record", record, "record fieldId", fieldId);
 
   const updateComments = async (comment: CommentType) => {
     const { recordId, id, ...rest } = record;
@@ -111,7 +138,7 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
     // close();
   };
 
-  const DiscussBar = (
+  return (
     <Form form={form} onFinish={onFinish}>
       <Form.Item
         name="content"
@@ -136,6 +163,38 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
       </Form.Item>
     </Form>
   );
+};
+
+interface DiscussModalProps {
+  fieldId: string;
+  record: any;
+  dstId?: any;
+  open: boolean;
+  close: () => void;
+  children?: React.ReactNode;
+  reader: boolean;
+  writer: boolean;
+  manager: boolean;
+}
+
+interface CommentType {
+  userId: string;
+  username: string;
+  avatar: string;
+  content: string;
+  create_time: string;
+}
+
+export const DiscussModal: React.FC<DiscussModalProps> = ({
+  open,
+  close,
+  fieldId,
+  record,
+  reader,
+  writer,
+  manager,
+}) => {
+  let comments = record[fieldId] || undefined;
 
   return (
     <Modal
@@ -143,42 +202,13 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
       open={open}
       onCancel={close}
       width={620}
-      footer={writer || manager ? DiscussBar : null}
+      footer={
+        writer || manager ? (
+          <DiscussBar record={record} fieldId={fieldId} />
+        ) : null
+      }
     >
-      {comments ? (
-        <div style={{ height: 450, overflow: "auto" }}>
-          <List
-            itemLayout="horizontal"
-            dataSource={comments}
-            renderItem={(item: CommentType, index: number) => (
-              <List.Item key={`item-${index}`}>
-                <List.Item.Meta
-                  avatar={<Avatar src={item.avatar} />}
-                  title={item.username}
-                  description={
-                    <>
-                      {item.content}
-                      <br />
-                      {item.create_time}
-                    </>
-                  }
-                />
-              </List.Item>
-            )}
-          />
-        </div>
-      ) : (
-        <div
-          style={{
-            height: 350,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Empty description="暂无评论" />
-        </div>
-      )}
+      <DiscussListWrap record={record} fieldId={fieldId} />
     </Modal>
   );
 };
@@ -204,20 +234,8 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
 
   return (
     <>
-      <Button type="text" onClick={handleOpen}>
-        评论
-      </Button>
-      {form?.recordId && (
-        <DiscussModal
-          fieldId={cell.fieldId}
-          record={form}
-          open={open}
-          close={() => setOpen(false)}
-          reader={true}
-          writer={true}
-          manager={true}
-        />
-      )}
+      <DiscussListWrap record={form} fieldId={cell.fieldId} />
+      {form?.recordId && <DiscussBar record={form} fieldId={cell.fieldId} />}
     </>
   );
 };

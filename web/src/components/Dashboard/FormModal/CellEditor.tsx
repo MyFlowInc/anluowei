@@ -300,10 +300,16 @@ const CellEditor: React.FC<CellEditorProps> = (props) => {
   const { item, updateField, deleteField, form, setForm, modalType } = props;
   const [type, setType] = useState("view");
   let rules: any = undefined;
-
+  
   switch (item.type) {
     case NumFieldType.OptionStatus:
       return <div className="hidden"></div>;
+    case NumFieldType.SingleText:
+      const isRequired = _.get(item, "fieldConfig.property.isRequired");
+      if (typeof isRequired !== `undefined` && isRequired) {
+        rules = [{ required: true, message: `请输入${item.name}!` }];
+      }
+      break;
     case NumFieldType.Email:
       rules = [{ type: "email", message: "请输入有效的邮箱地址." }];
       break;

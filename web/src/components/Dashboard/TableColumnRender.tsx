@@ -122,14 +122,18 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   }
 
   const { type, fieldId, fieldConfig } = column;
+  // console.log("fieldConfig", fieldConfig);
   let childNode = children;
   switch (type) {
-    case NumFieldType.Text:
-      childNode = <MultipleText value={record[fieldId]} />;
+    case NumFieldType.SingleText:
+    case NumFieldType.DateTime:
+    case NumFieldType.Number:
+    case NumFieldType.Email:
+    case NumFieldType.Phone:
       break;
 
-    case NumFieldType.SingleText:
-      childNode = <SingleText value={record[fieldId]} />;
+    case NumFieldType.Text:
+      childNode = <MultipleText value={record[fieldId]} />;
       break;
 
     case NumFieldType.OptionStatus:
@@ -140,10 +144,6 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
     case NumFieldType.Attachment:
       childNode = <Attachment value={record[fieldId]} />;
-      break;
-
-    case NumFieldType.DateTime:
-      childNode = <SingleDateTime value={record[fieldId]} />;
       break;
 
     case NumFieldType.SingleSelect:
@@ -158,20 +158,8 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
       );
       break;
 
-    case NumFieldType.Number:
-      childNode = <SingleNumber value={record[fieldId]} />;
-      break;
-
     case NumFieldType.Link:
       childNode = <NetAddress value={record[fieldId]} record={record} />;
-      break;
-
-    case NumFieldType.Email:
-      childNode = <SingleText value={record[fieldId]} />;
-      break;
-
-    case NumFieldType.Phone:
-      childNode = <SingleText value={record[fieldId]} />;
       break;
 
     case NumFieldType.Member:

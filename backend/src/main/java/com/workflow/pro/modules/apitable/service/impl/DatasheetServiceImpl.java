@@ -129,7 +129,7 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
             metaMap.put("optionId" + i, optionId);
         }
 
-        for(int i =0 ; i < 9; i++) {
+        for(int i = 0 ; i < 9; i++) {
             String fieldId = IdUtil.createFieldId();
             // template binding dynamic parameters
             metaMap.put("fieldId" + i, fieldId);
@@ -145,6 +145,7 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
         metaMap.put("HRResumeTemplateExperience", "从业时间");
         metaMap.put("HRResumeTemplateEducation", "最高学历");
         metaMap.put("HRResumeTemplatePhone", "电话");
+        metaMap.put("HRResumeTemplateNextInterviewDate", "下一次面试时间");
         metaMap.put("HRResumeTemplateComment", "评论");
         metaMap.put("HRResumeTemplateResume", "简历");
 
