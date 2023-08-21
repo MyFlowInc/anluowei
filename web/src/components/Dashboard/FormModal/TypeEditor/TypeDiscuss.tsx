@@ -19,6 +19,17 @@ import {
   sendWebSocketMsg,
 } from "../../../../api/apitable/ws-msg";
 
+const DiscussPanel = styled.div`
+  position: relative;
+  padding: 16px;
+  border: 1px solid #c0c0c0;
+
+  .discuss-header {
+    font-size: 14px;
+    font-weight: 600;
+  }
+`;
+
 const DiscussAvatar = styled(({ src, ...rest }) => (
   <div {...rest}>
     <Avatar src={src} />
@@ -33,14 +44,16 @@ const DiscussAvatar = styled(({ src, ...rest }) => (
 interface DiscussListWrapProps {
   fieldId: string;
   record: any;
+  comments?: CommentType[];
   children?: React.ReactNode;
 }
 
 const DiscussListWrap: React.FC<DiscussListWrapProps> = ({
   fieldId,
   record,
+  comments,
 }) => {
-  let comments = record[fieldId] || undefined;
+  // let comments = record[fieldId] || undefined;
   return (
     <>
       {comments ? (
@@ -84,20 +97,24 @@ const DiscussListWrap: React.FC<DiscussListWrapProps> = ({
 interface DiscussBarProps {
   fieldId: string;
   record: any;
+  comments: CommentType[];
+  setComments: (comments: CommentType[]) => void;
   children?: React.ReactNode;
 }
 
-const DiscussBar: React.FC<DiscussBarProps> = ({ fieldId, record }) => {
+const DiscussBar: React.FC<DiscussBarProps> = ({
+  fieldId,
+  record,
+  comments,
+  setComments,
+}) => {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const user = useAppSelector(selectUser);
   const curDstId = useAppSelector(selectCurFlowDstId);
-  let comments = record[fieldId] || undefined;
 
-  const updateComments = async (comment: CommentType) => {
+  const updateComments = async () => {
     const { recordId, id, ...rest } = record;
-    comments = comments ? [comment, ...comments] : [comment];
-
     const fields = { ...rest, [fieldId]: comments };
     const params: UpdateDSCellsParams = {
       dstId: curDstId!,
@@ -125,7 +142,12 @@ const DiscussBar: React.FC<DiscussBarProps> = ({ fieldId, record }) => {
     }
   };
 
+  React.useEffect(() => {
+    updateComments();
+  }, [comments]);
+
   const onFinish = (values: any) => {
+    console.log("values", values);
     const comment: CommentType = {
       userId: user.id,
       username: user.nickname,
@@ -133,7 +155,7 @@ const DiscussBar: React.FC<DiscussBarProps> = ({ fieldId, record }) => {
       content: values.content,
       create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
-    updateComments(comment);
+    setComments(comments ? [comment, ...comments] : [comment]);
     form.resetFields();
     // close();
   };
@@ -152,7 +174,7 @@ const DiscussBar: React.FC<DiscussBarProps> = ({ fieldId, record }) => {
         <div style={{ display: "flex", width: "100%" }}>
           <DiscussAvatar src={user.avatar} />
           <Input
-            style={{ width: "10,0%", flex: 1 }}
+            style={{ width: "100%", flex: 1 }}
             suffix={
               <Button type="text" htmlType="submit">
                 评论
@@ -194,7 +216,9 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
   writer,
   manager,
 }) => {
-  let comments = record[fieldId] || undefined;
+  const [comments, setComments] = React.useState<any>(
+    record[fieldId] || undefined
+  );
 
   return (
     <Modal
@@ -204,11 +228,16 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
       width={620}
       footer={
         writer || manager ? (
-          <DiscussBar record={record} fieldId={fieldId} />
+          <DiscussBar
+            record={record}
+            fieldId={fieldId}
+            comments={comments}
+            setComments={setComments}
+          />
         ) : null
       }
     >
-      <DiscussListWrap record={record} fieldId={fieldId} />
+      <DiscussListWrap record={record} fieldId={fieldId} comments={comments} />
     </Modal>
   );
 };
@@ -222,21 +251,100 @@ interface TypeDiscussProps {
 
 const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
   const { form, cell } = props;
-  const [open, setOpen] = React.useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const curDstId = useAppSelector(selectCurFlowDstId);
 
-  const handleOpen = () => {
-    if (form && form.recordId) {
-      setOpen(true);
-    } else {
-      message.error("创建工单完成后，才能发表评论！", 3);
+  const [inpValue, setInpValue] = React.useState<string>("");
+  const [status, setStatus] = React.useState<boolean>(false);
+  const [comments, setComments] = React.useState<CommentType[]>(
+    form[cell.fieldId] || undefined
+  );
+
+  const updateComments = async () => {
+    const { recordId, id, ...rest } = form;
+    const fields = { ...rest, [cell.fieldId]: comments };
+    const params: UpdateDSCellsParams = {
+      dstId: curDstId!,
+      fieldKey: "id",
+      records: [
+        {
+          recordId,
+          fields,
+        },
+      ],
+    };
+    try {
+      await updateDSCells(params);
+      dispatch(freshCurTableRows(curDstId!));
+      // 同步
+      sendWebSocketMsg({
+        user,
+        dstId: curDstId!,
+        type: SocketMsgType.SetRecords,
+        recordId,
+        row: fields,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
+  React.useEffect(() => {
+    updateComments();
+  }, [comments]);
+
+  const handleSubmit = () => {
+    console.log("values", inpValue);
+    if (typeof inpValue === `undefined` || inpValue === "") {
+      setStatus(true);
+      return;
+    }
+    const comment: CommentType = {
+      userId: user.id,
+      username: user.nickname,
+      avatar: user.avatar,
+      content: inpValue,
+      create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
+    };
+    console.log("comment", comment);
+    setComments(comments ? [comment, ...comments] : [comment]);
+    setInpValue("");
+    status && setStatus(false);
+  };
+
+  const handleInputChange = (e: React.SyntheticEvent) => {
+    const target = e.target as typeof e.target & { value: string };
+    setInpValue(target.value);
+  };
+
   return (
-    <>
-      <DiscussListWrap record={form} fieldId={cell.fieldId} />
-      {form?.recordId && <DiscussBar record={form} fieldId={cell.fieldId} />}
-    </>
+    <DiscussPanel>
+      <div className="discuss-header">
+        {`${comments ? comments.length : 0}条评论`}
+      </div>
+      <DiscussListWrap
+        record={form}
+        fieldId={cell.fieldId}
+        comments={comments}
+      />
+      {form?.recordId && (
+        <div style={{ display: "flex", width: "100%" }}>
+          <DiscussAvatar src={user.avatar} />
+          <Input
+            value={inpValue}
+            onChange={handleInputChange}
+            style={{ width: "100%", flex: 1 }}
+            status={status ? "error" : undefined}
+            suffix={
+              <Button type="text" onClick={handleSubmit}>
+                评论
+              </Button>
+            }
+          />
+        </div>
+      )}
+    </DiscussPanel>
   );
 };
 
