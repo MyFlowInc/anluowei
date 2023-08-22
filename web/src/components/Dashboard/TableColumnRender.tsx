@@ -102,6 +102,7 @@ interface TableColumnRenderProps {
   writer: boolean;
   manager: boolean;
   searchText: string;
+  userList: any;
   children: React.ReactNode;
 }
 
@@ -114,6 +115,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   writer,
   manager,
   searchText,
+  userList,
   children,
   ...restProps
 }) => {
@@ -122,7 +124,6 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   }
 
   const { type, fieldId, fieldConfig } = column;
-  // console.log("fieldConfig", fieldConfig);
   let childNode = children;
   switch (type) {
     case NumFieldType.SingleText:
@@ -163,9 +164,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
       break;
 
     case NumFieldType.Member:
-      childNode = (
-        <MemberSelect value={record[fieldId]} fieldConfig={fieldConfig} />
-      );
+      childNode = <MemberSelect value={record[fieldId]} userList={userList} />;
       break;
 
     case NumFieldType.discuss:
@@ -353,17 +352,19 @@ const NetAddress: React.FC<{
 
 const MemberSelect: React.FC<{
   value: any;
-  fieldConfig: any;
+  userList: any;
   children?: React.ReactNode;
-}> = ({ value, fieldConfig }) => {
-  const list = _.get(fieldConfig, "property.options") || [];
-
-  if (typeof value === `undefined` || !(value instanceof Array)) {
+}> = ({ value, userList }) => {
+  if (
+    typeof value === `undefined` ||
+    typeof userList === `undefined` ||
+    !(value instanceof Array)
+  ) {
     return <></>;
   }
 
   const memberList = value.map((item: string) => {
-    return list.filter((m: any) => m.id === item)[0];
+    return userList.filter((m: any) => m.id === item)[0];
   });
 
   return (

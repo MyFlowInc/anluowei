@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { FlowTableContainer } from './style'
-import { Modal, Table, Space, Button, Tooltip } from 'antd'
-import { ExclamationCircleFilled, LinkOutlined } from '@ant-design/icons'
-import { useAppSelector } from '../../../store/hooks'
+import React, { useEffect, useState } from "react";
+import { FlowTableContainer } from "./style";
+import { Modal, Table, Space, Button, Tooltip } from "antd";
+import { ExclamationCircleFilled, LinkOutlined } from "@ant-design/icons";
+import { useAppSelector } from "../../../store/hooks";
 import {
   selectCurTableColumn,
   selectCurTableRows,
   selectSearchText,
+  selectMembers,
 } from "../../../store/workflowSlice";
 import _ from "lodash";
 import { ColumnsType } from "antd/es/table";
@@ -74,6 +75,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   const tableData = useAppSelector(selectCurTableRows);
   const dstColumns = useAppSelector(selectCurTableColumn);
   const searchText = useAppSelector(selectSearchText);
+  const userList = useAppSelector(selectMembers);
   const [tableColumn, setTableColumn] = useState<
     ColumnsType<FlowItemTableDataType>
   >([]);
@@ -125,6 +127,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           writer,
           manager,
           searchText,
+          userList,
         }),
       };
     });
@@ -181,7 +184,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
       }
     });
     setTableColumn(columns);
-  }, [dstColumns, reader, writer, manager, searchText]);
+  }, [dstColumns, reader, writer, manager, searchText, userList]);
 
   const filterTableData = (records: any[]) => {
     if (!statusId) {
@@ -219,4 +222,4 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   );
 };
 
-export default FlowTable
+export default FlowTable;
