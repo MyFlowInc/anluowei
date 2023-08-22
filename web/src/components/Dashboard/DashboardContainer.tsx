@@ -1,22 +1,24 @@
-import Header from './Header/Header'
-import FlowTable, { FlowItemTableDataType } from './FlowTable/core'
-import { useHistory, useParams } from 'react-router'
-import styled from 'styled-components'
-import { useEffect, useState } from 'react'
+import Header from "./Header/Header";
+import FlowTable, { FlowItemTableDataType } from "./FlowTable/core";
+import { useHistory, useParams } from "react-router";
+import styled from "styled-components";
+import { useEffect, useState } from "react";
 
-import _ from 'lodash'
+import _ from "lodash";
 import {
   freshCurMetaData,
   freshCurTableRows,
   selectCurShowMode,
   selectCurStatusFieldId,
   selectCurTableStatusList,
+  setMembers,
 } from "../../store/workflowSlice";
 import { NoStatusData } from "./NoStatus";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { delay } from "../../util/delay";
 import { deleteDSCells } from "../../api/apitable/ds-record";
+import { inviteUserList } from "../../api/apitable/ds-share";
 
 interface ContainerProps {
   reader: boolean;
@@ -79,6 +81,17 @@ const DashboardContainer: React.FC<ContainerProps> = ({
     await deleteDSCells(params);
     dispatch(freshCurTableRows(dstId!));
   };
+
+  const fetchUserList = async () => {
+    const res = await inviteUserList({ dstId: dstId! });
+    dispatch(setMembers(_.get(res, "data")));
+  };
+
+  useEffect(() => {
+    if (typeof dstId !== `undefined`) {
+      fetchUserList();
+    }
+  }, [dstId]);
 
   const freshFlowItem = async () => {
     setLoading(true);
@@ -176,4 +189,4 @@ const DashboardContainer: React.FC<ContainerProps> = ({
   );
 };
 
-export default DashboardContainer
+export default DashboardContainer;
