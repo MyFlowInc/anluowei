@@ -62,6 +62,7 @@ export const NumFieldType = {
   OptionStatus: 26, // 状态
   discuss: 27,
   InterviewStatus: 30,
+  InviteStatus: 31,
   DeniedField: 999, // no permission column
 }
 export const ReverSedNumFieldType = {
@@ -127,6 +128,9 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
   const { type, fieldId, fieldConfig } = column
   let childNode = children
+  const cloneConfig = _.cloneDeep(fieldConfig)
+  const options = _.get(cloneConfig, 'property.options')
+
   switch (type) {
     case NumFieldType.SingleText:
     case NumFieldType.DateTime:
@@ -144,10 +148,8 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
         <SingleSelect value={record[fieldId]} fieldConfig={fieldConfig} />
       )
       break
-
+    // 面试状态
     case NumFieldType.InterviewStatus:
-      const cloneConfig = _.cloneDeep(fieldConfig)
-      const options = _.get(cloneConfig, 'property.options')
       if (options) {
         _.set(cloneConfig, 'property.options', flatList(options))
       }
@@ -155,6 +157,17 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
         <SingleSelect value={record[fieldId]} fieldConfig={cloneConfig} />
       )
       break
+
+    // 邀请状态
+    case NumFieldType.InviteStatus:
+      if (options) {
+        _.set(cloneConfig, 'property.options', flatList(options))
+      }
+      childNode = (
+        <SingleSelect value={record[fieldId]} fieldConfig={cloneConfig} />
+      )
+      break
+
     case NumFieldType.Attachment:
       childNode = <Attachment value={record[fieldId]} />
       break
