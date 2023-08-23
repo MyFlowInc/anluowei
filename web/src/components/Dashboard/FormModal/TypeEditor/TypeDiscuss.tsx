@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Modal, List, Avatar, Button, Input, Form, Empty, message } from "antd";
+import { Modal, List, Avatar, Button, Input, Form, Empty } from "antd";
 import _ from "lodash";
 import styled from "styled-components";
 import { selectUser } from "../../../../store/globalSlice";
@@ -42,18 +42,11 @@ const DiscussAvatar = styled(({ src, ...rest }) => (
 `;
 
 interface DiscussListWrapProps {
-  fieldId: string;
-  record: any;
   comments?: CommentType[];
   children?: React.ReactNode;
 }
 
-const DiscussListWrap: React.FC<DiscussListWrapProps> = ({
-  fieldId,
-  record,
-  comments,
-}) => {
-  // let comments = record[fieldId] || undefined;
+const DiscussListWrap: React.FC<DiscussListWrapProps> = ({ comments }) => {
   return (
     <>
       {comments ? (
@@ -143,11 +136,16 @@ const DiscussBar: React.FC<DiscussBarProps> = ({
   };
 
   React.useEffect(() => {
-    updateComments();
+    if (
+      typeof record[fieldId] === `undefined` ||
+      (typeof comments !== `undefined` &&
+        comments.length !== record[fieldId].length)
+    ) {
+      updateComments();
+    }
   }, [comments]);
 
   const onFinish = (values: any) => {
-    console.log("values", values);
     const comment: CommentType = {
       userId: user.id,
       username: user.nickname,
@@ -220,6 +218,10 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
     record[fieldId] || undefined
   );
 
+  React.useEffect(() => {
+    setComments(record[fieldId]);
+  }, [record[fieldId]]);
+
   return (
     <Modal
       title={`${comments ? comments.length : 0}条评论`}
@@ -237,7 +239,7 @@ export const DiscussModal: React.FC<DiscussModalProps> = ({
         ) : null
       }
     >
-      <DiscussListWrap record={record} fieldId={fieldId} comments={comments} />
+      <DiscussListWrap comments={comments} />
     </Modal>
   );
 };
@@ -250,7 +252,7 @@ interface TypeDiscussProps {
 }
 
 const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
-  const { form, cell } = props;
+  const { form, cell, setForm } = props;
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const curDstId = useAppSelector(selectCurFlowDstId);
@@ -262,6 +264,10 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
   );
 
   const updateComments = async () => {
+    setForm({
+      ...form,
+      [cell.fieldId]: comments,
+    });
     const { recordId, id, ...rest } = form;
     const fields = { ...rest, [cell.fieldId]: comments };
     const params: UpdateDSCellsParams = {
@@ -274,6 +280,7 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
         },
       ],
     };
+
     try {
       await updateDSCells(params);
       dispatch(freshCurTableRows(curDstId!));
@@ -291,12 +298,17 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
   };
 
   React.useEffect(() => {
-    updateComments();
+    if (
+      typeof form[cell.fieldId] === `undefined` ||
+      (typeof comments !== `undefined` &&
+        comments.length !== form[cell.fieldId].length)
+    ) {
+      updateComments();
+    }
   }, [comments]);
 
   const handleSubmit = () => {
-    console.log("values", inpValue);
-    if (typeof inpValue === `undefined` || inpValue === "") {
+    if (typeof inpValue === `undefined` || inpValue.trim() === "") {
       setStatus(true);
       return;
     }
@@ -307,7 +319,6 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
       content: inpValue,
       create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
-    console.log("comment", comment);
     setComments(comments ? [comment, ...comments] : [comment]);
     setInpValue("");
     status && setStatus(false);
@@ -316,6 +327,7 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
   const handleInputChange = (e: React.SyntheticEvent) => {
     const target = e.target as typeof e.target & { value: string };
     setInpValue(target.value);
+    target.value.trim() !== "" && setStatus(false);
   };
 
   return (
@@ -323,11 +335,7 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
       <div className="discuss-header">
         {`${comments ? comments.length : 0}条评论`}
       </div>
-      <DiscussListWrap
-        record={form}
-        fieldId={cell.fieldId}
-        comments={comments}
-      />
+      <DiscussListWrap comments={comments} />
       {form?.recordId && (
         <div style={{ display: "flex", width: "100%" }}>
           <DiscussAvatar src={user.avatar} />
@@ -344,6 +352,15 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
           />
         </div>
       )}
+      <div
+        style={{
+          display: `${status ? "" : "none"}`,
+          color: "red",
+          textAlign: "right",
+        }}
+      >
+        评论不能为空！
+      </div>
     </DiscussPanel>
   );
 };

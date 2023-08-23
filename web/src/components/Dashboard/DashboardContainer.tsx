@@ -13,12 +13,14 @@ import {
   selectCurShowMode,
   selectCurStatusFieldId,
   selectCurTableStatusList,
+  setMembers,
 } from '../../store/workflowSlice'
 import { NoStatusData } from './NoStatus'
 import { BaseLoading } from '../../BaseUI/BaseLoading'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { delay } from '../../util/delay'
 import { deleteDSCells } from '../../api/apitable/ds-record'
+import { inviteUserList } from '../../api/apitable/ds-share'
 
 interface ContainerProps {
   reader: boolean
@@ -89,6 +91,17 @@ const DashboardContainer: React.FC<ContainerProps> = ({
     await deleteDSCells(params)
     dispatch(freshCurTableRows(dstId!))
   }
+
+  const fetchUserList = async () => {
+    const res = await inviteUserList({ dstId: dstId! })
+    dispatch(setMembers(_.get(res, 'data')))
+  }
+
+  useEffect(() => {
+    if (typeof dstId !== `undefined`) {
+      fetchUserList()
+    }
+  }, [dstId])
 
   const freshFlowItem = async () => {
     setLoading(true)
