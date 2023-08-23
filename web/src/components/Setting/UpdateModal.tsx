@@ -1,13 +1,9 @@
-import { Component, useState, useMemo, memo, useEffect } from 'react'
+import {   useState,  useEffect } from 'react'
 import {
   Button,
   Form,
   Input,
   Modal,
-  Tabs,
-  Upload,
-  UploadFile,
-  UploadProps,
   message,
 } from 'antd'
 import styled from 'styled-components'

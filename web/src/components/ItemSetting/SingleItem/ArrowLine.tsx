@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
-const ArrowLineRoot = styled.div`
+interface ArrowLineRootProps {
+  rotate?: string;
+}
+const ArrowLineRoot = styled.div<ArrowLineRootProps>`
   font-size: 0px;
   height: 24px;
   width: 120px;
@@ -8,13 +11,14 @@ const ArrowLineRoot = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: ${props => props.rotate ? props.rotate : 'unset'};
 
 `;
 
-export function ArrowLine() {
-  const style: any = { markerEnd: "url(#triangle)" };
+export function ArrowLine(props: any) {
+  const {rotate=''} = props;
   return (
-    <ArrowLineRoot>
+    <ArrowLineRoot rotate={rotate}>
       <svg
         fill="none"
         version="1.1"

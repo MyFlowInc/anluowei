@@ -23,7 +23,7 @@ export const SingleItemContainer = styled.div`
     }
     .operation-container {
       margin-left: 16px;
-      width: 181px;
+      width: fit-content;
       height: 34px;
       border-radius: 4px;
       opacity: 1;
