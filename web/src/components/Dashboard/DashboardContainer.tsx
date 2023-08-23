@@ -141,7 +141,7 @@ const DashboardContainer: React.FC<ContainerProps> = ({
           flatStatusList.map((item) => {
             return (
               <div key={'FlowTable_' + item.id} className="table-item">
-                <h3 className="mt-2">{item.name}</h3>
+                <h3 className="mt-4 mb-4">{item.name}</h3>
                 <FlowTable
                   className="mb-2 card-table"
                   title={item.name}

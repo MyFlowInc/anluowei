@@ -104,11 +104,13 @@ export const freshCurMetaData = createAsyncThunk(
       const fieldId = item.fieldId
       const type = fieldMap[fieldId].type
       const name = fieldMap[fieldId].name
+      const name_en = fieldMap[fieldId].name_en
       return {
         dstId,
         fieldId: fieldId,
         dataIndex: fieldId,
         name: name,
+        name_en,
         title: name,
         fieldConfig: fieldMap[fieldId],
         type,
