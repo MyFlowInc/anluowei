@@ -148,33 +148,39 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           text: string,
           record: FlowItemTableDataType,
           index: number
-        ) => (
-          <Space>
-            <Tooltip placement="top" title={'编辑'}>
-              <Button
-                type="text"
-                icon={<img src={editSvg} />}
-                onClick={() => {
-                  editHandle(text, record, index)
-                }}
-              />
-            </Tooltip>
-            {manager && (
-              <Tooltip placement="top" title={'删除'}>
+        ) => {
+          return (
+            <Space>
+              <Tooltip placement="top" title={'编辑'}>
                 <Button
                   type="text"
-                  icon={<img src={deleteSvg} />}
+                  icon={<img src={editSvg} />}
                   onClick={() => {
-                    delHandle(text, record, index)
+                    editHandle(text, record, index)
                   }}
                 />
               </Tooltip>
-            )}
-            <Tooltip placement="top" title={'邀请链接'}>
-              <Button type="text" icon={<LinkOutlined />} onClick={() => {}} />
-            </Tooltip>
-          </Space>
-        ),
+              {manager && (
+                <Tooltip placement="top" title={'删除'}>
+                  <Button
+                    type="text"
+                    icon={<img src={deleteSvg} />}
+                    onClick={() => {
+                      delHandle(text, record, index)
+                    }}
+                  />
+                </Tooltip>
+              )}
+              <Tooltip placement="top" title={'复制邀请链接'}>
+                <Button
+                  type="text"
+                  icon={<LinkOutlined />}
+                  onClick={() => {}}
+                />
+              </Tooltip>
+            </Space>
+          )
+        },
       }) ||
       {}
     const columns = [...temp, action]
