@@ -42,6 +42,7 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
 
   useEffect(() => {
     const optionId = form[curStatusFieldId]
+    updateArrowStatus(optionId)
     if (optionId) {
       setName(_.find(flatStatusList, { id: optionId })?.name || '未选择')
     } else {
@@ -49,6 +50,20 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
       handleMenuClick({ key: flatStatusList[0]?.id || '' })
     }
   }, [form])
+
+  const updateArrowStatus = (optionId: string) => {
+    const index = _.findIndex(flatStatusList, { id: optionId })
+    if (index >= 0 && index < flatStatusList.length - 1) {
+      setShowRight(true)
+    } else {
+      setShowRight(false)
+    }
+    if (index > 0 && index < flatStatusList.length) {
+      setShowLeft(true)
+    } else {
+      setShowLeft(false)
+    }
+  }
 
   const handleMenuClick = (info: { key: string }) => {
     const id = info.key
@@ -58,8 +73,26 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
       [curStatusFieldId]: id,
     })
   }
-  const leftHandler = () => {}
-  const rightHandler = () => {}
+  const leftHandler = () => {
+    const optionId = form[curStatusFieldId]
+    const index = _.findIndex(flatStatusList, { id: optionId })
+    const id = flatStatusList[index - 1]?.id
+    if (!id) return
+    setForm({
+      ...form,
+      [curStatusFieldId]: id,
+    })
+  }
+  const rightHandler = () => {
+    const optionId = form[curStatusFieldId]
+    const index = _.findIndex(flatStatusList, { id: optionId })
+    const id = flatStatusList[index + 1]?.id
+    if (!id) return
+    setForm({
+      ...form,
+      [curStatusFieldId]: id,
+    })
+  }
   return (
     <StatusTagRoot>
       <div>
