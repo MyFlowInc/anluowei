@@ -6,13 +6,42 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-
-import { useAppDispatch } from "../../../../store/hooks";
-import { setCurSearchText } from "../../../../store/workflowSlice";
-
+import _ from "lodash";
+import { useAppSelector, useAppDispatch } from "../../../../store/hooks";
+import {
+  setCurSearchText,
+  selectMembers,
+  selectSearchText,
+} from "../../../../store/workflowSlice";
 import type { TableColumnItem } from "../../../../store/workflowSlice";
 
+const getMemberList = (value: any, userList: any) => {
+  if (
+    typeof value === `undefined` ||
+    typeof userList === `undefined` ||
+    !(value instanceof Array)
+  ) {
+    return;
+  }
+
+  return value.map((item: string) => {
+    return userList.filter((m: any) => m.id === item)[0];
+  });
+};
+
+const getFileName = (url: string) => {
+  const file = url.split("/").pop();
+  const fileName = file?.split("-")[1] || "";
+  return fileName;
+};
+
+function encode(keyword: string) {
+  const reg = /[\[\(\$\^\.\]\*\\\?\+\{\}\\|\)]/gi;
+  return keyword.replace(reg, (key) => `\\${key}`);
+}
+
 interface SearchContentProps {
+  open: boolean;
   records: any[];
   colunms: TableColumnItem[];
   onClosePop: () => void;
@@ -20,12 +49,15 @@ interface SearchContentProps {
 }
 
 const SearchContent: React.FC<SearchContentProps> = ({
+  open,
   records,
   colunms,
   onClosePop,
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const searchText = useAppSelector(selectSearchText);
+  const userList = useAppSelector(selectMembers);
   const [total, setTotal] = useState<number>(0);
 
   const count = (
@@ -35,31 +67,81 @@ const SearchContent: React.FC<SearchContentProps> = ({
     </Space.Compact>
   );
 
-  const handleValuesChanged = (changedValues: any, allValues: any) => {
-    dispatch(setCurSearchText(changedValues.searchField));
+  const search = (keyword: string) => {
     const RowsNum = records.length;
     const ColsNum = colunms.length;
     let MatchNum = 0;
 
-    const reg: RegExp = new RegExp(changedValues.searchField, "gi");
     for (let i = 0; i < RowsNum; i++) {
       for (let j = 0; j < ColsNum; j++) {
         const record = records[i];
         const colunm = colunms[j];
 
-        if (typeof record[colunm.fieldId] !== `undefined`) {
-          const isMatched = reg.test(record[colunm.fieldId]);
-          if (isMatched) {
-            MatchNum++;
-          }
+        switch (colunm.type) {
+          case 6:
+            const attachmentName =
+              record[colunm.fieldId] && getFileName(record[colunm.fieldId]);
+            const rega: RegExp = new RegExp(keyword, "gi");
+            const isMatch =
+              keyword && keyword !== "" ? rega.test(attachmentName) : false;
+            if (isMatch) {
+              MatchNum++;
+            }
+            break;
+          case 13:
+            const memberList = getMemberList(record[colunm.fieldId], userList);
+            if (memberList) {
+              for (let i = 0; i < memberList.length; i++) {
+                const regb: RegExp = new RegExp(keyword, "gi");
+                const isMatch =
+                  keyword && keyword !== ""
+                    ? regb.test(memberList[i].nickname)
+                    : false;
+                if (isMatch) {
+                  MatchNum++;
+                  break;
+                }
+              }
+            }
+            break;
+          case 27: // 不搜索评论内容
+            continue;
+          default:
+            if (typeof record[colunm.fieldId] !== `undefined`) {
+              const regc: RegExp = new RegExp(keyword, "gi");
+              const isMatched = regc.test(record[colunm.fieldId]);
+              if (isMatched) {
+                MatchNum++;
+              }
+            }
         }
       }
     }
     setTotal(MatchNum);
   };
 
-  const handleClosePop = () => {
+  const resetSearch = () => {
     dispatch(setCurSearchText(""));
+    setTotal(0);
+  };
+
+  React.useEffect(() => {
+    const value = form.getFieldValue("searchField");
+    if (open && value && value !== "") {
+      search(searchText);
+    } else {
+      resetSearch();
+    }
+  }, [records, colunms, open]);
+
+  const handleValuesChanged = (changedValues: any, allValues: any) => {
+    const keyword = encode(changedValues.searchField as string);
+    dispatch(setCurSearchText(keyword));
+    search(keyword);
+  };
+
+  const handleClosePop = () => {
+    resetSearch();
     form.resetFields();
     onClosePop();
   };
@@ -109,6 +191,7 @@ const Search: React.FC<SearchProps> = ({ records, colunms }) => {
       placement="bottom"
       content={
         <SearchContent
+          open={open}
           records={records}
           colunms={colunms}
           onClosePop={handleTogglePop}

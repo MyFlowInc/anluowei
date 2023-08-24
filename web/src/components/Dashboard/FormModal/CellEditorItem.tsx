@@ -98,7 +98,6 @@ const FieldTypeList = [
 
 const CellEditorItemRoot = styled.div`
   flex: 1;
-  padding-left: 24px;
 `;
 interface CellEditorItemProps {
   item: WorkFlowFieldInfo;

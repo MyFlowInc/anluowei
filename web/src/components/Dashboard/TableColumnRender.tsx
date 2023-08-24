@@ -124,6 +124,14 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   }
 
   const { type, fieldId, fieldConfig } = column;
+
+  const reg: RegExp = new RegExp(searchText, "gi");
+  let isMatch = false;
+  if (record[fieldId] && record[fieldId] !== "") {
+    isMatch =
+      searchText && searchText !== "" ? reg.test(record[fieldId]) : false;
+  }
+
   let childNode = children;
   switch (type) {
     case NumFieldType.SingleText:
@@ -145,6 +153,10 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
     case NumFieldType.Attachment:
       childNode = <Attachment value={record[fieldId]} />;
+      const attachmentName = record[fieldId] && getFileName(record[fieldId]);
+      const rega: RegExp = new RegExp(searchText, "gi");
+      isMatch =
+        searchText && searchText !== "" ? rega.test(attachmentName) : false;
       break;
 
     case NumFieldType.SingleSelect:
@@ -165,9 +177,23 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
     case NumFieldType.Member:
       childNode = <MemberSelect value={record[fieldId]} userList={userList} />;
+      const memberList = getMemberList(record[fieldId], userList);
+      if (memberList) {
+        for (let i = 0; i < memberList.length; i++) {
+          const regb: RegExp = new RegExp(searchText, "gi");
+          isMatch =
+            searchText && searchText !== ""
+              ? regb.test(memberList[i].nickname)
+              : false;
+          if (isMatch) {
+            break;
+          }
+        }
+      }
       break;
 
     case NumFieldType.discuss:
+      isMatch = false;
       childNode = (
         <DiscussModalWrap
           fieldId={fieldId}
@@ -183,11 +209,6 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
       childNode = <StringifyTextRender value={record[fieldId]} />;
   }
 
-  // console.log("field value>>", record[fieldId]);
-  const reg: RegExp = new RegExp(searchText, "gi");
-  const isMatch =
-    searchText && searchText !== "" ? reg.test(record[fieldId]) : false;
-
   let styles: React.CSSProperties = {};
   if (isMatch) {
     styles = {
@@ -199,6 +220,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   if (cIndex === 0) {
     styles = { ...styles, position: "sticky", left: "32px" };
   }
+
   return (
     <td {...restProps} style={styles}>
       {childNode}
@@ -350,22 +372,26 @@ const NetAddress: React.FC<{
   );
 };
 
-const MemberSelect: React.FC<{
-  value: any;
-  userList: any;
-  children?: React.ReactNode;
-}> = ({ value, userList }) => {
+const getMemberList = (value: any, userList: any) => {
   if (
     typeof value === `undefined` ||
     typeof userList === `undefined` ||
     !(value instanceof Array)
   ) {
-    return <></>;
+    return;
   }
 
-  const memberList = value.map((item: string) => {
+  return value.map((item: string) => {
     return userList.filter((m: any) => m.id === item)[0];
   });
+};
+
+const MemberSelect: React.FC<{
+  value: any;
+  userList: any;
+  children?: React.ReactNode;
+}> = ({ value, userList }) => {
+  const memberList = getMemberList(value, userList);
 
   return (
     <div>
