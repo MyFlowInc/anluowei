@@ -1,30 +1,32 @@
-import Header from "./Header/Header";
-import FlowTable, { FlowItemTableDataType } from "./FlowTable/core";
-import { useHistory, useParams } from "react-router";
-import styled from "styled-components";
-import { useEffect, useState } from "react";
+import Header from './Header/Header'
+import FlowTable, { FlowItemTableDataType } from './FlowTable/core'
+import { useHistory, useParams } from 'react-router'
+import styled from 'styled-components'
+import { useEffect, useState } from 'react'
 
-import _ from "lodash";
+import _ from 'lodash'
 import {
+  WorkFlowStatusInfo,
+  flatList,
   freshCurMetaData,
   freshCurTableRows,
   selectCurShowMode,
   selectCurStatusFieldId,
   selectCurTableStatusList,
   setMembers,
-} from "../../store/workflowSlice";
-import { NoStatusData } from "./NoStatus";
-import { BaseLoading } from "../../BaseUI/BaseLoading";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { delay } from "../../util/delay";
-import { deleteDSCells } from "../../api/apitable/ds-record";
-import { inviteUserList } from "../../api/apitable/ds-share";
+} from '../../store/workflowSlice'
+import { NoStatusData } from './NoStatus'
+import { BaseLoading } from '../../BaseUI/BaseLoading'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { delay } from '../../util/delay'
+import { deleteDSCells } from '../../api/apitable/ds-record'
+import { inviteUserList } from '../../api/apitable/ds-share'
 
 interface ContainerProps {
-  reader: boolean;
-  writer: boolean;
-  manager: boolean;
-  children?: React.ReactNode;
+  reader: boolean
+  writer: boolean
+  manager: boolean
+  children?: React.ReactNode
 }
 
 const DashboardRoot = styled.div`
@@ -48,7 +50,7 @@ const DashboardRoot = styled.div`
       }
     }
   }
-`;
+`
 
 const DashboardContainer: React.FC<ContainerProps> = ({
   reader,
@@ -56,82 +58,90 @@ const DashboardContainer: React.FC<ContainerProps> = ({
   manager,
 }) => {
   // console.log("reader", reader, "writer", writer, "manager", manager);
-  const curShowMode = useAppSelector(selectCurShowMode);
-  const statusList = useAppSelector(selectCurTableStatusList) || [];
-  const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || "";
+  const curShowMode = useAppSelector(selectCurShowMode)
+  const statusList = useAppSelector(selectCurTableStatusList) || []
+
+  const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || ''
   const [editFlowItemRecord, setEditFlowItemRecord] = useState<
     FlowItemTableDataType | undefined
-  >(undefined);
+  >(undefined)
 
-  const history = useHistory();
-  const { dstId } = useParams<{ dstId: string }>();
-  const [loading, setLoading] = useState(true);
+  const history = useHistory()
+  const { dstId } = useParams<{ dstId: string }>()
+  const [loading, setLoading] = useState(true)
 
   // for modal
-  const [open, setOpen] = useState(false);
-  const [modalType, setModalType] = useState("add");
+  const [open, setOpen] = useState(false)
+  const [modalType, setModalType] = useState('add')
 
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
+
+  const [flatStatusList, setFlatStatusList] = useState<WorkFlowStatusInfo[]>(
+    flatList(statusList)
+  )
+  useEffect(() => {
+    setFlatStatusList(flatList(statusList))
+  }, [statusList])
 
   const deleteFlowItemHandler = async (recordId: string) => {
     const params = {
       dstId,
       recordIds: [recordId],
-    };
-    await deleteDSCells(params);
-    dispatch(freshCurTableRows(dstId!));
-  };
+    }
+    await deleteDSCells(params)
+    dispatch(freshCurTableRows(dstId!))
+  }
 
   const fetchUserList = async () => {
-    const res = await inviteUserList({ dstId: dstId! });
-    dispatch(setMembers(_.get(res, "data")));
-  };
+    const res = await inviteUserList({ dstId: dstId! })
+    dispatch(setMembers(_.get(res, 'data')))
+  }
 
   useEffect(() => {
     if (typeof dstId !== `undefined`) {
-      fetchUserList();
+      fetchUserList()
     }
-  }, [dstId]);
+  }, [dstId])
 
   const freshFlowItem = async () => {
-    setLoading(true);
-    await delay();
-    setLoading(false);
-    setModalType("add");
-  };
+    setLoading(true)
+    await delay()
+    setLoading(false)
+    setModalType('add')
+  }
 
   const initTable = async (dstId: string) => {
     dispatch(freshCurMetaData(dstId)).then(() => {
-      dispatch(freshCurTableRows(dstId));
-    });
-  };
+      dispatch(freshCurTableRows(dstId))
+    })
+  }
 
   // init table data
   const fetchDatas = async (dstId: string) => {
-    await initTable(dstId);
-    setLoading(false);
-  };
+    await initTable(dstId)
+    setLoading(false)
+  }
 
   useEffect(() => {
-    dstId && fetchDatas(dstId);
-  }, [dstId]);
+    dstId && fetchDatas(dstId)
+  }, [dstId])
 
   const jumpToAdd = (id: string) => {
     if (id) {
       // TODO:
-      const path = "/dashboard/workflow-edit/" + dstId;
-      history.push(path);
+      const path = '/dashboard/workflow-edit/' + dstId
+      history.push(path)
     }
-  };
+  }
 
   const StatusView = () => {
     return (
       <>
-        {statusList.length > 0 ? (
-          statusList.map((item) => {
+        {flatStatusList.length > 0 ? (
+          flatStatusList.map((item) => {
             return (
-              <div key={"FlowTable_" + item.id} className="table-item">
-                <h3 className="mt-2">{item.name}</h3>
+              <div key={'FlowTable_' + item.id} className="table-item">
+                <h3 className="mt-4 mb-4">{item.name}</h3>
                 <FlowTable
                   className="mb-2 card-table"
                   title={item.name}
@@ -148,14 +158,14 @@ const DashboardContainer: React.FC<ContainerProps> = ({
                   manager={manager}
                 />
               </div>
-            );
+            )
           })
         ) : (
           <NoStatusData dstId={dstId} clickHandler={jumpToAdd} />
         )}
       </>
-    );
-  };
+    )
+  }
   return (
     <DashboardRoot>
       <Header
@@ -169,7 +179,7 @@ const DashboardContainer: React.FC<ContainerProps> = ({
       />
       {loading && <BaseLoading />}
       <div className="table-list">
-        {curShowMode == "list" && (
+        {curShowMode == 'list' && (
           <FlowTable
             dstId={dstId}
             show-mode={curShowMode}
@@ -183,10 +193,10 @@ const DashboardContainer: React.FC<ContainerProps> = ({
             manager={manager}
           />
         )}
-        {curShowMode == "status" && <StatusView />}
+        {curShowMode == 'status' && <StatusView />}
       </div>
     </DashboardRoot>
-  );
-};
+  )
+}
 
-export default DashboardContainer;
+export default DashboardContainer

@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { useLocation } from 'react-router'
 import _ from 'lodash'
 
@@ -72,12 +72,13 @@ const isEdit = (path: string) => {
   return path.includes('workflow-edit')
 }
 
-const ItemSettingContainer = () => {
+const ItemSettingContainer: React.FC<any> = () => {
   const location = useLocation()
   const dispatch = useAppDispatch()
   const curTableColumn = useAppSelector(selectCurTableColumn)
   const curFlowDstId = useAppSelector(selectCurFlowDstId)
   const statusList = useAppSelector(selectCurTableStatusList)
+  const [ messageApi, contextHolder] = message.useMessage()
 
   const initTable = async (dstId: string) => {
     dispatch(freshCurMetaData(dstId)).then(() => {
@@ -94,9 +95,6 @@ const ItemSettingContainer = () => {
     curFlowDstId && fetchDatas(curFlowDstId)
   }, [curFlowDstId])
 
-
-
-  
   // 交换 状态 位置
   const onDragEnd = async (result: any) => {
     if (!result.destination) {
@@ -124,7 +122,7 @@ const ItemSettingContainer = () => {
       color: 0,
     }
     options.push(newItem)
-    console.log('clickHandler',  options)
+    console.log('clickHandler', options)
     // 同步数据库
     try {
       await updateField(options)
@@ -151,24 +149,29 @@ const ItemSettingContainer = () => {
     }
   }
 
-  const updateStatus = async (newItem: WorkFlowStatusInfo, sync:boolean) => {
-    const temp =  _.cloneDeep(statusList)
+  const updateStatus = async (newItem: WorkFlowStatusInfo, sync: boolean) => {
+    const temp = _.cloneDeep(statusList)
     console.log('updateStatus111', temp)
-      const idx = _.findIndex(temp, { id: newItem.id })
-      temp.splice(idx, 1, newItem)
+    const idx = _.findIndex(temp, { id: newItem.id })
+    temp.splice(idx, 1, newItem)
 
     // 同步数据库
     try {
       await updateField(temp)
-      console.log('FupdateField' ,temp)
-
+      console.log('FupdateField', temp)
     } catch (e) {
       console.log(e)
     }
   }
-
-  // 数据库更新字段值
   const updateField = async (options: WorkFlowStatusInfo[]) => {
+    // TODO:  26 --> 30 暂不支持修改 功能废弃
+    messageApi.warning('请联系管理员进行修改')
+    return 
+  }
+  // 数据库更新字段值
+  const updateField2 = async (options: WorkFlowStatusInfo[]) => {
+    // TODO:  26 --> 30 暂不支持修改 功能废弃
+    
     const dstId = curFlowDstId
     const optionStatusField = _.find(curTableColumn, { type: 26 })
     if (!optionStatusField || !dstId) {
@@ -199,104 +202,171 @@ const ItemSettingContainer = () => {
       console.log(e)
     }
   }
-
-  return (
-    <>
-      <div
-        className="flex justify-between"
-        style={{ marginBottom: '12px', paddingRight: '24px' }}
-      >
-        <Button
-          style={{ background: '#2845D4' }}
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={ clickHandler}
-        >
-          新增状态
-        </Button>
-        <Button
-          style={{ background: '#2845D4' }}
-          type="primary"
-          icon={
-            <span
-              style={{
-                height: '24px',
-                display: 'inline-block',
-                marginRight: '8px',
-              }}
-            >
-              <img src={lockSvg} style={{ marginBottom: '4px' }} />
-            </span>
-          }
-        >
-          锁定
-        </Button>
-      </div>
+  if (statusList.length === 0) {
+    return (
       <ItemSettingRoot>
-        {/* <WorkFlowForm statusList={statusList} /> */}
-        <DnDRoot>
-          <DragDropContext
-            // onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-            // onDragUpdate={onDragUpdate}
-          >
-            <center>
-              <Droppable droppableId="droppable" type="common">
-                {(provided, snapshot) => {
-                  const length = statusList.length
-                  return (
-                    <div
-                      //provided.droppableProps应用的相同元素.
-                      {...provided.droppableProps}
-                      // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
-                      ref={provided.innerRef}
-                      style={getListStyle()}
-                    >
-                      {statusList.map((item, index) => {
-                        return (
-                          <Draggable
-                            key={item.id}
-                            draggableId={item.id}
-                            index={index}
-                            isDragDisabled={length === 1}
-                          >
-                            {(provided, snapshot) => {
-                              return (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  style={getItemStyle(
-                                    snapshot.isDragging,
-                                    provided.draggableProps.style
-                                  )}
-                                >
-                                  <SingleItem
-                                    isShowEnd={index !== length - 1}
-                                    isShowDelete={length > 1}
-                                    isShowMove={length > 1}
-                                    item={item}
-                                    addStatus={addStatus}
-                                    updateStatus={updateStatus}
-                                    deleteStatus={deleteStatus}
-                                  />
-                                </div>
-                              )
-                            }}
-                          </Draggable>
-                        )
-                      })}
-                      {provided.placeholder}
-                    </div>
-                  )
-                }}
-              </Droppable>
-            </center>
-          </DragDropContext>
-        </DnDRoot>
+        <center className="flex justify-center">
+          <h3 className="mt-16">无面试状态,请联系管理员添加</h3>
+        </center>
       </ItemSettingRoot>
-    </>
-  )
+    )
+  } else {
+    return (
+      <div style={{height: '100%'}}>
+        {contextHolder}
+        <div
+          className="flex justify-between hidden"
+          style={{ marginBottom: '12px', paddingRight: '24px' }}
+        >
+          <Button
+            style={{ background: '#2845D4' }}
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={clickHandler}
+          >
+            新增状态
+          </Button>
+          <Button
+            style={{ background: '#2845D4' }}
+            type="primary"
+            icon={
+              <span
+                style={{
+                  height: '24px',
+                  display: 'inline-block',
+                  marginRight: '8px',
+                }}
+              >
+                <img src={lockSvg} style={{ marginBottom: '4px' }} />
+              </span>
+            }
+          >
+            锁定
+          </Button>
+        </div >
+        <ItemSettingRoot>
+          <center>
+
+            <div className="mt-32">
+              {statusList.map((item, index) => {
+                const length = statusList.length
+                return (
+                  <SingleItem
+                    key={index}
+                    isShowEnd={index !== length - 1}
+                    isShowDelete={length > 1}
+                    isShowMove={length > 1}
+                    item={item}
+                    addStatus={addStatus}
+                    updateStatus={updateStatus}
+                    deleteStatus={deleteStatus}
+                  />
+                )
+              })}
+            </div>
+          </center>
+        </ItemSettingRoot>
+      </div>
+    )
+  }
+
+  // return (
+  //   <>
+  //     <div
+  //       className="flex justify-between hidden"
+  //       style={{ marginBottom: '12px', paddingRight: '24px' }}
+  //     >
+  //       <Button
+  //         style={{ background: '#2845D4' }}
+  //         type="primary"
+  //         icon={<PlusOutlined />}
+  //         onClick={ clickHandler}
+  //       >
+  //         新增状态
+  //       </Button>
+  //       <Button
+  //         style={{ background: '#2845D4' }}
+  //         type="primary"
+  //         icon={
+  //           <span
+  //             style={{
+  //               height: '24px',
+  //               display: 'inline-block',
+  //               marginRight: '8px',
+  //             }}
+  //           >
+  //             <img src={lockSvg} style={{ marginBottom: '4px' }} />
+  //           </span>
+  //         }
+  //       >
+  //         锁定
+  //       </Button>
+  //     </div>
+  //     <ItemSettingRoot>
+  //       {/* <WorkFlowForm statusList={statusList} /> */}
+  //       <DnDRoot>
+  //         <DragDropContext
+  //           // onDragStart={onDragStart}
+  //           onDragEnd={onDragEnd}
+  //           // onDragUpdate={onDragUpdate}
+  //         >
+  //           <center>
+  //             <Droppable droppableId="droppable" type="common">
+  //               {(provided, snapshot) => {
+  //                 const length = statusList.length
+  //                 return (
+  //                   <div
+  //                     //provided.droppableProps应用的相同元素.
+  //                     {...provided.droppableProps}
+  //                     // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
+  //                     ref={provided.innerRef}
+  //                     style={getListStyle()}
+  //                   >
+  //                     {statusList.map((item, index) => {
+  //                       return (
+  //                         <Draggable
+  //                           key={item.id}
+  //                           draggableId={item.id}
+  //                           index={index}
+  //                           isDragDisabled={length === 1}
+  //                         >
+  //                           {(provided, snapshot) => {
+  //                             return (
+  //                               <div
+  //                                 ref={provided.innerRef}
+  //                                 {...provided.draggableProps}
+  //                                 {...provided.dragHandleProps}
+  //                                 style={getItemStyle(
+  //                                   snapshot.isDragging,
+  //                                   provided.draggableProps.style
+  //                                 )}
+  //                               >
+  //                                 <SingleItem
+  //                                   isShowEnd={index !== length - 1}
+  //                                   isShowDelete={length > 1}
+  //                                   isShowMove={length > 1}
+  //                                   item={item}
+  //                                   addStatus={addStatus}
+  //                                   updateStatus={updateStatus}
+  //                                   deleteStatus={deleteStatus}
+  //                                 />
+  //                               </div>
+  //                             )
+  //                           }}
+  //                         </Draggable>
+  //                       )
+  //                     })}
+  //                     {provided.placeholder}
+  //                   </div>
+  //                 )
+  //               }}
+  //             </Droppable>
+  //           </center>
+  //         </DragDropContext>
+  //       </DnDRoot>
+  //     </ItemSettingRoot>
+  //   </>
+  // )
 }
 
 export default ItemSettingContainer
