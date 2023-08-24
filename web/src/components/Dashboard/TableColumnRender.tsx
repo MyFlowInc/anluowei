@@ -60,6 +60,8 @@ export const NumFieldType = {
   Cascader: 25,
   OptionStatus: 26, // 状态
   discuss: 27,
+  InterviewStatus: 30,
+  InviteStatus: 31,
   DeniedField: 999, // no permission column
 };
 export const ReverSedNumFieldType = {
