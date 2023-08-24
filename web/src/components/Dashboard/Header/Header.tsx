@@ -156,7 +156,7 @@ const Header: React.FC<HeaderProps> = (props) => {
 
   useEffect(() => {
     // TODO: 取消功能
-    // fetchInviteList();  
+    // fetchInviteList();
   }, []);
 
   // 通知

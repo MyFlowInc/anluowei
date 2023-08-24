@@ -106,9 +106,9 @@ const DiscussBar: React.FC<DiscussBarProps> = ({
   const user = useAppSelector(selectUser);
   const curDstId = useAppSelector(selectCurFlowDstId);
 
-  const updateComments = async () => {
+  const updateComments = async (ncomments: CommentType[]) => {
     const { recordId, id, ...rest } = record;
-    const fields = { ...rest, [fieldId]: comments };
+    const fields = { ...rest, [fieldId]: ncomments };
     const params: UpdateDSCellsParams = {
       dstId: curDstId!,
       fieldKey: "id",
@@ -135,16 +135,6 @@ const DiscussBar: React.FC<DiscussBarProps> = ({
     }
   };
 
-  React.useEffect(() => {
-    if (
-      typeof record[fieldId] === `undefined` ||
-      (typeof comments !== `undefined` &&
-        comments.length !== record[fieldId].length)
-    ) {
-      updateComments();
-    }
-  }, [comments]);
-
   const onFinish = (values: any) => {
     const comment: CommentType = {
       userId: user.id,
@@ -153,7 +143,9 @@ const DiscussBar: React.FC<DiscussBarProps> = ({
       content: values.content,
       create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
-    setComments(comments ? [comment, ...comments] : [comment]);
+    const ncomments = comments ? [comment, ...comments] : [comment];
+    setComments(ncomments);
+    updateComments(ncomments);
     form.resetFields();
     // close();
   };
@@ -263,13 +255,13 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
     form[cell.fieldId] || undefined
   );
 
-  const updateComments = async () => {
+  const updateComments = async (ncomments: CommentType[]) => {
     setForm({
       ...form,
-      [cell.fieldId]: comments,
+      [cell.fieldId]: ncomments,
     });
     const { recordId, id, ...rest } = form;
-    const fields = { ...rest, [cell.fieldId]: comments };
+    const fields = { ...rest, [cell.fieldId]: ncomments };
     const params: UpdateDSCellsParams = {
       dstId: curDstId!,
       fieldKey: "id",
@@ -297,16 +289,6 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
     }
   };
 
-  React.useEffect(() => {
-    if (
-      typeof form[cell.fieldId] === `undefined` ||
-      (typeof comments !== `undefined` &&
-        comments.length !== form[cell.fieldId].length)
-    ) {
-      updateComments();
-    }
-  }, [comments]);
-
   const handleSubmit = () => {
     if (typeof inpValue === `undefined` || inpValue.trim() === "") {
       setStatus(true);
@@ -319,7 +301,9 @@ const TypeDiscuss: React.FC<TypeDiscussProps> = (props: TypeDiscussProps) => {
       content: inpValue,
       create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
-    setComments(comments ? [comment, ...comments] : [comment]);
+    const ncomments = comments ? [comment, ...comments] : [comment];
+    setComments(ncomments);
+    updateComments(ncomments);
     setInpValue("");
     status && setStatus(false);
   };
