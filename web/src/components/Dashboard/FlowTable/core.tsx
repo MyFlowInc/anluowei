@@ -14,7 +14,7 @@ import { ColumnsType } from 'antd/es/table'
 import TableColumnRender from '../TableColumnRender'
 import deleteSvg from '../assets/table/delete-bin.svg'
 import editSvg from '../assets/table/edit.svg'
-
+import { clipboardWriteText } from '../../../util/clipboard'
 export interface FlowItemTableDataType {
   key: string
   flowItemId: number
@@ -112,7 +112,20 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     setModalType?.('edit')
     setOpen?.(true)
   }
+  const copyInviteLink = (record: FlowItemTableDataType) => {
+    console.log('copyInviteLink', record)
+    const res = _.find(dstColumns, { name_en: 'invite_status' }) as any
+    if (!res) return
+    const inviteFieldId = res.fieldId
 
+    const path =
+      window.location.origin +
+      '/invite?recordId=' +
+      record.recordId +
+      '&&inviteFieldId=' +
+      inviteFieldId
+    clipboardWriteText(path)
+  }
   useEffect(() => {
     const temp = dstColumns
       .map((item: any, cIndex: any) => {
@@ -175,7 +188,9 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                 <Button
                   type="text"
                   icon={<LinkOutlined />}
-                  onClick={() => {}}
+                  onClick={() => {
+                    copyInviteLink(record)
+                  }}
                 />
               </Tooltip>
             </Space>

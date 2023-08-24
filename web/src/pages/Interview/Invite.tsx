@@ -1,9 +1,10 @@
-import React from 'react'
-import { useHistory } from 'react-router'
+import React, { useEffect } from 'react'
+import { useHistory, useLocation } from 'react-router'
 import { useDispatch } from 'react-redux'
 import { TopBarUI } from '../../components/TopBar/TopBar'
 import { BeiAnUI } from '../../components/TabBar/BeiAn'
 import styled from 'styled-components'
+import { getRecord } from '../../api/apitable/ds-record'
 
 export const RootUI = styled.div`
   display: flex;
@@ -59,7 +60,27 @@ export const Container = styled.div`
 
 const Login: React.FC = () => {
   const history = useHistory()
-  const dispatch = useDispatch()
+  const location = useLocation()
+  const recordId = new URLSearchParams(location.search).get('recordId')
+  const inviteFieldId = new URLSearchParams(location.search).get(
+    'inviteFieldId'
+  )
+
+  const fetchInviteState = async () => {
+    try {
+      const res = await getRecord({
+        recordId: recordId,
+      })
+      console.log('res ', res)
+    } catch (error) {
+      console.log('error', error)
+      history.push('/invite_error')
+    }
+  }
+
+  useEffect(() => {
+    fetchInviteState()
+  }, [])
 
   return (
     <RootUI>

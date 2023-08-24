@@ -1,11 +1,8 @@
 // 表格列
 
 import { AxiosResponse } from 'axios'
-import { apiCall } from '../../network'
+import { apiCall, noLoginApiCall } from '../../network'
 import _ from 'lodash'
-
-
-
 
 interface DSMetaQuery {
   dstId: string
@@ -130,11 +127,21 @@ export function deleteDSCells(data: DeleteDSCellsParams): Promise<any> {
 
 // 根据 recordId 获取单条记录
 export function fetchRecordById(data: any): Promise<any> {
-
   const { dstId, recordId } = data
   return apiCall({
     url: 'api/sys/apitableDatasheetRecord/page',
     method: 'get',
-    params: {dstId, recordId},
+    params: { dstId, recordId },
+  })
+}
+
+// 无登录状态获取record
+
+export function getRecord(data: any): Promise<any> {
+  const { recordId } = data
+  return noLoginApiCall({
+    url: 'api/sys/apitableDatasheetRecord/getRecord',
+    method: 'get',
+    params: { record_id: recordId },
   })
 }

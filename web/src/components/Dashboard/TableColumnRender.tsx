@@ -93,6 +93,8 @@ export const ReverSedNumFieldType = {
   '25': 'Cascader',
   '26': 'OptionStatus',
   '27': 'discuss',
+  '30': 'InterviewStatus',
+  '31': 'InviteStatus',
   '999': 'DeniedField',
 }
 
@@ -164,7 +166,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
         _.set(cloneConfig, 'property.options', flatList(options))
       }
       childNode = (
-        <SingleSelect value={record[fieldId]} fieldConfig={cloneConfig} />
+        <InviteSingleSelect value={record[fieldId]} fieldConfig={cloneConfig} />
       )
       break
 
@@ -284,6 +286,42 @@ const SingleSelect: React.FC<{
     options = temp.map((item: any) => ({
       label: item.name,
       value: item.id,
+    }))
+  }
+
+  const text = _.find(options, { value: value })?.label || ''
+  if (text) {
+    return <Tag color="default">{text}</Tag>
+  } else {
+    return <div></div>
+  }
+}
+
+const InviteSingleSelect: React.FC<{
+  value: any
+  fieldConfig: any
+  children?: React.ReactNode
+}> = ({ value, fieldConfig }) => {
+  const temp = _.get(fieldConfig, 'property.options') || []
+
+  if (temp.length === 0) {
+    return <div></div>
+  }
+
+  const item0 = temp[0]
+  let options: any = []
+
+  if (typeof item0 === 'string') {
+    options = temp.map((item: any) => ({
+      label: item,
+      value: item,
+    }))
+  }
+
+  if (typeof item0 === 'object') {
+    options = temp.map((item: any) => ({
+      label: item.name,
+      value: item.name,
     }))
   }
 

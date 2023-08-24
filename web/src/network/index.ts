@@ -107,3 +107,8 @@ export function uploadApiCall(options: AxiosRequestConfig): Promise<any> {
   const requestOptions = Object.assign({}, uploadConfig, options)
   return ins(requestOptions)
 }
+
+export function noLoginApiCall(options: AxiosRequestConfig): Promise<any> {
+  const requestOptions = Object.assign({}, flowConfig, options)
+  return axios(requestOptions)
+}
