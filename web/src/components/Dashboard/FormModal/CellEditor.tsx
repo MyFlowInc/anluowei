@@ -262,12 +262,12 @@ const CellEditorLabel = styled.div`
     cursor: grab;
   }
   .item-title {
-    margin-left: 12px;
+    margin-left: 16px;
     display: flex;
     align-items: center;
-    width: 158px;
+    width: 130px;
     .text {
-      width: 158px;
+      width: 130px;
       overflow: hidden; //超出的文本隐藏
       text-overflow: ellipsis; //溢出用省略号显示
       white-space: nowrap; //溢出不换行
@@ -284,7 +284,6 @@ const CellEditorLabel = styled.div`
   .flow-item-edit {
     flex: 1;
     /* width: 80%; */
-    padding-left: 24px;
   }
 `
 

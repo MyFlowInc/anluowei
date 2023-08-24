@@ -28,7 +28,7 @@ const TypeDateTime: React.FC<TypeDateTimeProps> = (
       dayjs(form[cell.fieldId])) ||
     null;
 
-  console.log("value>>", form[cell.fieldId]);
+  // console.log("value>>", form[cell.fieldId]);
 
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
