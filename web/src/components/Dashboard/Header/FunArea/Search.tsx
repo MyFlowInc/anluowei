@@ -172,10 +172,12 @@ const SearchContent: React.FC<SearchContentProps> = ({
           case NumFieldType.Attachment:
             const attachmentName =
               record[colunm.fieldId] && getFileName(record[colunm.fieldId]);
-            const rega: RegExp = new RegExp(keyword, "gi");
-            const isMatched =
-              keyword && keyword !== "" ? rega.test(attachmentName) : false;
-            isMatched && list.push(`cell-${i}-${j}`);
+            if (attachmentName) {
+              const rega: RegExp = new RegExp(keyword, "gi");
+              const isMatched =
+                keyword && keyword !== "" ? rega.test(attachmentName) : false;
+              isMatched && list.push(`cell-${i}-${j}`);
+            }
             break;
           case NumFieldType.Member:
             const memberList = getMemberList(record[colunm.fieldId], userList);
