@@ -99,7 +99,8 @@ const TypeInterviewer: React.FC<TypeInterviewerProps> = (
           userInvite({
             dstId: curDstId!,
             userId: id,
-          })
+            interviewUserName: form[nameFieldId],
+          } as any)
         })
       }
     } catch (error) {
