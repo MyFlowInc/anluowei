@@ -145,3 +145,13 @@ export function getRecord(data: any): Promise<any> {
     params: { record_id: recordId },
   })
 }
+
+export function setRecordValue(data: any): Promise<any> {
+  const { recordId, ...rest } = data
+  return noLoginApiCall({
+    url: 'api/sys/apitableDatasheetRecord/setRecordValue',
+    method: 'post',
+    params: { record_id: recordId },
+    data: rest,
+  })
+}

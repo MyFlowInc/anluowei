@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { TopBarUI } from '../../components/TopBar/TopBar'
 import { BeiAnUI } from '../../components/TabBar/BeiAn'
 import styled from 'styled-components'
-import { getRecord } from '../../api/apitable/ds-record'
+import { getRecord, setRecordValue } from '../../api/apitable/ds-record'
 
 export const RootUI = styled.div`
   display: flex;
@@ -31,6 +31,40 @@ export const RootUI = styled.div`
   }
 `
 
+const AcceptUI = () => {
+  return (
+    <div className="bg-gray-100">
+      <div className="bg-white p-6  md:mx-auto">
+        <div className="text-center">
+          <h3 className="md:text-2xl text-base text-green-600 font-semibold text-center">
+            您已同意面试邀请
+          </h3>
+          <p className="text-gray-600 my-2">
+            请耐心等待HR与您联系，如有疑问请联系HR。
+          </p>
+          <p> 祝您生活愉快! </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const RejectUI = () => {
+  return (
+    <div className="bg-gray-100">
+      <div className="bg-white p-6  md:mx-auto">
+        <div className="text-center">
+          <h3 className="md:text-2xl text-base text-red-600 font-semibold text-center">
+            您已拒绝面试邀请。
+          </h3>
+          <p className="text-gray-600 my-2">
+            感谢您对我们公司的关注，祝您生活愉快!
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
 export const Container = styled.div`
   padding-top: 46px;
   padding-left: 10%;
@@ -58,29 +92,78 @@ export const Container = styled.div`
   }
 `
 
-const Login: React.FC = () => {
+const Invite: React.FC = () => {
   const history = useHistory()
   const location = useLocation()
   const recordId = new URLSearchParams(location.search).get('recordId')
-  const inviteFieldId = new URLSearchParams(location.search).get(
-    'inviteFieldId'
-  )
+  const inviteFieldId =
+    new URLSearchParams(location.search).get('inviteFieldId') || ''
+  const nameFieldId =
+    new URLSearchParams(location.search).get('nameFieldId') || ''
+  const [name, setName] = React.useState('')
+  const [inviteStatus, setInviteStatus] = React.useState('')
 
   const fetchInviteState = async () => {
     try {
       const res = await getRecord({
         recordId: recordId,
       })
-      console.log('res ', res)
+      const record = JSON.parse(res.data.data.data)
+      console.log('res ', record)
+      setName(record[nameFieldId])
+      setInviteStatus(record[inviteFieldId])
     } catch (error) {
       console.log('error', error)
       history.push('/invite_error')
     }
   }
+  const freshInviteState = async () => {
+    const res = await getRecord({
+      recordId: recordId,
+    })
+    const record = JSON.parse(res.data.data.data)
+    console.log('res ', record)
+    setName(record[nameFieldId])
+    setInviteStatus(record[inviteFieldId])
+  }
+
+  useEffect(() => {
+    if (!recordId || !inviteFieldId || !nameFieldId) {
+      history.push('/invite_error')
+    }
+  }, [])
 
   useEffect(() => {
     fetchInviteState()
   }, [])
+
+  const rejectHandle = async () => {
+    console.log('rejectHandle')
+    try {
+      await setRecordValue({
+        recordId: recordId,
+        filedKey: inviteFieldId,
+        filedValue: '已拒绝',
+      })
+      await freshInviteState()
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  const acceptHandle = async () => {
+    console.log('acceptHandle')
+    try {
+      await setRecordValue({
+        recordId: recordId,
+        filedKey: inviteFieldId,
+        filedValue: '已同意',
+      })
+      await freshInviteState()
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
 
   return (
     <RootUI>
@@ -92,7 +175,7 @@ const Login: React.FC = () => {
               面试邀请函
             </h1>
             <p className=" text-left mb-4 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-              XX 先生/女士：
+              {name} 先生/女士：
             </p>
 
             <p className=" text-left mb-4 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
@@ -109,18 +192,24 @@ const Login: React.FC = () => {
               联系人：xxxxx
             </p> */}
             <div className="flex flex-col mb-4 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-              <a
-                href="#"
-                className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-              >
-                拒绝
-              </a>
-              <a
-                href="#"
-                className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-              >
-                接受
-              </a>
+              {inviteStatus === '已同意' && AcceptUI()}
+              {inviteStatus === '已拒绝' && RejectUI()}
+              {['未邀请', '已邀请'].includes(inviteStatus) && (
+                <>
+                  <span
+                    onClick={rejectHandle}
+                    className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                  >
+                    拒绝
+                  </span>
+                  <span
+                    onClick={acceptHandle}
+                    className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+                  >
+                    接受
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </section>
@@ -131,4 +220,4 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+export default Invite

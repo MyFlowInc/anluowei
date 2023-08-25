@@ -114,16 +114,23 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   }
   const copyInviteLink = (record: FlowItemTableDataType) => {
     console.log('copyInviteLink', record)
-    const res = _.find(dstColumns, { name_en: 'invite_status' }) as any
-    if (!res) return
-    const inviteFieldId = res.fieldId
+
+    const invite_item = _.find(dstColumns, { name_en: 'invite_status' }) as any
+    if (!invite_item) return
+    const inviteFieldId = invite_item.fieldId
+
+    const name_item = _.find(dstColumns, { name_en: 'interviewer_name' }) as any
+    if (!name_item) return
+    const nameFieldId = name_item.fieldId
 
     const path =
       window.location.origin +
       '/invite?recordId=' +
       record.recordId +
       '&&inviteFieldId=' +
-      inviteFieldId
+      inviteFieldId +
+      '&&nameFieldId=' +
+      nameFieldId
     clipboardWriteText(path)
   }
   useEffect(() => {
