@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import {
   selectCurTableColumn,
   selectCurTableRows,
-  selectSearchText,
   selectMembers,
   selectCurFlowDstId,
   freshCurTableRows,
@@ -86,7 +85,6 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   const curDstId = useAppSelector(selectCurFlowDstId)
   const tableData = useAppSelector(selectCurTableRows)
   const dstColumns = useAppSelector(selectCurTableColumn)
-  const searchText = useAppSelector(selectSearchText)
   const userList = useAppSelector(selectMembers)
   const [tableColumn, setTableColumn] = useState<
     ColumnsType<FlowItemTableDataType>
@@ -197,7 +195,6 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
             reader,
             writer,
             manager,
-            searchText,
             userList,
           }),
         }
@@ -270,7 +267,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
       }
     })
     setTableColumn(columns)
-  }, [dstColumns, reader, writer, manager, searchText, userList])
+  }, [dstColumns, reader, writer, manager, userList])
 
   const filterTableData = (records: any[]) => {
     if (!statusId) {
@@ -286,6 +283,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   return (
     <FlowTableContainer className={'card-table-container' + ' ' + className}>
       <Table
+        size="small"
         components={{
           body: {
             cell: TableColumnRender,

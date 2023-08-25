@@ -22,7 +22,7 @@ import {
 const DiscussPanel = styled.div`
   position: relative;
   padding: 16px;
-  border: 1px solid #c0c0c0;
+  // border: 1px solid #c0c0c0;
 
   .discuss-header {
     font-size: 14px;
