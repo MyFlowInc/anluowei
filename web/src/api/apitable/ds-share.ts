@@ -15,7 +15,8 @@ interface UserInviteParams {
   dstId: string
   userId: string
 }
-// 邀请指定用户
+
+// 邀请指定用户  兼容 通知面试官
 export function userInvite(data: UserInviteParams) {
   return apiCall({
     url: 'api/sys/apitableDeveloper/save',
@@ -73,15 +74,15 @@ export function editInviteUser(data: EditInviteUserParams) {
   return apiCall({
     url: 'api/sys/apitableDeveloper/edit',
     method: 'PUT',
-    data
+    data,
   })
 }
 
 // 移除协作者
-export function deleteInviteUser(params: {id: string}) {
+export function deleteInviteUser(params: { id: string }) {
   return apiCall({
     url: 'api/sys/apitableDeveloper/remove',
     method: 'delete',
-    params
+    params,
   })
 }

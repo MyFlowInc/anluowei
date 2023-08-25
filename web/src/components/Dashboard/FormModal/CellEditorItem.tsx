@@ -27,6 +27,7 @@ import TypePhone from './TypeEditor/TypePhone'
 import TypeMember from './TypeEditor/TypeMember'
 import TypeDiscuss from './TypeEditor/TypeDiscuss'
 import TypeTreeSelect from './TypeEditor/TypeTreeSelect'
+import TypeInterviewer from './TypeEditor/TypeInterviewer'
 
 const FieldTypeList = [
   {
@@ -99,7 +100,7 @@ const FieldTypeList = [
 
 const CellEditorItemRoot = styled.div`
   flex: 1;
-`;
+`
 interface CellEditorItemProps {
   item: WorkFlowFieldInfo
   form: { [id: string]: string }
@@ -131,6 +132,9 @@ const CellEditorItem: React.FC<CellEditorItemProps> = (props) => {
       )}
       {item.type === NumFieldType.Member && (
         <TypeMember mode="multiple" cell={item} {...{ form, setForm }} />
+      )}
+      {item.type === NumFieldType.Interviewer && (
+        <TypeInterviewer mode="multiple" cell={item} {...{ form, setForm }} />
       )}
       {item.type === NumFieldType.Link && (
         <TypeLink cell={item} {...{ form, setForm }} />

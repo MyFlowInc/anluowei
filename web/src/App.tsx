@@ -34,11 +34,13 @@ import Preview from "./pages/Preview";
 import "./styles/tailwind.css";
 import "./styles/cover.css";
 
-import "antd/dist/reset.css";
-import { ConfigProvider } from "antd";
-import zhCN from "antd/locale/zh_CN";
-import PaySuccess from "./pages/PaySuccess";
-import InviteError from "./pages/404/error_invite";
+import 'antd/dist/reset.css'
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
+import PaySuccess from './pages/PaySuccess'
+import InviteError from './pages/404/error_invite'
+import ResetPwd from './pages/User/ResetPwd'
+
 
 setupIonicReact();
 
@@ -67,17 +69,20 @@ const App: React.FC = () => {
             <Route path="/login" exact={true}>
               <Login />
             </Route>
-            <Route path="/reset" exact={true}>
+           {/*    <Route path="/reset" exact={true}>
               <Reset />
-            </Route>
+            </Route> */}
             <Route path="/invite" exact={true}>
               <Invite />
             </Route>
             <Route path="/invite_error" exact={true}>
               <InviteError />
             </Route>
-            <Route path="/register" exact={true}>
+            {/* <Route path="/register" exact={true}>
               <Register />
+            </Route> */}
+            <Route path="/reset" exact={true}>
+              <ResetPwd />
             </Route>
           </IonRouterOutlet>
         </IonReactRouter>

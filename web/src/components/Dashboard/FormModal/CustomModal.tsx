@@ -1,32 +1,29 @@
-import React, { useEffect, useState } from "react";
-import _ from "lodash";
-import { Button, Form, Input } from "antd";
-import styled from "styled-components";
-import { StatusTag } from "./StatusTag";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import React, { useEffect, useState } from 'react'
+import _ from 'lodash'
+import { Button, Form, Input } from 'antd'
+import styled from 'styled-components'
+import { StatusTag } from './StatusTag'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import {
   freshCurMetaData,
   freshCurTableRows,
   selectCurFlowDstId,
   WorkFlowFieldInfo,
   WorkFlowStatusInfo,
-} from "../../../store/workflowSlice";
-import TableRecordForm from "./TableRecordForm";
-import { PlusOutlined } from "@ant-design/icons";
-import { NoFieldData } from "./NoFieldData";
-import { FlowItemTableDataType } from "../FlowTable/core";
+} from '../../../store/workflowSlice'
+import TableRecordForm from './TableRecordForm'
+import { PlusOutlined } from '@ant-design/icons'
+import { NoFieldData } from './NoFieldData'
+import { FlowItemTableDataType } from '../FlowTable/core'
 import {
   addDSCells,
   AddDSCellsParams,
   updateDSCells,
   UpdateDSCellsParams,
-} from "../../../api/apitable/ds-record";
-import {
-  UpdateDSMetaParams,
-  updateDSMeta,
-} from "../../../api/apitable/ds-meta";
-import { selectUser } from "../../../store/globalSlice";
-import { SocketMsgType, sendWebSocketMsg } from "../../../api/apitable/ws-msg";
+} from '../../../api/apitable/ds-record'
+import { UpdateDSMetaParams, updateDSMeta } from '../../../api/apitable/ds-meta'
+import { selectUser } from '../../../store/globalSlice'
+import { SocketMsgType, sendWebSocketMsg } from '../../../api/apitable/ws-msg'
 
 const CustomModalRoot = styled.div`
   width: 100%;
@@ -98,17 +95,17 @@ const CustomModalRoot = styled.div`
       background: #605bff;
     }
   }
-`;
+`
 interface CustomModalProps {
-  title: string;
-  open: boolean;
-  setOpen: (value: boolean) => void;
-  freshFlowItem: () => void;
-  statusList: WorkFlowStatusInfo[];
-  dstColumns: WorkFlowFieldInfo[];
-  modalType: string;
-  setModalType: (v: string) => void;
-  editFlowItemRecord: FlowItemTableDataType | undefined;
+  title: string
+  open: boolean
+  setOpen: (value: boolean) => void
+  freshFlowItem: () => void
+  statusList: WorkFlowStatusInfo[]
+  dstColumns: WorkFlowFieldInfo[]
+  modalType: string
+  setModalType: (v: string) => void
+  editFlowItemRecord: FlowItemTableDataType | undefined
 }
 
 const CustomModal: React.FC<CustomModalProps> = (props) => {
@@ -121,103 +118,103 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
     modalType,
     setModalType,
     editFlowItemRecord,
-  } = props;
-  const [form, setForm] = useState<{ [id: string]: string }>({});
-  const [inputForm] = Form.useForm();
-  const user = useAppSelector(selectUser);
-  const curDstId = useAppSelector(selectCurFlowDstId);
-  const dispatch = useAppDispatch();
+  } = props
+  const [form, setForm] = useState<{ [id: string]: string }>({})
+  const [inputForm] = Form.useForm()
+  const user = useAppSelector(selectUser)
+  const curDstId = useAppSelector(selectCurFlowDstId)
+  const dispatch = useAppDispatch()
 
   // esc handler
   useEffect(() => {
     if (!open) {
-      return;
+      return
     }
     const keydownHandler = (e: KeyboardEvent) => {
-      if (e.code === "Escape") {
-        setOpen(false);
+      if (e.code === 'Escape') {
+        setOpen(false)
       }
-    };
-    document.addEventListener("keydown", keydownHandler, true);
+    }
+    document.addEventListener('keydown', keydownHandler, true)
     return () => {
-      document.removeEventListener("keydown", keydownHandler, true);
-    };
-  }, [open]);
+      document.removeEventListener('keydown', keydownHandler, true)
+    }
+  }, [open])
 
   useEffect(() => {
     if (!open) {
-      return;
+      return
     }
-    inputForm.resetFields();
-    if (modalType === "edit" && editFlowItemRecord) {
-      const { key, flowItemId, statusId, ...temp } = editFlowItemRecord;
-      setForm(temp);
+    inputForm.resetFields()
+    if (modalType === 'edit' && editFlowItemRecord) {
+      const { key, flowItemId, statusId, ...temp } = editFlowItemRecord
+      setForm(temp)
     }
-    if (modalType === "add") {
+    if (modalType === 'add') {
       if (statusList && statusList.length > 0) {
       }
-      setForm({});
+      setForm({})
     }
-  }, [open]);
+  }, [open])
 
   const addFieldHandler = async () => {
     if (!curDstId) {
-      return;
+      return
     }
     const param: UpdateDSMetaParams = {
       dstId: curDstId,
-      name: "字段" + (dstColumns.length + 1),
-      type: "SingleText",
-    };
-    try {
-      await updateDSMeta(param);
-      await dispatch(freshCurMetaData(curDstId));
-    } catch (error) {
-      console.log("updateFieldHandler error", error);
+      name: '字段' + (dstColumns.length + 1),
+      type: 'SingleText',
     }
-  };
+    try {
+      await updateDSMeta(param)
+      await dispatch(freshCurMetaData(curDstId))
+    } catch (error) {
+      console.log('updateFieldHandler error', error)
+    }
+  }
 
   const addTableRecordHandler = async () => {
-    console.log("addTableRecordHandler", form);
-    inputForm.setFieldsValue(form);
+    console.log('addTableRecordHandler', form)
+    inputForm.setFieldsValue(form)
     const params: AddDSCellsParams = {
       dstId: curDstId!,
-      fieldKey: "id",
+      fieldKey: 'id',
       records: [
         {
           fields: form,
         },
       ],
-    };
+    }
     try {
-      await inputForm.validateFields();
-      await addDSCells(params);
-      dispatch(freshCurTableRows(curDstId!));
+      await inputForm.validateFields()
+      await addDSCells(params)
+      dispatch(freshCurTableRows(curDstId!))
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
 
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const editFormItemHandler = async () => {
-    console.log("editFormItemHandler", form);
-    const { recordId, id, ...rest } = form;
-    inputForm.setFieldsValue(rest);
+    console.log('editFormItemHandler', form)
+    const { recordId, id, ...rest } = form
+    inputForm.setFieldsValue(rest)
     const params: UpdateDSCellsParams = {
       dstId: curDstId!,
-      fieldKey: "id",
+      fieldKey: 'id',
       records: [
         {
           recordId,
           fields: rest,
         },
       ],
-    };
+    }
     try {
-      await inputForm.validateFields();
-      await updateDSCells(params);
-      dispatch(freshCurTableRows(curDstId!));
+      await inputForm.validateFields()
+      await updateDSCells(params)
+      dispatch(freshCurTableRows(curDstId!))
       // 同步
       sendWebSocketMsg({
         user,
@@ -225,12 +222,12 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
         type: SocketMsgType.SetRecords,
         recordId,
         row: rest,
-      });
-      setOpen(false);
+      })
+      setOpen(false)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <CustomModalRoot>
@@ -263,7 +260,7 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
         <div
           className="add-icon"
           onClick={() => {
-            addFieldHandler();
+            addFieldHandler()
           }}
         >
           <PlusOutlined className="icon" />
@@ -274,29 +271,29 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
         <Button
           className="cancel"
           onClick={() => {
-            setOpen(false);
-            setModalType("add");
+            setOpen(false)
+            setModalType('add')
           }}
         >
           取消
         </Button>
-        {modalType === "add" && (
+        {modalType === 'add' && (
           <Button
             className="submit"
             type="primary"
             onClick={() => {
-              addTableRecordHandler();
+              addTableRecordHandler()
             }}
           >
             创建
           </Button>
         )}
-        {modalType === "edit" && (
+        {modalType === 'edit' && (
           <Button
             className="submit"
             type="primary"
             onClick={() => {
-              editFormItemHandler();
+              editFormItemHandler()
             }}
           >
             修改
@@ -304,7 +301,7 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
         )}
       </div>
     </CustomModalRoot>
-  );
-};
+  )
+}
 
-export default CustomModal;
+export default CustomModal

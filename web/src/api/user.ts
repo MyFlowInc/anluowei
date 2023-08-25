@@ -16,7 +16,7 @@ class AnotherAxiosFactory extends AxiosFactory {
   }
 }
 
-const baseURL = process.env.REACT_APP_BASE_SERVER_URL;
+const baseURL = process.env.REACT_APP_BASE_SERVER_URL
 const flowConfig: CreateAxiosDefaults = {
   timeout: 5000,
   withCredentials: true,
@@ -126,10 +126,27 @@ export function userUpdate(data: Partial<UserUpdateParams> & { id: string }) {
 }
 // 修改 密码 user/password/edit
 
-export function pwdUpdate(data: { newPassword: string; oldPassword: string,userId: string }) {
+export function pwdUpdate(data: {
+  newPassword: string
+  oldPassword: string
+  userId: string
+}) {
   return apiCall({
     url: 'api/sys/user/password/edit',
     method: 'PUT',
+    data,
+  })
+}
+
+// 重置密码
+export function resetPwd(data: {
+  email: string
+  code: string
+  password: string
+}) {
+  return apiCall({
+    url: 'api/sys/user/password/reset/email',
+    method: 'post',
     data,
   })
 }
