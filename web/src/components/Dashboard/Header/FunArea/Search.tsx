@@ -194,6 +194,8 @@ const SearchContent: React.FC<SearchContentProps> = ({
             }
             break;
           case NumFieldType.OptionStatus:
+          case NumFieldType.InterviewStatus:
+          case NumFieldType.InviteStatus:
             const text = getStatusText(
               record[colunm.fieldId],
               colunm.fieldConfig
