@@ -124,15 +124,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   if (column === undefined || record === undefined) {
     return <td {...restProps}>{children}</td>;
   }
-
   const { type, fieldId, fieldConfig } = column;
-
-  const reg: RegExp = new RegExp(searchText, "gi");
-  let isMatch = false;
-  if (record[fieldId] && record[fieldId] !== "") {
-    isMatch =
-      searchText && searchText !== "" ? reg.test(record[fieldId]) : false;
-  }
 
   let childNode = children;
   switch (type) {
@@ -155,10 +147,6 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
     case NumFieldType.Attachment:
       childNode = <Attachment value={record[fieldId]} />;
-      const attachmentName = record[fieldId] && getFileName(record[fieldId]);
-      const rega: RegExp = new RegExp(searchText, "gi");
-      isMatch =
-        searchText && searchText !== "" ? rega.test(attachmentName) : false;
       break;
 
     case NumFieldType.SingleSelect:
@@ -179,23 +167,9 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
     case NumFieldType.Member:
       childNode = <MemberSelect value={record[fieldId]} userList={userList} />;
-      const memberList = getMemberList(record[fieldId], userList);
-      if (memberList) {
-        for (let i = 0; i < memberList.length; i++) {
-          const regb: RegExp = new RegExp(searchText, "gi");
-          isMatch =
-            searchText && searchText !== ""
-              ? regb.test(memberList[i].nickname)
-              : false;
-          if (isMatch) {
-            break;
-          }
-        }
-      }
       break;
 
     case NumFieldType.discuss:
-      isMatch = false;
       childNode = (
         <DiscussModalWrap
           fieldId={fieldId}
@@ -212,19 +186,12 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   }
 
   let styles: React.CSSProperties = {};
-  if (isMatch) {
-    styles = {
-      ...styles,
-      backgroundColor: "#B0E0E6",
-      border: "2px solid blue",
-    };
-  }
   if (cIndex === 0) {
-    styles = { ...styles, position: "sticky", left: "32px" };
+    styles = { position: "sticky", left: "32px" };
   }
 
   return (
-    <td {...restProps} style={styles}>
+    <td {...restProps} style={{ ...styles }} id={`cell-${rIndex}-${cIndex}`}>
       {childNode}
     </td>
   );
@@ -258,15 +225,10 @@ const MultipleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
   );
 };
 
-const SingleSelect: React.FC<{
-  value: any;
-  fieldConfig: any;
-  children?: React.ReactNode;
-}> = ({ value, fieldConfig }) => {
+const getStatusText = (value: any, fieldConfig: any) => {
   const temp = _.get(fieldConfig, "property.options") || [];
-
   if (temp.length === 0) {
-    return <div></div>;
+    return;
   }
 
   const item0 = temp[0];
@@ -286,12 +248,16 @@ const SingleSelect: React.FC<{
     }));
   }
 
-  const text = _.find(options, { value: value })?.label || "";
-  if (text) {
-    return <Tag color="default">{text}</Tag>;
-  } else {
-    return <div></div>;
-  }
+  return _.find(options, { value: value })?.label || "";
+};
+
+const SingleSelect: React.FC<{
+  value: any;
+  fieldConfig: any;
+  children?: React.ReactNode;
+}> = ({ value, fieldConfig }) => {
+  const text = getStatusText(value, fieldConfig);
+  return text && text !== "" ? <Tag color="default">{text}</Tag> : <div></div>;
 };
 
 const MultiSelect: React.FC<{
