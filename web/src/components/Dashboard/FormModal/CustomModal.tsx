@@ -190,6 +190,15 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
       await inputForm.validateFields()
       await addDSCells(params)
       dispatch(freshCurTableRows(curDstId!))
+
+      // 同步 ws
+      sendWebSocketMsg({
+        user,
+        dstId: curDstId!,
+        type: SocketMsgType.AddRecords,
+        recordId: '',
+        row: {},
+      })
     } catch (error) {
       console.log(error)
     }

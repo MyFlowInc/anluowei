@@ -63,7 +63,7 @@ export interface workflowState {
   curStatusFieldId: string // 当前的状态字段id
   curTableColumn: TableColumnItem[]
   curTableRows: any[] //  当前表格的行数据
-  curTableRecords: any[]
+
   members: User[]
   inviteMembers: User[]
   status: 'idle' | 'loading' | 'failed' // 接口状态
@@ -78,7 +78,7 @@ const initialState: workflowState = {
   curStatusFieldId: '',
   curTableColumn: [], // 当前的列视图  可能切换
   curTableRows: [], //  当前表格的行数据
-  curTableRecords: [],
+
   members: [],
   inviteMembers: [],
   status: 'idle',
@@ -219,12 +219,11 @@ export const workflowSlice = createSlice({
     updateTableRow: (state, action) => {
       console.log('redux', action.payload)
       const { recordId, ...row } = action.payload
-      const newData = [...state.curTableRows]
-      const idx = _.find(newData, { recordId })
+      const newData = _.cloneDeep(state.curTableRows)
+      const idx = _.findIndex(newData, { recordId })
       const item = state.curTableRows[idx]
       newData.splice(idx, 1, { ...item, ...row })
       state.curTableRows = newData
-      state.curTableRecords = newData
     },
     setMembers: (state, action) => {
       state.members = action.payload
@@ -244,7 +243,7 @@ export const workflowSlice = createSlice({
     })
     builder.addCase(freshCurTableRows.fulfilled, (state, action) => {
       state.curTableRows = action.payload
-      state.curTableRecords = action.payload
+
       // console.log('addCase---', action)
     })
   },
@@ -334,9 +333,6 @@ export const selectCurStatusFieldId = (state: RootState) =>
 
 export const selectCurTableRows = (state: RootState) =>
   state.workflow.curTableRows
-
-export const selectCurTableRecords = (state: RootState) =>
-  state.workflow.curTableRecords
 
 export const selectMembers = (state: RootState) => state.workflow.members
 

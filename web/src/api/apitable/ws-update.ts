@@ -15,7 +15,7 @@ export const msgCenter = (msg: any, user: User, dstId: string) => {
     if (cmd === 'SetRecords') {
       user_id !== user.id && updateRecord(recordId, dstId)
     }
-    if (cmd === 'addRecords') {
+    if (cmd === 'DeleteRecords') {
       user_id !== user.id && deleteRecord(dstId)
     }
     if (cmd === 'AddRecords') {

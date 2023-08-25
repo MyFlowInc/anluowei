@@ -1,24 +1,24 @@
-import React from "react";
-import { Space } from "antd";
+import React from 'react'
+import { Space } from 'antd'
 
-import { useAppSelector } from "../../../../store/hooks";
+import { useAppSelector } from '../../../../store/hooks'
 import {
   selectCurTableColumn,
-  selectCurTableRecords,
-} from "../../../../store/workflowSlice";
+  selectCurTableRows,
+} from '../../../../store/workflowSlice'
 
-import Filter from "./Filter";
-import Sort from "./Sort";
-import Senior from "./Senior";
-import Search from "./Search";
+import Filter from './Filter'
+import Sort from './Sort'
+import Senior from './Senior'
+import Search from './Search'
 
 interface FunAreaProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 const FunArea: React.FC<FunAreaProps> = () => {
-  const dstColumns = useAppSelector(selectCurTableColumn);
-  const records = useAppSelector(selectCurTableRecords);
+  const dstColumns = useAppSelector(selectCurTableColumn)
+  const records = useAppSelector(selectCurTableRows)
 
   return (
     <Space>
@@ -27,7 +27,7 @@ const FunArea: React.FC<FunAreaProps> = () => {
       <Senior />
       <Search records={records} columns={dstColumns} />
     </Space>
-  );
-};
+  )
+}
 
-export default FunArea;
+export default FunArea
