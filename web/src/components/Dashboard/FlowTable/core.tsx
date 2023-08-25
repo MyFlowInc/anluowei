@@ -7,12 +7,13 @@ import {
   selectCurTableColumn,
   selectCurTableRows,
   selectMembers,
-} from "../../../store/workflowSlice";
-import _ from "lodash";
-import { ColumnsType } from "antd/es/table";
-import TableColumnRender from "../TableColumnRender";
-import deleteSvg from "../assets/table/delete-bin.svg";
-import editSvg from "../assets/table/edit.svg";
+} from '../../../store/workflowSlice'
+import _ from 'lodash'
+import { ColumnsType } from 'antd/es/table'
+import TableColumnRender from '../TableColumnRender'
+import deleteSvg from '../assets/table/delete-bin.svg'
+import editSvg from '../assets/table/edit.svg'
+import { clipboardWriteText } from '../../../util/clipboard'
 
 export interface FlowItemTableDataType {
   key: string;
@@ -105,12 +106,34 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     record: FlowItemTableDataType,
     index: number
   ) => {
-    console.log("editHandle", record);
-    setEditFlowItemRecord?.(record);
-    setModalType?.("edit");
-    setOpen?.(true);
-  };
 
+    console.log('editHandle', record)
+    setEditFlowItemRecord?.(record)
+    setModalType?.('edit')
+    setOpen?.(true)
+  }
+  const copyInviteLink = (record: FlowItemTableDataType) => {
+    console.log('copyInviteLink', record)
+
+    const invite_item = _.find(dstColumns, { name_en: 'invite_status' }) as any
+    if (!invite_item) return
+    const inviteFieldId = invite_item.fieldId
+
+    const name_item = _.find(dstColumns, { name_en: 'interviewer_name' }) as any
+    if (!name_item) return
+    const nameFieldId = name_item.fieldId
+
+
+    const path =
+      window.location.origin +
+      '/invite?recordId=' +
+      record.recordId +
+      '&&inviteFieldId=' +
+      inviteFieldId +
+      '&&nameFieldId=' +
+      nameFieldId
+    clipboardWriteText(path)
+  }
   useEffect(() => {
     const temp = dstColumns
       .map((item: any, cIndex: any) => {
@@ -172,7 +195,9 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                 <Button
                   type="text"
                   icon={<LinkOutlined />}
-                  onClick={() => {}}
+                  onClick={() => {
+                    copyInviteLink(record)
+                  }}
                 />
               </Tooltip>
             </Space>

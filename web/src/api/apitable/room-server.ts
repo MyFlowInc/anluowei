@@ -11,7 +11,7 @@ import { User } from '../../store/globalSlice'
 import { msgCenter } from './ws-update'
 
 // WebSocket 连接地址
-const host = '47.101.172.25'
+const host = process.env.ROOM_SERVER_URL
 // 心跳消息内容
 const heartbeatMessage = 'heartbeat'
 // 心跳检测时间间隔（毫秒）

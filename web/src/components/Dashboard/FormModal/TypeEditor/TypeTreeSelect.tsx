@@ -54,7 +54,7 @@ const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
       <TreeSelect
         fieldNames={{
           label: 'name',
-          value: 'id',
+          value: 'name',
           children: 'children',
         }}
         style={{ width: '100%' }}

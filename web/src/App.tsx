@@ -1,15 +1,15 @@
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { Redirect, Route } from "react-router-dom";
-import React from "react";
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
+import { IonReactRouter } from '@ionic/react-router'
+import { Redirect, Route } from 'react-router-dom'
+import React from 'react'
 
 /** all page */
-import MyTest from "./pages/Test/MyTest";
-import Login from "./pages/User/Login";
+import MyTest from './pages/Test/MyTest'
+import Login from './pages/User/Login'
 import Invite from './pages/Interview/Invite'
-import DashboardRouterOutlet from "./routes/DashboardRouterOutlet";
-import Register from "./pages/User/Register";
-import Preview from "./pages/Preview";
+import DashboardRouterOutlet from './routes/DashboardRouterOutlet'
+import Register from './pages/User/Register'
+import Preview from './pages/Preview'
 
 /* Core CSS required for Ionic components to work properly */
 // import "@ionic/react/css/core.css";
@@ -30,15 +30,16 @@ import Preview from "./pages/Preview";
 /* Theme variables */
 // import "./theme/variables.css";
 
-import "./styles/tailwind.css";
-import "./styles/cover.css";
+import './styles/tailwind.css'
+import './styles/cover.css'
 
-import "antd/dist/reset.css";
-import { ConfigProvider } from "antd";
-import zhCN from "antd/locale/zh_CN";
-import PaySuccess from "./pages/PaySuccess";
+import 'antd/dist/reset.css'
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
+import PaySuccess from './pages/PaySuccess'
+import InviteError from './pages/404/error_invite'
 
-setupIonicReact();
+setupIonicReact()
 
 const App: React.FC = () => {
   return (
@@ -68,6 +69,9 @@ const App: React.FC = () => {
             <Route path="/invite" exact={true}>
               <Invite />
             </Route>
+            <Route path="/invite_error" exact={true}>
+              <InviteError />
+            </Route>
             <Route path="/register" exact={true}>
               <Register />
             </Route>
@@ -75,6 +79,6 @@ const App: React.FC = () => {
         </IonReactRouter>
       </ConfigProvider>
     </IonApp>
-  );
-};
-export default App;
+  )
+}
+export default App
