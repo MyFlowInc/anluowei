@@ -17,11 +17,11 @@ interface ConditionType {
 
 interface FilterTableProps {
   records: any[];
-  colunms: TableColumnItem[];
+  columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const FilterTable: React.FC<FilterTableProps> = ({ records, colunms }) => {
+const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
@@ -129,8 +129,8 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, colunms }) => {
   }, [relation, conditions]);
 
   React.useEffect(() => {
-    setFirstFieldId(_.get(colunms, 0).fieldId);
-  }, [colunms]);
+    setFirstFieldId(_.get(columns, 0).fieldId);
+  }, [columns]);
 
   return (
     <Form
@@ -162,15 +162,15 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, colunms }) => {
         name="conditions"
         initialValue={[
           {
-            conditionName: _.get(colunms, 0).fieldId,
+            conditionName: _.get(columns, 0).fieldId,
             conditionOperator: "eq",
           },
           {
-            conditionName: _.get(colunms, 0).fieldId,
+            conditionName: _.get(columns, 0).fieldId,
             conditionOperator: "eq",
           },
           {
-            conditionName: _.get(colunms, 0).fieldId,
+            conditionName: _.get(columns, 0).fieldId,
             conditionOperator: "eq",
           },
         ]}
@@ -179,7 +179,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, colunms }) => {
           return (
             <>
               {fields.map(({ key, name, ...restField }) => {
-                const options: SelectProps["options"] = colunms.map(
+                const options: SelectProps["options"] = columns.map(
                   (item: any) => {
                     return {
                       label: item.name,
@@ -260,15 +260,15 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, colunms }) => {
 
 interface FilterProps {
   records: any[];
-  colunms: TableColumnItem[];
+  columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const Filter: React.FC<FilterProps> = ({ records, colunms }) => {
+const Filter: React.FC<FilterProps> = ({ records, columns }) => {
   return (
     <Popover
       placement="bottom"
-      content={<FilterTable records={records} colunms={colunms} />}
+      content={<FilterTable records={records} columns={columns} />}
       trigger="click"
     >
       <Button type="text" icon={<FilterFilled />}>
