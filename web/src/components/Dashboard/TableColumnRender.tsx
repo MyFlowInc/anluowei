@@ -131,14 +131,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
   const { type, fieldId, fieldConfig } = column
   const cloneConfig = _.cloneDeep(fieldConfig)
   const options = _.get(cloneConfig, 'property.options')
-
-  const reg: RegExp = new RegExp(searchText, 'gi')
-  let isMatch = false
-  if (record[fieldId] && record[fieldId] !== '') {
-    isMatch =
-      searchText && searchText !== '' ? reg.test(record[fieldId]) : false
-  }
-
+  
   let childNode = children
   switch (type) {
     case NumFieldType.SingleText:
@@ -178,12 +171,8 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
       break
 
     case NumFieldType.Attachment:
-      childNode = <Attachment value={record[fieldId]} />
-      const attachmentName = record[fieldId] && getFileName(record[fieldId])
-      const rega: RegExp = new RegExp(searchText, 'gi')
-      isMatch =
-        searchText && searchText !== '' ? rega.test(attachmentName) : false
-      break
+      childNode = <Attachment value={record[fieldId]} />;
+      break;
 
     case NumFieldType.SingleSelect:
       childNode = (
@@ -202,24 +191,11 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
       break
 
     case NumFieldType.Member:
-      childNode = <MemberSelect value={record[fieldId]} userList={userList} />
-      const memberList = getMemberList(record[fieldId], userList)
-      if (memberList) {
-        for (let i = 0; i < memberList.length; i++) {
-          const regb: RegExp = new RegExp(searchText, 'gi')
-          isMatch =
-            searchText && searchText !== ''
-              ? regb.test(memberList[i].nickname)
-              : false
-          if (isMatch) {
-            break
-          }
-        }
-      }
-      break
+
+      childNode = <MemberSelect value={record[fieldId]} userList={userList} />;
+      break;
 
     case NumFieldType.discuss:
-      isMatch = false
       childNode = (
         <DiscussModalWrap
           fieldId={fieldId}
@@ -235,20 +211,14 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
       childNode = <StringifyTextRender value={record[fieldId]} />
   }
 
-  let styles: React.CSSProperties = {}
-  if (isMatch) {
-    styles = {
-      ...styles,
-      backgroundColor: '#B0E0E6',
-      border: '2px solid blue',
-    }
-  }
+
+  let styles: React.CSSProperties = {};
   if (cIndex === 0) {
-    styles = { ...styles, position: 'sticky', left: '32px' }
+    styles = { position: "sticky", left: "32px" };
   }
 
   return (
-    <td {...restProps} style={styles}>
+    <td {...restProps} style={{ ...styles }} id={`cell-${rIndex}-${cIndex}`}>
       {childNode}
     </td>
   )
@@ -282,15 +252,10 @@ const MultipleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
   )
 }
 
-const SingleSelect: React.FC<{
-  value: any
-  fieldConfig: any
-  children?: React.ReactNode
-}> = ({ value, fieldConfig }) => {
-  const temp = _.get(fieldConfig, 'property.options') || []
-
+const getStatusText = (value: any, fieldConfig: any) => {
+  const temp = _.get(fieldConfig, "property.options") || [];
   if (temp.length === 0) {
-    return <div></div>
+    return;
   }
 
   const item0 = temp[0]
@@ -310,49 +275,19 @@ const SingleSelect: React.FC<{
     }))
   }
 
-  const text = _.find(options, { value: value })?.label || ''
-  if (text) {
-    return <Tag color="default">{text}</Tag>
-  } else {
-    return <div></div>
-  }
-}
 
-const InviteSingleSelect: React.FC<{
-  value: any
-  fieldConfig: any
-  children?: React.ReactNode
+  return _.find(options, { value: value })?.label || "";
+};
+
+const SingleSelect: React.FC<{
+  value: any;
+  fieldConfig: any;
+  children?: React.ReactNode;
 }> = ({ value, fieldConfig }) => {
-  const temp = _.get(fieldConfig, 'property.options') || []
+  const text = getStatusText(value, fieldConfig);
+  return text && text !== "" ? <Tag color="default">{text}</Tag> : <div></div>;
+};
 
-  if (temp.length === 0) {
-    return <div></div>
-  }
-
-  const item0 = temp[0]
-  let options: any = []
-
-  if (typeof item0 === 'string') {
-    options = temp.map((item: any) => ({
-      label: item,
-      value: item,
-    }))
-  }
-
-  if (typeof item0 === 'object') {
-    options = temp.map((item: any) => ({
-      label: item.name,
-      value: item.name,
-    }))
-  }
-
-  const text = _.find(options, { value: value })?.label || ''
-  if (text) {
-    return <Tag color="default">{text}</Tag>
-  } else {
-    return <div></div>
-  }
-}
 
 const MultiSelect: React.FC<{
   value: any
