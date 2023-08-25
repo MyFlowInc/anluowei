@@ -67,7 +67,7 @@ function encode(keyword: string) {
 interface SearchContentProps {
   open: boolean;
   records: any[];
-  colunms: TableColumnItem[];
+  columns: TableColumnItem[];
   onClosePop: () => void;
   children?: React.ReactNode;
 }
@@ -75,7 +75,7 @@ interface SearchContentProps {
 const SearchContent: React.FC<SearchContentProps> = ({
   open,
   records,
-  colunms,
+  columns,
   onClosePop,
 }) => {
   const [form] = Form.useForm();
@@ -160,22 +160,24 @@ const SearchContent: React.FC<SearchContentProps> = ({
 
   const search = (keyword: string) => {
     const RowsNum = records.length;
-    const ColsNum = colunms.length;
+    const ColsNum = columns.length;
     const list = [];
 
     for (let i = 0; i < RowsNum; i++) {
       for (let j = 0; j < ColsNum; j++) {
         const record = records[i];
-        const colunm = colunms[j];
+        const colunm = columns[j];
 
         switch (colunm.type) {
           case NumFieldType.Attachment:
             const attachmentName =
               record[colunm.fieldId] && getFileName(record[colunm.fieldId]);
-            const rega: RegExp = new RegExp(keyword, "gi");
-            const isMatched =
-              keyword && keyword !== "" ? rega.test(attachmentName) : false;
-            isMatched && list.push(`cell-${i}-${j}`);
+            if (attachmentName) {
+              const rega: RegExp = new RegExp(keyword, "gi");
+              const isMatched =
+                keyword && keyword !== "" ? rega.test(attachmentName) : false;
+              isMatched && list.push(`cell-${i}-${j}`);
+            }
             break;
           case NumFieldType.Member:
             const memberList = getMemberList(record[colunm.fieldId], userList);
@@ -230,7 +232,7 @@ const SearchContent: React.FC<SearchContentProps> = ({
 
   React.useEffect(() => {
     resetSearch();
-  }, [records, colunms, open]);
+  }, [records, columns, open]);
 
   const handleValuesChanged = (changedValues: any, allValues: any) => {
     if (changedValues.searchField && changedValues.searchField !== "") {
@@ -276,11 +278,11 @@ const SearchContent: React.FC<SearchContentProps> = ({
 
 interface SearchProps {
   records: any[];
-  colunms: TableColumnItem[];
+  columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const Search: React.FC<SearchProps> = ({ records, colunms }) => {
+const Search: React.FC<SearchProps> = ({ records, columns }) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const handleTogglePop = () => {
@@ -294,7 +296,7 @@ const Search: React.FC<SearchProps> = ({ records, colunms }) => {
         <SearchContent
           open={open}
           records={records}
-          colunms={colunms}
+          columns={columns}
           onClosePop={handleTogglePop}
         />
       }

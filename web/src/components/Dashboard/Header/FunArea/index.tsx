@@ -22,10 +22,10 @@ const FunArea: React.FC<FunAreaProps> = () => {
 
   return (
     <Space>
-      <Filter records={records} colunms={dstColumns} />
+      <Filter records={records} columns={dstColumns} />
       <Sort />
       <Senior />
-      <Search records={records} colunms={dstColumns} />
+      <Search records={records} columns={dstColumns} />
     </Space>
   );
 };
