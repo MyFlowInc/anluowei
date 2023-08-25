@@ -38,6 +38,7 @@ import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import PaySuccess from './pages/PaySuccess'
 import InviteError from './pages/404/error_invite'
+import ResetPwd from './pages/User/ResetPwd'
 
 setupIonicReact()
 
@@ -72,8 +73,11 @@ const App: React.FC = () => {
             <Route path="/invite_error" exact={true}>
               <InviteError />
             </Route>
-            <Route path="/register" exact={true}>
+            {/* <Route path="/register" exact={true}>
               <Register />
+            </Route> */}
+            <Route path="/reset" exact={true}>
+              <ResetPwd />
             </Route>
           </IonRouterOutlet>
         </IonReactRouter>

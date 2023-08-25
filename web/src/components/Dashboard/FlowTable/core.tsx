@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { FlowTableContainer } from './style'
 import { Modal, Table, Space, Button, Tooltip } from 'antd'
 import { ExclamationCircleFilled, LinkOutlined } from '@ant-design/icons'
-import { useAppSelector } from '../../../store/hooks'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import {
   selectCurTableColumn,
   selectCurTableRows,
   selectSearchText,
   selectMembers,
+  selectCurFlowDstId,
+  freshCurTableRows,
 } from '../../../store/workflowSlice'
 import _ from 'lodash'
 import { ColumnsType } from 'antd/es/table'
@@ -15,6 +17,12 @@ import TableColumnRender from '../TableColumnRender'
 import deleteSvg from '../assets/table/delete-bin.svg'
 import editSvg from '../assets/table/edit.svg'
 import { clipboardWriteText } from '../../../util/clipboard'
+import {
+  UpdateDSCellsParams,
+  updateDSCells,
+} from '../../../api/apitable/ds-record'
+import { SocketMsgType, sendWebSocketMsg } from '../../../api/apitable/ws-msg'
+import { selectUser } from '../../../store/globalSlice'
 export interface FlowItemTableDataType {
   key: string
   flowItemId: number
@@ -72,6 +80,10 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     manager,
   } = props
   const { confirm } = Modal
+  const dispatch = useAppDispatch()
+  const user = useAppSelector(selectUser)
+
+  const curDstId = useAppSelector(selectCurFlowDstId)
   const tableData = useAppSelector(selectCurTableRows)
   const dstColumns = useAppSelector(selectCurTableColumn)
   const searchText = useAppSelector(selectSearchText)
@@ -112,26 +124,64 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     setModalType?.('edit')
     setOpen?.(true)
   }
-  const copyInviteLink = (record: FlowItemTableDataType) => {
-    console.log('copyInviteLink', record)
+  const copyInviteLink = async (record: FlowItemTableDataType) => {
+    try {
+      console.log('copyInviteLink', record)
+      const invite_item = _.find(dstColumns, {
+        name_en: 'invite_status',
+      }) as any
 
-    const invite_item = _.find(dstColumns, { name_en: 'invite_status' }) as any
-    if (!invite_item) return
-    const inviteFieldId = invite_item.fieldId
+      if (!invite_item) return
+      const inviteFieldId = invite_item.fieldId
 
-    const name_item = _.find(dstColumns, { name_en: 'interviewer_name' }) as any
-    if (!name_item) return
-    const nameFieldId = name_item.fieldId
+      const name_item = _.find(dstColumns, {
+        name_en: 'interviewer_name',
+      }) as any
+      if (!name_item) return
+      const nameFieldId = name_item.fieldId
 
-    const path =
-      window.location.origin +
-      '/invite?recordId=' +
-      record.recordId +
-      '&&inviteFieldId=' +
-      inviteFieldId +
-      '&&nameFieldId=' +
-      nameFieldId
-    clipboardWriteText(path)
+      const path =
+        window.location.origin +
+        '/invite?recordId=' +
+        record.recordId +
+        '&&inviteFieldId=' +
+        inviteFieldId +
+        '&&nameFieldId=' +
+        nameFieldId
+      clipboardWriteText(path)
+
+      const inviteStatus = record[inviteFieldId]
+
+      if (inviteStatus === '未邀请' || !inviteStatus) {
+        // 修改状态
+        const params: UpdateDSCellsParams = {
+          dstId: curDstId!,
+          fieldKey: 'id',
+          records: [
+            {
+              recordId: record.recordId,
+              fields: {
+                [inviteFieldId]: '已邀请',
+              },
+            },
+          ],
+        }
+        await updateDSCells(params)
+        dispatch(freshCurTableRows(curDstId!))
+        // 同步
+        sendWebSocketMsg({
+          user,
+          dstId: curDstId!,
+          type: SocketMsgType.SetRecords,
+          recordId: record.recordId,
+          row: {
+            [inviteFieldId]: '已邀请',
+          },
+        })
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
   useEffect(() => {
     const temp = dstColumns
