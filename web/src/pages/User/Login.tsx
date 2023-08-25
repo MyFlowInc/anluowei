@@ -1,79 +1,80 @@
-import React, { useEffect } from 'react'
-import { LockOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Form, Input, message } from 'antd'
-import { useHistory } from 'react-router'
-import { userLoginmail, userProfile } from '../../api/user'
-import { useDispatch } from 'react-redux'
-import { loginSuccess } from '../../store/globalSlice'
-import { TopBarUI } from '../../components/TopBar/TopBar'
-import { Container, FormRoot, LoginRoot } from './styles'
-import { BeiAnUI } from '../../components/TabBar/BeiAn'
-import { LogoUI2 } from '../../components/TopBar/Logo'
+import React, { useEffect } from "react";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Form, Input, message } from "antd";
+import { Link } from "react-router-dom";
+import { useHistory } from "react-router";
+import { userLoginmail, userProfile } from "../../api/user";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../store/globalSlice";
+import { TopBarUI } from "../../components/TopBar/TopBar";
+import { Container, FormRoot, LoginRoot } from "./styles";
+import { BeiAnUI } from "../../components/TabBar/BeiAn";
+import { LogoUI2 } from "../../components/TopBar/Logo";
 
 const Login: React.FC = () => {
-  const history = useHistory()
-  const dispatch = useDispatch()
-  const [form] = Form.useForm()
-  const [messageApi, contextHolder] = message.useMessage()
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
-    const email = localStorage.getItem('user_email')
+    const email = localStorage.getItem("user_email");
     if (form && email) {
-      form.setFieldValue('email', email || '')
+      form.setFieldValue("email", email || "");
     }
-  }, [form])
+  }, [form]);
 
   const checkLogin = () => {
     form
       .validateFields()
       .then(async () => {
-        const data = form.getFieldsValue(['email', 'password'])
+        const data = form.getFieldsValue(["email", "password"]);
         try {
-          const response = (await userLoginmail(data)) as any
+          const response = (await userLoginmail(data)) as any;
           if (response.code !== 200) {
-            throw new Error(response.msg)
+            throw new Error(response.msg);
           }
 
-          const { token, tokenKey } = response.data
+          const { token, tokenKey } = response.data;
           if (token && tokenKey) {
-            localStorage.setItem('Authorization', token)
-            localStorage.setItem('Authorization-key', tokenKey)
-            localStorage.setItem('user_email', data.email)
+            localStorage.setItem("Authorization", token);
+            localStorage.setItem("Authorization-key", tokenKey);
+            localStorage.setItem("user_email", data.email);
 
-            const res = await userProfile()
-            console.log('userProfile', res)
-            dispatch(loginSuccess(res.data))
+            const res = await userProfile();
+            console.log("userProfile", res);
+            dispatch(loginSuccess(res.data));
             messageApi
               .open({
-                type: 'success',
-                content: '登录成功!',
+                type: "success",
+                content: "登录成功!",
                 duration: 1,
               })
               .then(() => {
-                history.push('/dashboard')
-              })
+                history.push("/dashboard");
+              });
           }
         } catch (e: any) {
-          console.log(e)
+          console.log(e);
           messageApi.open({
-            type: 'error',
-            content: '登录失败,' + e.message,
+            type: "error",
+            content: "登录失败," + e.message,
             duration: 1,
-          })
+          });
         }
       })
       .catch(() => {
-        return
-      })
-  }
+        return;
+      });
+  };
   const jump2Register = () => {
-    history.push('/register')
-  }
+    history.push("/register");
+  };
   const onFinish = (values: any) => {
-    console.log('Received values of form: ', values)
-  }
+    console.log("Received values of form: ", values);
+  };
   const onFinishFailed = () => {
-    console.error('Submit failed!')
-  }
+    console.error("Submit failed!");
+  };
 
   return (
     <LoginRoot>
@@ -117,7 +118,9 @@ const Login: React.FC = () => {
                 <Checkbox>自动登录</Checkbox>
               </Form.Item>
 
-              <div className="login-form-forgot">忘记密码</div>
+              <Link target="_blank" to="/reset" rel="noreferrer">
+                忘记密码
+              </Link>
             </Form.Item>
 
             <Form.Item>
@@ -137,6 +140,6 @@ const Login: React.FC = () => {
       <BeiAnUI />
     </LoginRoot>
   );
-}
+};
 
-export default Login
+export default Login;
