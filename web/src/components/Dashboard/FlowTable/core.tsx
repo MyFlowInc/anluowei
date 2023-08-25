@@ -106,6 +106,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
         console.log(222, record)
         // TODO change name
         deleteFlowItem?.(record.recordId)
+        // 同步room server
       },
       onCancel() {
         console.log('Cancel')

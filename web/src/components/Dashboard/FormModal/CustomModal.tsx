@@ -215,7 +215,7 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
       await inputForm.validateFields()
       await updateDSCells(params)
       dispatch(freshCurTableRows(curDstId!))
-      // 同步
+      // 同步 ws
       sendWebSocketMsg({
         user,
         dstId: curDstId!,

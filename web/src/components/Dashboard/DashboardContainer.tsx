@@ -10,6 +10,7 @@ import {
   flatList,
   freshCurMetaData,
   freshCurTableRows,
+  selectCurFlowDstId,
   selectCurShowMode,
   selectCurStatusFieldId,
   selectCurTableStatusList,
@@ -21,6 +22,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { delay } from '../../util/delay'
 import { deleteDSCells } from '../../api/apitable/ds-record'
 import { inviteUserList } from '../../api/apitable/ds-share'
+import { SocketMsgType, sendWebSocketMsg } from '../../api/apitable/ws-msg'
+import { selectUser } from '../../store/globalSlice'
 
 interface ContainerProps {
   reader: boolean
@@ -60,6 +63,8 @@ const DashboardContainer: React.FC<ContainerProps> = ({
   // console.log("reader", reader, "writer", writer, "manager", manager);
   const curShowMode = useAppSelector(selectCurShowMode)
   const statusList = useAppSelector(selectCurTableStatusList) || []
+  const user = useAppSelector(selectUser)
+  const curDstId = useAppSelector(selectCurFlowDstId)
 
   const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || ''
   const [editFlowItemRecord, setEditFlowItemRecord] = useState<
@@ -90,6 +95,14 @@ const DashboardContainer: React.FC<ContainerProps> = ({
     }
     await deleteDSCells(params)
     dispatch(freshCurTableRows(dstId!))
+    // 同步 ws
+    sendWebSocketMsg({
+      user,
+      dstId: curDstId!,
+      type: SocketMsgType.DeleteRecords,
+      recordId,
+      row: {},
+    })
   }
 
   const fetchUserList = async () => {
