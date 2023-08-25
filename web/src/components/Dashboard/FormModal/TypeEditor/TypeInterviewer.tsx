@@ -8,6 +8,7 @@ import {
   TableColumnItem,
   selectCurFlowDstId,
   selectCurTableColumn,
+  selectInviteMembers,
   selectMembers,
 } from '../../../../store/workflowSlice'
 import _ from 'lodash'
@@ -73,7 +74,7 @@ const TypeInterviewer: React.FC<TypeInterviewerProps> = (
 ) => {
   const { mode, cell, form, setForm } = props
   const [value, setValue] = useState<string[]>([])
-  const userList = useAppSelector(selectMembers)
+  const inviteMembers = useAppSelector(selectInviteMembers)
   const dstColumns = useAppSelector(selectCurTableColumn)
   const curDstId = useAppSelector(selectCurFlowDstId)
 
@@ -126,7 +127,8 @@ const TypeInterviewer: React.FC<TypeInterviewerProps> = (
       onChange={handleSelectChange}
       optionLabelProp="label"
     >
-      {userList.map((user) => {
+      {inviteMembers.map((member: any) => {
+        const user = member.userInfo
         return (
           <Select.Option key={user.id} value={user.id} label={user.nickname}>
             <UIListItem>

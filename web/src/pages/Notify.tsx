@@ -16,6 +16,7 @@ const UIROOT = styled.div`
   height: 100%;
   background-color: #fff;
   border-radius: 4px;
+  overflow: auto;
   .notify-header {
     width: 100%;
   }
@@ -40,7 +41,7 @@ const Notify = () => {
   const user = useAppSelector(selectUser)
   const onTabChange = (key: string) => {
     setTabState(key as 'undo' | 'redo')
-  };
+  }
   const fetchInviteList = async (options: any = {}) => {
     const res = await getInviteList(options)
     const list = _.get(res, 'data.record') || []
@@ -50,16 +51,16 @@ const Notify = () => {
 
   useEffect(() => {
     console.log('Notify useEffect', tabState)
-    if(tabState === 'undo') {
+    if (tabState === 'undo') {
       fetchInviteList()
     } else {
-      fetchInviteList({ignoreMsg :1})
+      fetchInviteList({ ignoreMsg: 1 })
     }
   }, [tabState])
 
   return (
     <UIROOT className="notify">
-      <Tabs
+      {/* <Tabs
         className="notify-header"
         defaultActiveKey="1"
         centered
@@ -77,9 +78,9 @@ const Notify = () => {
             key: 'done',
           },
         ]}
-      />
-      <div className="content">
-        <NotifyHeader />
+      /> */}
+      <div className="content" style={{ marginBottom: '16px' }}>
+        {/* <NotifyHeader /> */}
         {inviteList.length === 0 && <div>暂无邀请信息</div>}
         {inviteList.length > 0 &&
           inviteList.map((item, index) => {

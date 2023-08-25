@@ -82,14 +82,14 @@ const NotifyCard = (props: any) => {
           <div className="word">
             <div className="title flex">
               <div>邀请通知</div>
-              <div className="ml-4">02月28日</div>
+              <div className="ml-4">{info.createTime}</div>
             </div>
             <div className="content">{info.content}</div>
           </div>
         </div>
 
         <div className="right">
-          {info.ignoreMsg === 0 && (
+          {/* {info.ignoreMsg === 0 && (
             <Button
               style={{ background: '#2845D4' }}
               type="primary"
@@ -97,7 +97,7 @@ const NotifyCard = (props: any) => {
             >
               同意邀请
             </Button>
-          )}
+          )} */}
           {info.ignoreMsg === 1 && <Button type="primary">删除记录</Button>}
         </div>
       </div>

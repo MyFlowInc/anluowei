@@ -14,6 +14,7 @@ import {
   selectCurShowMode,
   selectCurStatusFieldId,
   selectCurTableStatusList,
+  setInviteMembers,
   setMembers,
 } from '../../store/workflowSlice'
 import { NoStatusData } from './NoStatus'
@@ -21,7 +22,10 @@ import { BaseLoading } from '../../BaseUI/BaseLoading'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { delay } from '../../util/delay'
 import { deleteDSCells } from '../../api/apitable/ds-record'
-import { inviteUserList } from '../../api/apitable/ds-share'
+import {
+  apitableDeveloperUserList,
+  inviteUserList,
+} from '../../api/apitable/ds-share'
 import { SocketMsgType, sendWebSocketMsg } from '../../api/apitable/ws-msg'
 import { selectUser } from '../../store/globalSlice'
 
@@ -108,6 +112,8 @@ const DashboardContainer: React.FC<ContainerProps> = ({
   const fetchUserList = async () => {
     const res = await inviteUserList({ dstId: dstId! })
     dispatch(setMembers(_.get(res, 'data')))
+    const res2 = await apitableDeveloperUserList(dstId!)
+    dispatch(setInviteMembers(_.get(res2, 'data.record')))
   }
 
   useEffect(() => {

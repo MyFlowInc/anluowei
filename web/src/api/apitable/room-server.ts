@@ -11,7 +11,7 @@ import { User } from '../../store/globalSlice'
 import { msgCenter } from './ws-update'
 
 // WebSocket 连接地址
-const host = process.env.WDS_SOCKET_HOST
+const host = '47.101.172.25'
 console.log('process.env.', process.env, host)
 // 心跳消息内容
 const heartbeatMessage = 'heartbeat'
