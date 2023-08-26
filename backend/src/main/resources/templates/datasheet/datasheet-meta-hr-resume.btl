@@ -67,23 +67,7 @@
                 "id": "${fieldId4}",
                 "type": 3,
                 "property": {
-                    "options": [
-                        {
-                            "id": "${optionId4}",
-                            "name": "已淘汰",
-                            "color": 0
-                        },
-                        {
-                            "id": "${optionId5}",
-                            "name": "已录取",
-                            "color": 0
-                        },
-                        {
-                            "id": "${optionId5}",
-                            "name": "已录取",
-                            "color": 0
-                        }
-                    ]
+                    "options":['研究生','本科','大专','高中','高中中专','初中中专']
                 }
             },
             "${fieldId5}": {
