@@ -147,7 +147,7 @@ public class SysCaptchaServiceImpl extends ServiceImpl<SysCaptchaMapper, SysCapt
             save(sysCaptcha);
         }
         catch (Exception e) {
-
+            throw new Exception(e.getMessage());
         }
         return sysCaptcha;
     }

@@ -80,5 +80,10 @@ public class ApitableDeveloper extends BaseDomain {
      */
     @TableField(exist = false)
     private SysUser userInfo;
+    /**
+     * 子级集合
+     */
+    @TableField(exist = false)
+    private String interviewUserName;
 
 }

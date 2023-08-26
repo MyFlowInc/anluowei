@@ -13,6 +13,7 @@ import com.workflow.pro.modules.apitable.exception.BusinessExceptionNew;
 import com.workflow.pro.modules.sys.domain.*;
 import com.workflow.pro.modules.sys.param.LoginSuccess;
 import com.workflow.pro.modules.sys.param.SysUserRequest;
+import com.workflow.pro.modules.sys.param.SysUserResetPassword;
 import com.workflow.pro.modules.sys.repository.SysDeptRepository;
 import com.workflow.pro.modules.sys.repository.SysPowerRepository;
 import com.workflow.pro.modules.sys.repository.SysRoleRepository;
@@ -254,5 +255,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserRepository, SysUser> 
         success.setToken(tokenValue);
         success.setTokenKey(tokenKey);
         return success;
+    }
+
+    @Override
+    public SysUserResetPassword resetPasswordMail(SysUserResetPassword pass)throws BusinessExceptionNew {
+
+        SysUser sysUser = sysUserRepository.selectOne(new QueryWrapper<SysUser>().eq("email", pass.getEmail()));
+        if (sysUser == null) {
+            throw new BusinessExceptionNew(3012, "邮箱未注册");
+        }
+        sysUser.setPassword(passwordEncoder.encode(pass.getPassword()));
+        sysUserRepository.updateById(sysUser);
+        return pass;
     }
 }

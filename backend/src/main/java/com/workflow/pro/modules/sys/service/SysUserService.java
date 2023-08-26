@@ -9,6 +9,7 @@ import com.workflow.pro.modules.sys.domain.SysRole;
 import com.workflow.pro.modules.sys.domain.SysUser;
 import com.workflow.pro.modules.sys.param.LoginSuccess;
 import com.workflow.pro.modules.sys.param.SysUserRequest;
+import com.workflow.pro.modules.sys.param.SysUserResetPassword;
 
 import java.util.List;
 
@@ -132,4 +133,9 @@ public interface SysUserService extends IService<SysUser> {
 
     LoginSuccess loginByEmail(String pwd, String email) throws BusinessExceptionNew;
 
+    /**
+     * 重置密码
+     * @return {@link Boolean}
+     * */
+    SysUserResetPassword resetPasswordMail(SysUserResetPassword pass) throws BusinessExceptionNew;
 }

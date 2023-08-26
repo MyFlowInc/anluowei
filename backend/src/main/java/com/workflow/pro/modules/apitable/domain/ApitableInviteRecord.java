@@ -10,6 +10,7 @@ import com.workflow.pro.common.web.base.domain.BaseDomain;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.ibatis.type.Alias;
 import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
 /**
@@ -24,52 +25,52 @@ import java.util.Date;
 @TableName("apitable_invite_record")
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ApitableInviteRecord extends BaseDomain    {
-private static final long serialVersionUID=1L;
+public class ApitableInviteRecord extends BaseDomain {
+    private static final long serialVersionUID = 1L;
 
-        /** Primary Key */
-        
-                /**  @TableId(value = "id", type = IdType.AUTO)*/
-        @TableField(value = "id")
-                        private String id;
-        
-            /** 空间id */
-                                        
-                        private String spaceId;
-        
-            /** 表格id */
-                                        
-                        private String dstId;
-        
-            /** 邀请id */
-                                        
-                        private String inviter;
-        
-            /** 成员id */
-                                        
-                        private String accepter;
-        
-            /** 0: 邀请; 1: 文件导出; 2: 邀请链接 */
-                                        
-                        private Integer type;
-        
-            /** 内容 */
-                                        
-                        private String content;
-        
-            /** 排序 */
-                                        
-                        private Long sort;
-        
-            /** 忽略消息 */
-                                        
-                        private Integer ignoreMsg;
-        
-                        /** $column.columnComment */
-                                        
-                        
-                    /** 租户编号 */
-                                        
-                        private String tenantId;
-        
-            }
+    /** Primary Key */
+
+    /**  @TableId(value = "id", type = IdType.AUTO)*/
+    @TableField(value = "id")
+    private String id;
+
+    /** 空间id */
+
+    private String spaceId;
+
+    /** 表格id */
+
+    private String dstId;
+
+    /** 邀请id */
+
+    private String inviter;
+
+    /** 成员id */
+
+    private String accepter;
+
+    /** 0: 邀请; 1: 文件导出; 2: 邀请链接 */
+
+    private Integer type;
+
+    /** 内容 */
+
+    private String content;
+
+    /** 排序 */
+
+    private Long sort;
+
+    /** 忽略消息 */
+
+    private Integer ignoreMsg;
+
+    /** $column.columnComment */
+
+
+    /** 租户编号 */
+
+    private String tenantId;
+
+}

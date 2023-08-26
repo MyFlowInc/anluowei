@@ -1,37 +1,37 @@
 package com.workflow.pro.modules.apitable.controller;
 
 
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Resource;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.workflow.pro.common.aop.annotation.Log;
 import com.workflow.pro.common.constant.ControllerConstant;
 import com.workflow.pro.common.context.UserContext;
-import com.workflow.pro.modules.apitable.domain.ApitableAuditInviteRecord;
+import com.workflow.pro.common.web.base.BaseController;
+import com.workflow.pro.common.web.domain.Result;
 import com.workflow.pro.modules.apitable.domain.ApitableDatasheet;
+import com.workflow.pro.modules.apitable.domain.ApitableDeveloper;
 import com.workflow.pro.modules.apitable.domain.ApitableInviteRecord;
-import com.workflow.pro.modules.apitable.domain.ApitableNodeShareSetting;
 import com.workflow.pro.modules.apitable.exception.BusinessExceptionNew;
-import com.workflow.pro.modules.apitable.service.IApitableAuditInviteRecordService;
+import com.workflow.pro.modules.apitable.param.ApitableDeveloperRequest;
+import com.workflow.pro.modules.apitable.service.IApitableDeveloperService;
 import com.workflow.pro.modules.apitable.service.IApitableInviteRecordService;
 import com.workflow.pro.modules.apitable.service.impl.ApitableDatasheetServiceImpl;
 import com.workflow.pro.modules.sys.param.SysUserRequest;
 import io.swagger.annotations.Api;
-
-import org.springframework.web.bind.annotation.*;
-
-import com.workflow.pro.modules.apitable.service.IApitableDeveloperService;
-
-import com.workflow.pro.modules.apitable.param.ApitableDeveloperRequest;
-import com.workflow.pro.modules.apitable.domain.ApitableDeveloper;
-
-import javax.annotation.Resource;
-
-import java.util.List;
-import java.util.Objects;
-
 import io.swagger.annotations.ApiOperation;
-import com.workflow.pro.common.web.base.BaseController;
-import com.workflow.pro.common.aop.annotation.Log;
-import com.workflow.pro.common.web.domain.Result;
-import org.yaml.snakeyaml.tokens.ScalarToken;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 格协作者Controller
@@ -116,7 +116,7 @@ public class ApitableDeveloperController extends BaseController {
             throw new BusinessExceptionNew(3015, "邀请人必填");
         }
         if (apitableDeveloper.getDstId() == null) {
-            throw new BusinessExceptionNew(3015, "表格id必填");
+            throw new BusinessExceptionNew(3016, "表格id必填");
         }
         //当前邀请的用户id
         String userId = userContext.getUserId();
@@ -124,8 +124,14 @@ public class ApitableDeveloperController extends BaseController {
         record.setAccepter(apitableDeveloper.getUserId());
         String name = userContext.getNickName() != null ? userContext.getNickName() : userContext.getUsername();
         ApitableDatasheet dst_id = datasheet.getOne(new QueryWrapper<ApitableDatasheet>().eq("dst_id", apitableDeveloper.getDstId()), false);
+        if (Objects.equals(dst_id.getCreateBy(), apitableDeveloper.getUserId())) {
+            throw new BusinessExceptionNew(3017, "不能邀请创建者");
+        }
 
-        record.setContent(name + "邀请您加入: 表格-" + dst_id.getDstName() + "协作");
+
+        if (record.getContent() == "" || record.getContent() == null) {
+            record.setContent("您被分配了:《" + dst_id.getDstName() + "》 " + apitableDeveloper.getInterviewUserName() + " 的面试");
+        }
         //当前用户
         record.setInviter(userId);
         record.setType(0);

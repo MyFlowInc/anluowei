@@ -16,6 +16,7 @@ import com.workflow.pro.modules.sys.domain.SysUser;
 import com.workflow.pro.modules.sys.param.LoginSuccess;
 import com.workflow.pro.modules.sys.param.SysUserPasswordRequest;
 import com.workflow.pro.modules.sys.param.SysUserRequest;
+import com.workflow.pro.modules.sys.param.SysUserResetPassword;
 import com.workflow.pro.modules.sys.param.SysUserRoleRequest;
 import com.workflow.pro.modules.sys.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -92,6 +93,8 @@ public class SysUserController extends BaseController {
     @Log(title = "修改密码")
     @ApiOperation(value = "修改密码")
     public Result editPassword(@RequestBody SysUserPasswordRequest request) {
+
+
         String userId = request.getUserId();
         String newPassword = request.getNewPassword();
         String oldPassword = request.getOldPassword();
@@ -340,5 +343,28 @@ public class SysUserController extends BaseController {
         catch (BusinessExceptionNew e) {
             return Result.failure(e.getCode(), e.getMessage());
         }
+    }
+
+    @PostMapping("password/reset/email")
+    @ApiOperation(value = "重置密码")
+    public Result resetPasswordByEmail(@RequestBody SysUserResetPassword pass) throws BusinessExceptionNew{
+        if (pass.getEmail() == null) {
+            return Result.failure("邮箱必传", null);
+        }
+        if (pass.getPassword() == null) {
+            return Result.failure("密码必传", null);
+        }
+
+        if (pass.getCode() == null) {
+            return Result.failure("邮箱验证码必传", null);
+        }
+        try {
+            sysCaptchaService.Check(pass.getEmail(), pass.getCode());
+        }
+        catch (BusinessExceptionNew e) {
+            return Result.failure(e.getCode(), e.getMessage());
+        }
+
+        return success(sysUserService.resetPasswordMail(pass));
     }
 }

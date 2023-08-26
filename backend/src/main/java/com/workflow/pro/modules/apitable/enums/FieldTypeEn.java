@@ -60,7 +60,10 @@ public enum FieldTypeEn {
     LAST_MODIFIED_BY(24, "LastModifiedBy"),
 
     OPTION_STATUS(26, "OptionStatus"),
-    DISCUSS( 27,"discuss") ;
+    DISCUSS(27, "discuss"),
+    InterviewStatus(30, "interview_status"),
+    InviteStatus(31, "invite_status"),
+    Interviewer(32, "interviewer");
 
 
     private final int type;

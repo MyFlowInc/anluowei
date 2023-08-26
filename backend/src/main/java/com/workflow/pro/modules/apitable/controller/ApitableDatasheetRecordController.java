@@ -1,10 +1,15 @@
 package com.workflow.pro.modules.apitable.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.qiniu.util.Json;
+import com.qiniu.util.StringMap;
 import com.workflow.pro.common.constant.ControllerConstant;
 import com.workflow.pro.modules.apitable.controller.api.RecordApi;
+import com.workflow.pro.modules.apitable.domain.ApitableDatasheet;
 import com.workflow.pro.modules.apitable.domain.ApitableDatasheetMeta;
 import com.workflow.pro.modules.apitable.exception.BusinessExceptionNew;
+import com.workflow.pro.modules.apitable.param.AddFieldRecordUpdate;
 import com.workflow.pro.modules.apitable.service.IApitableDatasheetMetaService;
 import io.swagger.annotations.Api;
 
@@ -19,6 +24,7 @@ import javax.annotation.Resource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.swagger.annotations.ApiOperation;
 import com.workflow.pro.common.web.base.BaseController;
@@ -160,14 +166,35 @@ public class ApitableDatasheetRecordController extends BaseController {
         return success();
     }
 
-    @PostMapping("getRecords")
-    @ApiOperation(value = "getRecords")
-    public Result getRecords(@RequestParam(value = "dstId") String dstId, @RequestBody CreateRecordRequest record) {
+    @GetMapping("getRecord")
+    @ApiOperation(value = "getRecord")
+    public Result getRecords(@RequestParam(value = "record_id") String recordId) {
 
+        ApitableDatasheetRecord record_id = apitableDatasheetRecordService.getOne(new QueryWrapper<ApitableDatasheetRecord>().eq("record_id", recordId), false);
+        if (record_id == null) {
+            throw new ApiException("record_id not exist");
+        }
 
-        //apitableDatasheetMetaService.deleteRecords(dstId, "");
-        return success();
+        return success(record_id);
     }
+
+    @PostMapping("setRecordValue")
+    public Result setRecordValue(@RequestParam(value = "record_id") String recordId, @RequestBody AddFieldRecordUpdate record) {
+        ApitableDatasheetRecord record_id = apitableDatasheetRecordService.getOne(new QueryWrapper<ApitableDatasheetRecord>().eq("record_id", recordId), false);
+        if (record_id == null) {
+            throw new ApiException("record_id not exist");
+        }
+        if (!Objects.equals(record_id.getData(), "") || record_id.getData() != null) {
+            StringMap decode = Json.decode(record_id.getData());
+            decode.put(record.getFiledKey(), record.getFiledValue());
+            String encode = Json.encode(decode);
+            record_id.setData(encode);
+            apitableDatasheetRecordService.updateApitableDatasheetRecord(record_id);
+
+        }
+        return success(record_id);
+    }
+
 
     // public List<Record> getRecords(String datasheetId, int page, int itemsPerPage) throws ApiException {
     //     if (page < 0 || itemsPerPage < 0) {

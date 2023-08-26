@@ -1,160 +1,237 @@
 {
-    "meta":{
-        "fieldMap":{
-            "${fieldId0}":{
-                "name":"${HRResumeTemplateName}",
-                "id":"${fieldId0}",
-                "type":19,
-                "property":{
-                    "isRequired":true
+    "meta": {
+        "fieldMap": {
+            "${fieldId0}": {
+                "name": "${HRResumeTemplateName}",
+                "name_en": "interviewer_name",
+                "id": "${fieldId0}",
+                "type": 19,
+                "property": {
+                    "isRequired": true
                 }
             },
-            "${fieldId1}":{
-				"name":"${HRResumeTemplateOptions}",
-				"property":{
-					"options":[
-						{
-							"id":"${optionId0}",
-							"name":"未开始",
-							"color":0
-						},
-						{
-							"id":"${optionId1}",
-							"name":"进行中",
-							"color":1
-						},
-						{
-							"id":"${optionId2}",
-							"name":"已完成",
-							"color":2
-						}
-					],
-					"defaultValue":"${optionId0}"
-				},
-				"id":"${fieldId1}",
-				"type":26
-			},
-            "${fieldId2}":{
-                "name":"${HRResumeTemplateGender}",
-                "id":"${fieldId2}",
-                "type":3,
-                 "property":{
-                    "options":['男','女']
+            "${fieldId1}": {
+                "name": "${HRResumeTemplateOptions}",
+                "name_en": "interview_status",
+                "property": {
+                    "options": [
+                        {
+                            "id": "${optionId0}",
+                            "name": "未开始",
+                            "color": 0
+                        },
+                        {
+                            "id": "${optionId1}",
+                            "name": "进行中",
+                            "color": 1,
+                            "children": [
+                                {
+                                    "id": "${optionId2}",
+                                    "name": "已淘汰",
+                                    "color": 0
+                                },
+                                {
+                                    "id": "${optionId3}",
+                                    "name": "已录取",
+                                    "color": 0
+                                }
+                            ]
+                        }
+                    ],
+                    "defaultValue": "${optionId0}"
+                },
+                "id": "${fieldId1}",
+                "type": 30
+            },
+            "${fieldId2}": {
+                "name": "${HRResumeTemplateGender}",
+                "name_en": "gender",
+                "id": "${fieldId2}",
+                "type": 3,
+                "property": {
+                    "options": [
+                        "男",
+                        "女"
+                    ]
                 }
             },
-             "${fieldId3}":{
-                "name":"${HRResumeTemplateExperience}",
-                "id":"${fieldId3}",
-                "type":19,
+            "${fieldId3}": {
+                "name": "${HRResumeTemplateExperience}",
+                "name_en": "experience",
+                "id": "${fieldId3}",
+                "type": 19
             },
-            "${fieldId4}":{
-                "name":"${HRResumeTemplateEducation}",
-                "id":"${fieldId4}",
-                "type":3,
-                "property":{
-                    "options":['研究生','本科','大专','高中','高中中专','初中中专']
+            "${fieldId4}": {
+                "name": "${HRResumeTemplateEducation}",
+                "name_en": "education",
+                "id": "${fieldId4}",
+                "type": 3,
+                "property": {
+                    "options": [
+                        {
+                            "id": "${optionId4}",
+                            "name": "已淘汰",
+                            "color": 0
+                        },
+                        {
+                            "id": "${optionId5}",
+                            "name": "已录取",
+                            "color": 0
+                        },
+                        {
+                            "id": "${optionId5}",
+                            "name": "已录取",
+                            "color": 0
+                        }
+                    ]
                 }
             },
-             "${fieldId5}":{
-                "name":"${HRResumeTemplatePhone}",
-                "id":"${fieldId5}",
-                "type":10
+            "${fieldId5}": {
+                "name": "${HRResumeTemplatePhone}",
+                "name_en": "phone",
+                "id": "${fieldId5}",
+                "type": 10
             },
-            "${fieldId6}":{
-                "name":"${HRResumeTemplateNextInterviewDate}",
-                "id":"${fieldId6}",
-                "type":5
+            "${fieldId6}": {
+                "name": "${HRResumeTemplateNextInterviewDate}",
+                "name_en": "interview_date",
+                "id": "${fieldId6}",
+                "type": 5
             },
-           "${fieldId7}":{
-                "name":"${HRResumeTemplateResume}",
-                "id":"${fieldId7}",
-                "type":6,
+            "${fieldId7}": {
+                "name": "${HRResumeTemplateResume}",
+                "name_en": "resume",
+                "id": "${fieldId7}",
+                "type": 6
             },
-            "${fieldId8}":{
-                "name":"${HRResumeTemplateComment}",
-                "id":"${fieldId6}",
-                "type":27
+            "${fieldId8}": {
+                "name": "${HRResumeTemplateComment}",
+                "name_en": "comment",
+                "id": "${fieldId6}",
+                "type": 27
             },
+            "${fieldId9}": {
+                "name": "${HRResumeInviteStatus}",
+                "name_en": "invite_status",
+                "id": "${fieldId9}",
+                "type": 31,
+                "property": {
+                    "options": [
+                        {
+                            "id": "${optionId4}",
+                            "name": "未邀请",
+                            "color": 0
+                        },
+                        {
+                            "id": "${optionId5}",
+                            "name": "已邀请",
+                            "color": 1,
+                            "children": [
+                                {
+                                    "id": "${optionId6}",
+                                    "name": "已同意",
+                                    "color": 0
+                                },
+                                {
+                                    "id": "${optionId7}",
+                                    "name": "已拒绝",
+                                    "color": 0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "defaultValue": "未邀请"
+            },
+            "${fieldId10}": {
+                "name": "${HRResumeInterviewer}",
+                "name_en": "interviewer",
+                "id": "${fieldId10}",
+                "type": 32
+            }
         },
-        "views":[
+        "views": [
             {
-                "columns":[
+                "columns": [
                     {
-                        "fieldId":"${fieldId0}",
-                        "statType":1
+                        "fieldId": "${fieldId0}",
+                        "statType": 1
                     },
                     {
-                        "fieldId":"${fieldId1}",
-                        "statType":1
+                        "fieldId": "${fieldId1}",
+                        "statType": 1
                     },
                     {
-                        "fieldId":"${fieldId2}",
-                        "statType":1
-                     },
-                     {
-                        "fieldId":"${fieldId3}",
-                        "statType":1
-                     },
-                    {
-                        "fieldId":"${fieldId4}"
+                        "fieldId": "${fieldId2}",
+                        "statType": 1
                     },
                     {
-                        "fieldId":"${fieldId5}"
+                        "fieldId": "${fieldId3}",
+                        "statType": 1
                     },
                     {
-                        "fieldId":"${fieldId6}",
-                        "statType":1
+                        "fieldId": "${fieldId4}"
                     },
                     {
-                        "fieldId":"${fieldId7}"
+                        "fieldId": "${fieldId5}"
                     },
                     {
-                        "fieldId":"${fieldId8}"
-                    },
-                ],
-                "name":"${defaultView}",
-                "id":"${viewId}",
-                "frozenColumnCount":1,
-                "rows":[
-                    {
-                        "recordId":"${recordId0}"
+                        "fieldId": "${fieldId6}",
+                        "statType": 1
                     },
                     {
-                        "recordId":"${recordId1}"
+                        "fieldId": "${fieldId7}"
                     },
                     {
-                        "recordId":"${recordId2}"
+                        "fieldId": "${fieldId8}"
+                    },
+                    {
+                        "fieldId": "${fieldId9}"
+                    },
+                    {
+                        "fieldId": "${fieldId10}"
                     }
                 ],
-                "type":1,
-                "displayHiddenColumnWithinMirror":false,
-                "autoSave":false
+                "name": "${defaultView}",
+                "id": "${viewId}",
+                "frozenColumnCount": 1,
+                "rows": [
+                    {
+                        "recordId": "${recordId0}"
+                    },
+                    {
+                        "recordId": "${recordId1}"
+                    },
+                    {
+                        "recordId": "${recordId2}"
+                    }
+                ],
+                "type": 1,
+                "displayHiddenColumnWithinMirror": false,
+                "autoSave": false
             }
         ]
     },
-    "recordMap":{
-        "${recordId0}":{
-            "id":"${recordId0}",
-            "revisionHistory":0,
-            "revision":0,
-            "data":{
-
+    "recordMap": {
+        "${recordId0}": {
+            "id": "${recordId0}",
+            "revisionHistory": 0,
+            "revision": 0,
+            "data": {
             }
         },
-        "${recordId1}":{
-            "id":"${recordId1}",
-            "revisionHistory":0,
-            "revision":0,
-            "data":{
-
+        "${recordId1}": {
+            "id": "${recordId1}",
+            "revisionHistory": 0,
+            "revision": 0,
+            "data": {
             }
         },
-        "${recordId2}":{
-            "id":"${recordId2}",
-            "revisionHistory":0,
-            "revision":0,
-            "data":{
-
+        "${recordId2}": {
+            "id": "${recordId2}",
+            "revisionHistory": 0,
+            "revision": 0,
+            "data": {
             }
         }
     }

@@ -95,11 +95,13 @@ public class EmailServiceImpl implements IEmailService {
         catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+
         account.setFrom(emailConfig.getUser() + "<" + emailConfig.getFromUser() + ">");
         // ssl方式发送
         account.setSslEnable(true);
+        account.setDebug(true);
         // 使用STARTTLS安全连接
-        account.setStarttlsEnable(true);
+        // account.setStarttlsEnable(true);
         String content = emailVo.getContent();
         // 发送
         try {

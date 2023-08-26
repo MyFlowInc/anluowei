@@ -23,16 +23,16 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-  ## 邮件
+  # 邮件
   mail:
     ## 协议
     protocol: smtp
     ## 地址
-    host: smtp.qq.com
+    host: smtp.exmail.qq.com
     ## 端口
-    port: 587
+    port: 465
     ## 账户
-    username: 854085467@qq.com
+    username: xiapeifu
     ## 密钥
     password:
     ## 字符集
@@ -40,7 +40,7 @@ spring:
     ## 测试
     test-connection: false
     ## 来源
-    from: 854085467@qq.com
+    from: xiapeifu@corp-ci.com
 
 ## mybatis 配置
 mybatis-plus:

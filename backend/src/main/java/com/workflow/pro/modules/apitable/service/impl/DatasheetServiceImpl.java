@@ -121,15 +121,15 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
         // call the template to get the snapshot
         Map<String, Object> metaMap = MapUtil.newHashMap();
 
-        int initLength = 4;
-        for (int i = 0; i < initLength; i++) {
+        int initLength = 8;
+        for (int i = 0; i <= initLength; i++) {
             String recordId = IdUtil.createRecordId();
             metaMap.put("recordId" + i, recordId);
             String optionId = IdUtil.createOptionId();
             metaMap.put("optionId" + i, optionId);
         }
 
-        for(int i = 0 ; i < 9; i++) {
+        for (int i = 0; i < 11; i++) {
             String fieldId = IdUtil.createFieldId();
             // template binding dynamic parameters
             metaMap.put("fieldId" + i, fieldId);
@@ -140,7 +140,8 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
         String defaultViewName = StrUtil.isNotBlank(viewName) ? viewName : "视图";
         metaMap.put("defaultView", defaultViewName);
         metaMap.put("HRResumeTemplateName", "姓名");
-        metaMap.put("HRResumeTemplateOptions", "状态");
+        metaMap.put("HRResumeTemplateOptions", "面试状态");
+        metaMap.put("HRResumeInviteStatus", "邀请状态");
         metaMap.put("HRResumeTemplateGender", "性别");
         metaMap.put("HRResumeTemplateExperience", "从业时间");
         metaMap.put("HRResumeTemplateEducation", "最高学历");
@@ -148,6 +149,7 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
         metaMap.put("HRResumeTemplateNextInterviewDate", "下一次面试时间");
         metaMap.put("HRResumeTemplateComment", "评论");
         metaMap.put("HRResumeTemplateResume", "简历");
+        metaMap.put("HRResumeInterviewer", "面试官");
 
         // internationalization elements
         String snapshotJson = beetlTemplate.render("datasheet/datasheet-meta-hr-resume.btl", metaMap);

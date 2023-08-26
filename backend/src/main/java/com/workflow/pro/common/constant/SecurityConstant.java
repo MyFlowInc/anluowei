@@ -16,6 +16,13 @@ public class SecurityConstant {
             + "/api/sys/user/login_email,"
             + "/api/sys/sysCaptcha/send,"
             + "/api/sys/omsOrder/notify,"
+
+            + "/api/sys/apitableDatasheetRecord/getRecord,"
+            + "/api/sys/apitableDatasheetRecord/setRecordValue,"
+            + "/api/sys/user/password/reset/email,"
+
+
+
             + "/api/sys/user/register_email,";
 
     /**
