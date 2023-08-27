@@ -118,8 +118,8 @@ public class ApitableDatasheetController extends BaseController {
         apitableDatasheet.setCreateBy(userContext.getUsername());
 
         String disId = IdUtil.createDstId();
-        datasheetService.create(userId, "default", disId, apitableDatasheet.getDstName(), "");
-        return success();
+        ApitableDatasheet aDefault = datasheetService.create(userId, "default", disId, apitableDatasheet.getDstName(), "");
+        return success(aDefault);
     }
 
     /**

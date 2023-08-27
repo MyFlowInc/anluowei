@@ -91,7 +91,7 @@
             "${fieldId8}": {
                 "name": "${HRResumeTemplateComment}",
                 "name_en": "comment",
-                "id": "${fieldId6}",
+                "id": "${fieldId8}",
                 "type": 27
             },
             "${fieldId9}": {

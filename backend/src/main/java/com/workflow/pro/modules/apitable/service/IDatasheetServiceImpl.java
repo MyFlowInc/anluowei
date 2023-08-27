@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public interface IDatasheetServiceImpl {
-     void create(
+    ApitableDatasheet create(
             final String creator,
             final String spaceId,
             final String dstId,

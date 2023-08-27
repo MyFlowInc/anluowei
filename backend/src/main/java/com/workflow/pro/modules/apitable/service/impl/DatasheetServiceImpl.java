@@ -74,7 +74,7 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
     private IApitableDatasheetMetaService datasheetMetaService;
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(
+    public ApitableDatasheet create(
             final String creator,
             final String spaceId,
             final String dstId,
@@ -112,6 +112,7 @@ public class DatasheetServiceImpl implements IDatasheetServiceImpl {
         // Save record information
 
         datasheetRecordService.saveBatchRecord(creator, snapshot.getRecordMap(), dstId);
+        return  datasheet;
     }
 
 
