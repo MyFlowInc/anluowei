@@ -194,7 +194,7 @@ const AddFlowModal = (props: any) => {
       )}
       {curStep === 2 && (
         <Step2>
-          <SetFlowName {...{handleCancel}}/>
+          <SetFlowName {...{handleCancel, isModalOpen}}/>
         </Step2>
       )}
     </Modal>

@@ -1,4 +1,4 @@
-import { Dropdown, MenuProps, Tag } from 'antd'
+import { Button, Dropdown, MenuProps, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
@@ -33,6 +33,8 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
   const curStatusFieldId = useAppSelector(selectCurStatusFieldId)
   const [showLeft, setShowLeft] = useState(false)
   const [showRight, setShowRight] = useState(false)
+  const [showChildren, setShowChildren] = useState(false)
+
   const [flatStatusList, setFlatStatusList] = useState<WorkFlowStatusInfo[]>(
     flatList(statusList)
   )
@@ -53,16 +55,28 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
 
   const updateArrowStatus = (optionId: string) => {
     const index = _.findIndex(flatStatusList, { id: optionId })
-    if (index >= 0 && index < flatStatusList.length - 1) {
+    const item = flatStatusList[index]
+
+    if (item && item.name === '未开始' ) {
       setShowRight(true)
     } else {
       setShowRight(false)
     }
+
+
     if (index > 0 && index < flatStatusList.length) {
       setShowLeft(true)
     } else {
       setShowLeft(false)
     }
+
+    if (item && item.children && item.children.length > 0) {
+      setShowChildren(true)
+    } else {
+      setShowChildren(false)
+    }
+
+
   }
 
   const handleMenuClick = (info: { key: string }) => {
@@ -76,6 +90,19 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
   const leftHandler = () => {
     const optionId = form[curStatusFieldId]
     const index = _.findIndex(flatStatusList, { id: optionId })
+    const item = flatStatusList[index]
+    // 特殊处理
+    if(item.name === '已录取') {
+      const ele = _.find(flatStatusList, { name: '进行中' })
+      const id = ele?.id
+      if (!id) return
+      setForm({
+        ...form,
+        [curStatusFieldId]: id,
+      })
+      return
+    }
+
     const id = flatStatusList[index - 1]?.id
     if (!id) return
     setForm({
@@ -93,6 +120,25 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
       [curStatusFieldId]: id,
     })
   }
+  const rejectHandler = () => {
+    const idx = _.findIndex(flatStatusList, { name: '已淘汰' })
+    const id = flatStatusList[idx]?.id
+    if (!id) return
+    setForm({
+      ...form,
+      [curStatusFieldId]: id,
+    })
+  }
+  const approveHandler = () => {
+    const idx = _.findIndex(flatStatusList, { name: '已录取' })
+    const id = flatStatusList[idx]?.id
+    if (!id) return
+    setForm({
+      ...form,
+      [curStatusFieldId]: id,
+    })
+  }
+
   return (
     <StatusTagRoot>
       <div>
@@ -116,6 +162,14 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
           </Tag>
         </Dropdown>
         {showRight && <ArrowRightOutlined onClick={rightHandler} />}
+        {showChildren && <>
+          <Button type="dashed" size='small' onClick={rejectHandler}>
+            淘汰
+          </Button>
+          <Button className='ml-2' type="dashed" size='small' onClick={approveHandler}>
+            录取
+          </Button>
+        </>}
       </div>
     </StatusTagRoot>
   )

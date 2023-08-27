@@ -25,7 +25,7 @@ const FormRoot = styled.div`
   }
 `
 const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
-  const { handleCancel } = props
+  const { handleCancel, isModalOpen } = props
   const [messageApi, contextHolder] = message.useMessage()
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -34,7 +34,6 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
   const initForm = () => {
     form.setFieldValue('dstName', '')
   }
-
   const cancle = () => {
     // history.goBack()
     setLoading(false)
@@ -72,9 +71,10 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
       }
     })
   }
+
   useEffect(() => {
-    initForm()
-  }, [])
+    form.resetFields()
+  }, [handleCancel])
 
   return (
     <FormRoot>
@@ -83,7 +83,7 @@ const SetFlowName: React.FC<WorkFlowFormProps> = (props: any) => {
         <Form.Item
           label="名称"
           name="dstName"
-          rules={[{ required: true, message: '请输入工作流名字' }]}
+          rules={[{ required: true, message: '请输入岗位名字' }]}
         >
           <Input />
         </Form.Item>
