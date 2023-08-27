@@ -10,12 +10,13 @@ export const Logo: React.FC<any> = (props: any) => {
 const LogoUIRoot = styled.div`
   display: flex;
   align-items: center;
-
+  padding: 4px 0px;
+  width: 200px;
   .logo_img {
     margin-left: 44px;
     max-height: 100%;
+    height: 100%;
     width: auto;
-    padding: 4px 0px;
   }
   .title {
     margin-left: 16px;
@@ -33,7 +34,6 @@ export const LogoUI: React.FC = (props) => {
   return (
     <LogoUIRoot>
       <Logo className="logo_img" />
-      {/* <div className="title">HIFLOW平台</div> */}
     </LogoUIRoot>
   );
 };

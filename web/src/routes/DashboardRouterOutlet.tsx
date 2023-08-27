@@ -192,7 +192,7 @@ const DashboardRouterOutlet: React.FC = () => {
           </Layout>
         </Layout>
       </TourContext.Provider>
-      <Tour open={open} onClose={() => setOpen(false)} steps={getSteps()} />
+      {/* <Tour open={open} onClose={() => setOpen(false)} steps={getSteps()} /> */}
     </RouterContainer>
   )
 }

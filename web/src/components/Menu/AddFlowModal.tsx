@@ -125,13 +125,13 @@ const AddFlowModal = (props: any) => {
   const { className,  } = props
   let { isModalOpen, setIsModalOpen } = props
   const [flowType, setFlowType] = useState('')
-  const [curStep, setCurStep] = useState(1)
+  const [curStep, setCurStep] = useState(2)
 
  
   const handleCancel = () => {
     setIsModalOpen(false)
     setFlowType('')
-    setCurStep(1)
+    setCurStep(2)
   }
 
   return (
@@ -155,9 +155,9 @@ const AddFlowModal = (props: any) => {
             <PlusOutlined />
             <span style={{ marginLeft: '12px' }}>默认岗位</span>
           </div>
-          <div className="template-title">选择模板</div>
+          {/* <div className="template-title">选择模板</div> */}
           <div className="template-content">
-            {list.map((item, index) => {
+            {/* {list.map((item, index) => {
               return (
                 <TemplateCard
                   key={index}
@@ -166,7 +166,7 @@ const AddFlowModal = (props: any) => {
                   setFlowType={setFlowType}
                 />
               )
-            })}
+            })} */}
           </div>
           <div className="next-content">
             <Button

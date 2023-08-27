@@ -1,5 +1,3 @@
-import localforage from "localforage";
-
 import storage from 'store'
 import expirePlugin from 'store/plugins/expire'
 store.addPlugin(expirePlugin)
