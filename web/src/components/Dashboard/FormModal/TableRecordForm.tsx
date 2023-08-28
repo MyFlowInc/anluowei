@@ -15,7 +15,12 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { Modal } from 'antd'
 import { ExclamationCircleFilled } from '@ant-design/icons'
-import { UpdateDSMetaParams, deleteDSMeta, saveDSMeta, updateDSMeta } from '../../../api/apitable/ds-meta'
+import {
+  UpdateDSMetaParams,
+  deleteDSMeta,
+  saveDSMeta,
+  updateDSMeta,
+} from '../../../api/apitable/ds-meta'
 
 // 重新记录数组顺序
 const reorder = (
@@ -72,8 +77,8 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
 
   const dispatch = useAppDispatch()
   const curDstId = useAppSelector(selectCurFlowDstId)
-  const curFlowId =useAppSelector(selectCurFlowId) 
-  const metaId =useAppSelector(selectCurMetaId) 
+  const curFlowId = useAppSelector(selectCurFlowId)
+  const metaId = useAppSelector(selectCurMetaId)
   const curMetaData = useAppSelector(selectCurMetaData)
 
   const onDragEnd = async (result: any) => {
@@ -81,17 +86,17 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
     if (!result.destination) {
       return
     }
-    const res:WorkFlowFieldInfo[] = reorder(
+    const res: WorkFlowFieldInfo[] = reorder(
       dstColumns,
       result.source.index,
       result.destination.index
     )
-    // TODO update 
+    // TODO update
     try {
-      const meta_data =  _.cloneDeep(curMetaData)
-      let temp  = _.get(meta_data, 'views.0') as any
-      if(temp && meta_data){
-        temp.columns = res.map((item: any) =>{
+      const meta_data = _.cloneDeep(curMetaData)
+      let temp = _.get(meta_data, 'views.0') as any
+      if (temp && meta_data) {
+        temp.columns = res.map((item: any) => {
           return {
             fieldId: item.fieldId,
           }
@@ -101,21 +106,18 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
         id: metaId!,
         dstId: curDstId!,
         metaData: JSON.stringify(meta_data),
-        "revision": 0,
-        "deleted": false,
-        "sort": null,
-        "tenantId": null
+        revision: 0,
+        deleted: false,
+        sort: null,
+        tenantId: null,
       })
       // 同步状态
       dispatch(setCurTableColumn(res))
       dispatch(syncCurMetaDataColumn(res))
     } catch (error) {
-        console.log('onDragEnd error', error)
+      console.log('onDragEnd error', error)
     }
-
-
   }
-
 
   const updateFieldHandler = async (item: UpdateDSMetaParams) => {
     try {
@@ -140,7 +142,10 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
       cancelText: '取消',
       onOk: async () => {
         console.log('OK')
-        const res = await deleteDSMeta({dstId: curDstId!, fieldIds: [item.fieldId]})
+        const res = await deleteDSMeta({
+          dstId: curDstId!,
+          fieldIds: [item.fieldId],
+        })
         if (!curDstId) {
           return
         }

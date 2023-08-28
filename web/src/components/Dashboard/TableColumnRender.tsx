@@ -1,38 +1,18 @@
 import React from 'react'
 import { Button, Tag, Avatar } from 'antd'
 import { Link } from 'react-router-dom'
-
 import { DiscussModal } from './FormModal/TypeEditor/TypeDiscuss'
-
-import _, { StringChain } from 'lodash'
-import { flatList } from '../../store/workflowSlice'
+import _ from 'lodash'
+import { flatList, freshCurTableRows } from '../../store/workflowSlice'
 import { CopyOutlined, SendOutlined } from '@ant-design/icons'
-/**
- * The type of field returned by the interface	The type of the corresponding field
-      SingleText	single-line text
-      Text	Multi-line text
-      SingleSelect	Single choice
-      MultiSelect	Multiple choice
-      Number	Number
-      Currency	Currency
-      Percent	Percentage
-      DateTime	Datetime
-      Attachment	Attachment
-      Member	Member
-      Checkbox	Check
-      Rating	Rating
-      URL	Website
-      Phone	A telephone number.
-      Email	Email
-      MagicLink	MagicLink
-      MagicLookUp	MagicLookUp
-      Formula	Intelligent formula
-      AutoNumber	Autoincrement number
-      CreatedTime	Create Timestamp
-      LastModifiedTime	Modify Timestamp
-      CreatedBy	Created by
-      LastModifiedBy	Updated by
- */
+import { clipboardWriteText } from '../../util/clipboard'
+import { FlowItemTableDataType } from './FlowTable/core'
+import {
+  UpdateDSCellsParams,
+  updateDSCells,
+} from '../../api/apitable/ds-record'
+import store from '../../store'
+import { SocketMsgType, sendWebSocketMsg } from '../../api/apitable/ws-msg'
 export const NumFieldType = {
   NotSupport: 0,
   Text: 1, // Multi-line text
@@ -169,7 +149,11 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
         _.set(cloneConfig, 'property.options', flatList(options))
       }
       childNode = (
-        <InviteSingleSelect value={record[fieldId]} fieldConfig={cloneConfig} />
+        <InviteSingleSelect
+          value={record[fieldId]}
+          fieldConfig={cloneConfig}
+          record={record}
+        />
       )
       break
 
@@ -230,6 +214,73 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 }
 
 export default TableColumnRender
+
+const copyInviteLink = async (record: FlowItemTableDataType) => {
+  const dstColumns = store.getState().workflow.curTableColumn
+  const curDstId = store.getState().workflow.curFlowDstId
+  const user = store.getState().global.user
+
+  try {
+    console.log('copyInviteLink', record)
+    const invite_item = _.find(dstColumns, {
+      name_en: 'invite_status',
+    }) as any
+
+    if (!invite_item) return
+    const inviteFieldId = invite_item.fieldId
+
+    const name_item = _.find(dstColumns, {
+      name_en: 'interviewer_name',
+    }) as any
+    if (!name_item) return
+    const nameFieldId = name_item.fieldId
+
+    const path =
+      window.location.origin +
+      '/invite?recordId=' +
+      record.recordId +
+      '&&inviteFieldId=' +
+      inviteFieldId +
+      '&&nameFieldId=' +
+      nameFieldId
+    clipboardWriteText(path)
+
+    const inviteStatus = record[inviteFieldId]
+
+    if (inviteStatus === '未邀请' || !inviteStatus) {
+      // 修改状态
+      // TODO 这个接口有没有必要用rest, 业务意图只想更新一个字段
+      const { id, recordId, key, ...rest } = record
+      const params: UpdateDSCellsParams = {
+        dstId: curDstId!,
+        fieldKey: 'id',
+        records: [
+          {
+            recordId: record.recordId,
+            fields: {
+              ...rest,
+              [inviteFieldId]: '已邀请',
+            },
+          },
+        ],
+      }
+      await updateDSCells(params)
+      store.dispatch(freshCurTableRows(curDstId!))
+      // 同步
+      sendWebSocketMsg({
+        user,
+        dstId: curDstId!,
+        type: SocketMsgType.SetRecords,
+        recordId: record.recordId,
+        row: {
+          [inviteFieldId]: '已邀请',
+        },
+      })
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 const SingleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
   value,
@@ -295,10 +346,11 @@ const SingleSelect: React.FC<{
 const InviteSingleSelect: React.FC<{
   value: any
   fieldConfig: any
+  record: any
   children?: React.ReactNode
-}> = ({ value, fieldConfig }) => {
+}> = ({ value, fieldConfig, record }) => {
   const temp = _.get(fieldConfig, 'property.options') || []
-
+  // console.log(111, record)
   if (temp.length === 0) {
     return <div></div>
   }
@@ -322,15 +374,42 @@ const InviteSingleSelect: React.FC<{
 
   const text = _.find(options, { value: value })?.label || ''
   if (text) {
+    let color = 'default'
+    if (text === '已同意') {
+      color = '#87d068'
+    }
+    if (text === '已拒绝') {
+      color = '#f50'
+    }
     return (
       <div>
-        <Tag color="default">{text}</Tag>
-        <Tag  icon={<SendOutlined />} color="#55acee">生成邀约</Tag>
-        <Tag  icon={<CopyOutlined />} color="#55acee">复制</Tag>
-        
+        <Tag color={color}>{text}</Tag>
+        {text == '未邀请' && (
+          <Tag
+            icon={<SendOutlined />}
+            style={{ cursor: 'pointer !important' }}
+            color="#55acee"
+            onClick={() => {
+              copyInviteLink(record)
+            }}
+          >
+            生成邀约
+          </Tag>
+        )}
+        {['已邀请', '已同意', '已拒绝'].includes(text) && (
+          <Tag
+            icon={<CopyOutlined />}
+            style={{ cursor: 'pointer !important' }}
+            color="#55acee"
+            onClick={() => {
+              copyInviteLink(record)
+            }}
+          >
+            复制
+          </Tag>
+        )}
       </div>
     )
-      
   } else {
     return <div></div>
   }

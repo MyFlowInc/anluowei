@@ -153,6 +153,8 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
 
       if (inviteStatus === '未邀请' || !inviteStatus) {
         // 修改状态
+        // TODO 这个接口有没有必要用rest, 业务意图只想更新一个字段
+        const { id, recordId, key, ...rest } = record
         const params: UpdateDSCellsParams = {
           dstId: curDstId!,
           fieldKey: 'id',
@@ -160,6 +162,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
             {
               recordId: record.recordId,
               fields: {
+                ...rest,
                 [inviteFieldId]: '已邀请',
               },
             },
@@ -239,7 +242,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                   />
                 </Tooltip>
               )}
-              <Tooltip placement="top" title={'复制邀请链接'}>
+              {/* <Tooltip placement="top" title={'复制邀请链接'}>
                 <Button
                   type="text"
                   icon={<LinkOutlined />}
@@ -247,7 +250,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                     copyInviteLink(record)
                   }}
                 />
-              </Tooltip>
+              </Tooltip> */}
             </Space>
           )
         },

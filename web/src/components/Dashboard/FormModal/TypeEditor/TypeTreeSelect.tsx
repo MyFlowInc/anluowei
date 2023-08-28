@@ -25,26 +25,30 @@ const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
 
   // 初始化
   useEffect(() => {
-    // console.log('useEffect--TypeTreeSelect === ', cell, 'form == =', form)
+    console.log('useEffect--TypeTreeSelect === ', cell, 'form == =', form)
     const options = _.get(cell, 'fieldConfig.property.options')
     if (options) {
       setItems(options)
     }
-    const temp = _.get(form, cell.fieldId)
+    const temp =
+      _.get(form, cell.fieldId) || _.get(cell, 'fieldConfig.defaultValue')
     if (!temp) {
       setValue('')
     } else {
       setValue(temp)
+      handleSelectChange(temp)
     }
-  }, [form])
+  }, [form[cell.fieldId]])
 
-  const handleSelectChange = (value: string) => {
-    setValue(value)
-    console.log('handleSelectChange--value === ', value)
-
+  const handleSelectChange = (v: string) => {
+    if (v == value) {
+      return
+    }
+    setValue(v)
+    console.log('handleSelectChange--value === ', v)
     setForm({
       ...form,
-      [cell.fieldId]: value,
+      [cell.fieldId]: v,
     })
     console.log('onChangeContent', form)
   }
