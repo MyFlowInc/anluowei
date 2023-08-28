@@ -8,6 +8,7 @@ import {
   freshCurMetaData,
   freshCurTableRows,
   selectCurFlowDstId,
+  selectCurTableRows,
   WorkFlowFieldInfo,
   WorkFlowStatusInfo,
 } from '../../../store/workflowSlice'
@@ -123,6 +124,7 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
   const [inputForm] = Form.useForm()
   const user = useAppSelector(selectUser)
   const curDstId = useAppSelector(selectCurFlowDstId)
+  const curTableRows = useAppSelector(selectCurTableRows)
   const dispatch = useAppDispatch()
 
   // esc handler
@@ -210,6 +212,24 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
     console.log('editFormItemHandler', form)
     const { recordId, id, ...rest } = form
     inputForm.setFieldsValue(rest)
+
+    // 特殊需求 重置邀请状态
+    const res = _.find(dstColumns, { name_en: 'interview_date' }) as any
+    if (res) {
+      const interview_date_fieldId = res.fieldId
+      const newValue = rest[interview_date_fieldId]
+      const oldValue = _.find(curTableRows, { recordId })?.[
+        interview_date_fieldId
+      ]
+      if (newValue && oldValue && newValue !== oldValue) {
+        const res2 = _.find(dstColumns, { name_en: 'invite_status' }) as any
+        const invite_status_fieldId = res2.fieldId
+        if (rest[invite_status_fieldId]) {
+          rest[invite_status_fieldId] = '未邀请'
+        }
+      }
+    }
+
     const params: UpdateDSCellsParams = {
       dstId: curDstId!,
       fieldKey: 'id',
