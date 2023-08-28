@@ -6,6 +6,7 @@ import { DiscussModal } from './FormModal/TypeEditor/TypeDiscuss'
 
 import _, { StringChain } from 'lodash'
 import { flatList } from '../../store/workflowSlice'
+import { CopyOutlined, SendOutlined } from '@ant-design/icons'
 /**
  * The type of field returned by the interface	The type of the corresponding field
       SingleText	single-line text
@@ -321,7 +322,15 @@ const InviteSingleSelect: React.FC<{
 
   const text = _.find(options, { value: value })?.label || ''
   if (text) {
-    return <Tag color="default">{text}</Tag>
+    return (
+      <div>
+        <Tag color="default">{text}</Tag>
+        <Tag  icon={<SendOutlined />} color="#55acee">生成邀约</Tag>
+        <Tag  icon={<CopyOutlined />} color="#55acee">复制</Tag>
+        
+      </div>
+    )
+      
   } else {
     return <div></div>
   }
