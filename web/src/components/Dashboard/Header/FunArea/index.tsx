@@ -1,6 +1,6 @@
 import React from "react";
 import { Space } from "antd";
-
+import _ from "lodash";
 import { useAppSelector } from "../../../../store/hooks";
 import {
   selectCurTableColumn,
@@ -23,7 +23,7 @@ const FunArea: React.FC<FunAreaProps> = () => {
   return (
     <Space>
       <Filter records={records} columns={dstColumns} />
-      <Sort />
+      <Sort records={records} columns={dstColumns} />
       {/* <Senior /> */}
       <Search records={records} columns={dstColumns} />
     </Space>
