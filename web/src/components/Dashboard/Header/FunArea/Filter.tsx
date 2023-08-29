@@ -9,6 +9,11 @@ import { setCurTableRows } from "../../../../store/workflowSlice";
 import type { SelectProps } from "antd";
 import type { TableColumnItem } from "../../../../store/workflowSlice";
 
+function encode(keyword: string) {
+  const reg = /[\[\(\$\^\.\]\*\\\?\+\{\}\\|\)]/gi;
+  return keyword.replace(reg, (key) => `\\${key}`);
+}
+
 interface ConditionType {
   conditionName: string;
   conditionOperator: string;
@@ -39,15 +44,15 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
 
       case "include":
         const target = record[condition.conditionName] as string;
-        console.log("search condition", record[condition.conditionName]);
-        const reg: RegExp = new RegExp(condition.conditionValue, "gi");
-        return reg.test(target);
+        // console.log("search condition", record[condition.conditionName]);
+        const rega: RegExp = new RegExp(encode(condition.conditionValue), "gi");
+        return rega.test(target);
 
       case "notinclude":
         const target1 = record[condition.conditionName] as string;
-        console.log("search condition", record[condition.conditionName]);
-        const reg1: RegExp = new RegExp(condition.conditionValue, "gi");
-        return !reg1.test(target1);
+        // console.log("search condition", record[condition.conditionName]);
+        const regb: RegExp = new RegExp(encode(condition.conditionValue), "gi");
+        return !regb.test(target1);
 
       case "null":
         return (
@@ -129,8 +134,9 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
   }, [relation, conditions]);
 
   React.useEffect(() => {
+    form.resetFields();
     setFirstFieldId(_.get(columns, 0).fieldId);
-  }, [columns]);
+  }, [records, columns]);
 
   return (
     <Form
