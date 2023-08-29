@@ -173,16 +173,16 @@ export const StatusTag: React.FC<StatusTagProps> = (props) => {
             <Button
               type="dashed"
               size="small"
-              style={{ color: "red" }}
+              style={{ color: "#ff4d4f" }}
               onClick={rejectHandler}
             >
               淘汰
             </Button>
             <Button
               className="ml-2"
+              style={{ color: "#52c41a" }}
               type="dashed"
               size="small"
-              style={{ color: "green" }}
               onClick={approveHandler}
             >
               录取

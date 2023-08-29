@@ -1,10 +1,11 @@
 import { Button, Dropdown, Modal } from "antd";
 import styled from "styled-components";
 import _ from "lodash";
-import { getInviteList, userInvite, inviteUserList } from "../../api/apitable/ds-share";
+import { getInviteList, userInvite, inviteUserList, apitableDeveloperUserList } from "../../api/apitable/ds-share";
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
+import { selectCurFlowDstId, setInviteMembers } from "../../store/workflowSlice";
 
 const UIListItem = styled.div`
   display: flex;
@@ -130,24 +131,13 @@ const Invite = (props: any) => {
   const { isInviteModalOpen, setIsInviteModalOpen, editDstId } = props;
   const [useList, setUseList] = useState<any[]>([]);
   const user = useAppSelector(selectUser);
+  const dstId = useAppSelector(selectCurFlowDstId)
+  const dispatch = useAppDispatch()
 
-  const showModal = () => {
-    setIsInviteModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsInviteModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsInviteModalOpen(false);
-  };
+  
 
   const fetchUserList = async () => {
- 
     const res = await inviteUserList({dstId: editDstId});
-    console.log(1111, res.data);
-
     if (_.get(res, "data")) {
       const temp = res.data.filter((item: any) => {
         return item.id !== user.id;
@@ -155,12 +145,18 @@ const Invite = (props: any) => {
       setUseList(temp);
     }
   };
-
+  const freshInviteMember = async () => {
+    const res2 = await apitableDeveloperUserList(dstId!)
+      dispatch(setInviteMembers(_.get(res2, 'data.record')))
+  }
 
   useEffect(() => {
     isInviteModalOpen && fetchUserList();
   }, [isInviteModalOpen]);
 
+  useEffect(() => {
+    !isInviteModalOpen && freshInviteMember();
+  }, [isInviteModalOpen]);
  
 
   return (
@@ -168,8 +164,10 @@ const Invite = (props: any) => {
       title="邀请成员"
       open={isInviteModalOpen}
       width={566}
-      onOk={handleOk}
-      onCancel={handleCancel}
+      footer={null}
+      onCancel={() => {
+        setIsInviteModalOpen(false);
+      }}
     >
       <UIROOT className={className}>
         <div className="list-header">
@@ -189,3 +187,4 @@ const Invite = (props: any) => {
 };
 
 export default Invite;
+ 
