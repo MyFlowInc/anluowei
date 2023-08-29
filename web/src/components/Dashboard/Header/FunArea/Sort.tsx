@@ -5,12 +5,30 @@ import ArrowRightFilled from "../assets/ArrowRightFilled";
 
 import { useAppDispatch } from "../../../../store/hooks";
 import { setCurTableRows } from "../../../../store/workflowSlice";
-
+import { NumFieldType } from "../../TableColumnRender";
 import styled from "styled-components";
 import _ from "lodash";
 
 import type { SelectProps } from "antd";
 import type { TableColumnItem } from "../../../../store/workflowSlice";
+
+const getFileName = (url: string) => {
+  const file = url.split("/").pop();
+  const fileName = file?.split("-")[1] || "";
+  return fileName;
+};
+
+function encode(keyword: string) {
+  const reg = /[\[\(\$\^\.\]\*\\\?\+\{\}\\|\)]/gi;
+  return keyword.replace(reg, (key) => `\\${key}`);
+}
+
+interface SortSegmentedProps {
+  from: string;
+  to: string;
+  v: boolean;
+  children?: React.ReactNode;
+}
 
 const SortSegmented = styled(({ from, to, ...rest }) => (
   <div {...rest}>
@@ -18,7 +36,7 @@ const SortSegmented = styled(({ from, to, ...rest }) => (
     <ArrowRightFilled style={{ fontSize: "18px", padding: "0px 8px" }} />
     {to}
   </div>
-))`
+))<SortSegmentedProps>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,17 +47,21 @@ const SortSegmented = styled(({ from, to, ...rest }) => (
   color: ${(props) => (props.v ? "#0000ff" : "#000000")};
 `;
 
+SortSegmented.defaultProps = {
+  v: false,
+};
+
 interface SearchContentProps {
   records: any[];
   columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const SearchContent: React.FC<SearchContentProps> = ({ records, columns }) => {
+const SortContent: React.FC<SearchContentProps> = ({ records, columns }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
-  const [sort, set] = useState<string | number | "">("");
+  const [s, set] = useState<string | "">("");
 
   const options: SelectProps["options"] = columns.map((item: any) => {
     return {
@@ -48,26 +70,42 @@ const SearchContent: React.FC<SearchContentProps> = ({ records, columns }) => {
     };
   });
 
-  const handleSortChange = (value: string | number) => {
-    set(value as string);
+  const compare = (a: any, b: any, sortType: string) => {
+    const x = a || "";
+    const y = b || "";
+    const reg: RegExp = new RegExp("[a-zA-Z0-9]", "g");
+    if (reg.test(x) || reg.test(y)) {
+      if (x > y) {
+        return sortType === "asc" ? 1 : -1;
+      } else if (x < y) {
+        return sortType === "asc" ? -1 : 1;
+      } else {
+        return 0;
+      }
+    } else {
+      const n = x.localeCompare(y, "zh-Hans-CN");
+      return sortType === "asc" ? n : -n;
+    }
+  };
 
-    const fieldId = form.getFieldValue("condition");
-    if (fieldId) {
+  const sort = (field: string, sortType: string = s) => {
+    if (field) {
+      const currents = columns.filter((column) => column.fieldId === field);
+      const current = _.get(currents, 0);
+
       const sortRecords = records.slice().sort((a: any, b: any) => {
-        const x = a[fieldId];
-        const y = b[fieldId];
-        const reg: RegExp = new RegExp("[a-zA-Z0-9]", "g");
-        if (reg.test(x) || reg.test(y)) {
-          if (x > y) {
-            return value === "asc" ? 1 : -1;
-          } else if (x < y) {
-            return value === "asc" ? -1 : 1;
-          } else {
-            return 0;
+        if (current) {
+          switch (current.type) {
+            case NumFieldType.Attachment:
+              const attachmentA = a[field] && getFileName(a[field]);
+              const attachmentB = b[field] && getFileName(b[field]);
+              return compare(attachmentA, attachmentB, sortType);
+
+            default:
+              return compare(a[field], b[field], sortType);
           }
         } else {
-          const num = a[fieldId].localeCompare(b[fieldId], "zh-Hans-CN");
-          return value === "asc" ? num : -num;
+          return compare(a[field], b[field], sortType);
         }
       });
 
@@ -75,16 +113,29 @@ const SearchContent: React.FC<SearchContentProps> = ({ records, columns }) => {
     }
   };
 
+  const handleValuesChanged = (changedValues: any, allValues: any) => {
+    if (changedValues.condition && changedValues.condition !== "" && s !== "") {
+      sort(changedValues.condition);
+    }
+  };
+
+  const handleSortChange = (value: string | number) => {
+    set(value as string);
+    sort(form.getFieldValue("condition"), value as string);
+  };
+
   useEffect(() => {
     form.resetFields();
+    set("");
   }, [records, columns]);
 
   return (
     <Form
       form={form}
       name="sortForm"
-      style={{ width: 460, margin: "0px 16px" }}
       initialValues={{ condition: "" }}
+      onValuesChange={handleValuesChanged}
+      style={{ width: 460, margin: "0px 16px" }}
     >
       <Form.Item>
         <Typography.Text>设置排序条件</Typography.Text>
@@ -101,11 +152,15 @@ const SearchContent: React.FC<SearchContentProps> = ({ records, columns }) => {
             defaultValue=""
             options={[
               {
-                label: <SortSegmented from="A" to="Z" v={sort === "asc"} />,
+                label: (
+                  <SortSegmented from="A" to="Z" v={s === "asc" ? 1 : 0} />
+                ),
                 value: "asc",
               },
               {
-                label: <SortSegmented from="Z" to="A" v={sort === "desc"} />,
+                label: (
+                  <SortSegmented from="Z" to="A" v={s === "desc" ? 1 : 0} />
+                ),
                 value: "desc",
               },
             ]}
@@ -128,7 +183,7 @@ const Sort: React.FC<SortProps> = ({ records, columns }) => {
   return (
     <Popover
       placement="bottom"
-      content={<SearchContent records={records} columns={columns} />}
+      content={<SortContent records={records} columns={columns} />}
       trigger="click"
     >
       <Button type="text" icon={<SortAscendingOutlined />}>
