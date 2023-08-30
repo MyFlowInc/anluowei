@@ -18,11 +18,6 @@ const getFileName = (url: string) => {
   return fileName;
 };
 
-function encode(keyword: string) {
-  const reg = /[\[\(\$\^\.\]\*\\\?\+\{\}\\|\)]/gi;
-  return keyword.replace(reg, (key) => `\\${key}`);
-}
-
 interface SortSegmentedProps {
   from: string;
   to: string;

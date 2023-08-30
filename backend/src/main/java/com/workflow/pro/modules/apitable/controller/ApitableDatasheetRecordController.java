@@ -159,6 +159,16 @@ public class ApitableDatasheetRecordController extends BaseController {
         return success(apitableDatasheetRecords);
     }
 
+
+    @PostMapping("resetFieldType")
+    @ApiOperation(value = "resetFieldType")
+    public Result resetFieldType(@RequestParam(value = "dstId") String datasheetId, @RequestParam(value = "fieldId") String fieldId) {
+        apitableDatasheetRecordService.resetFieldType(datasheetId, fieldId);
+        return success();
+    }
+
+
+
     @PostMapping("delFieldData")
     @ApiOperation(value = "delFieldData")
     public Result delFieldData(@RequestParam(value = "dstId") String dstId, @RequestBody List<String> recordIds) {

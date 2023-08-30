@@ -8,7 +8,10 @@ import {
 } from "@ant-design/icons";
 import _ from "lodash";
 import { useAppSelector } from "../../../../store/hooks";
-import { selectMembers } from "../../../../store/workflowSlice";
+import {
+  selectMembers,
+  selectCurTableRows,
+} from "../../../../store/workflowSlice";
 import type { TableColumnItem } from "../../../../store/workflowSlice";
 
 import { NumFieldType } from "../../TableColumnRender";
@@ -66,7 +69,6 @@ function encode(keyword: string) {
 
 interface SearchContentProps {
   open: boolean;
-  records: any[];
   columns: TableColumnItem[];
   onClosePop: () => void;
   children?: React.ReactNode;
@@ -74,12 +76,12 @@ interface SearchContentProps {
 
 const SearchContent: React.FC<SearchContentProps> = ({
   open,
-  records,
   columns,
   onClosePop,
 }) => {
   const [form] = Form.useForm();
   const userList = useAppSelector(selectMembers);
+  const rows = useAppSelector(selectCurTableRows);
   const [matchList, setMatchList] = useState<string[]>([]);
   const [matchIndex, setMatchIndex] = useState<number>(0);
 
@@ -159,13 +161,13 @@ const SearchContent: React.FC<SearchContentProps> = ({
   };
 
   const search = (keyword: string) => {
-    const RowsNum = records.length;
+    const RowsNum = rows.length;
     const ColsNum = columns.length;
     const list = [];
 
     for (let i = 0; i < RowsNum; i++) {
       for (let j = 0; j < ColsNum; j++) {
-        const record = records[i];
+        const record = rows[i];
         const colunm = columns[j];
 
         switch (colunm.type) {
@@ -232,7 +234,7 @@ const SearchContent: React.FC<SearchContentProps> = ({
 
   React.useEffect(() => {
     resetSearch();
-  }, [records, columns, open]);
+  }, [columns, open]);
 
   const handleValuesChanged = (changedValues: any, allValues: any) => {
     if (changedValues.searchField && changedValues.searchField !== "") {
@@ -248,6 +250,14 @@ const SearchContent: React.FC<SearchContentProps> = ({
     resetSearch();
     onClosePop();
   };
+
+  React.useEffect(() => {
+    const searchField = form.getFieldValue("searchField");
+    if (searchField) {
+      const keyword = encode(searchField);
+      search(keyword);
+    }
+  }, [rows]);
 
   return (
     <Form
@@ -277,12 +287,11 @@ const SearchContent: React.FC<SearchContentProps> = ({
 };
 
 interface SearchProps {
-  records: any[];
   columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const Search: React.FC<SearchProps> = ({ records, columns }) => {
+const Search: React.FC<SearchProps> = ({ columns }) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const handleTogglePop = () => {
@@ -295,7 +304,6 @@ const Search: React.FC<SearchProps> = ({ records, columns }) => {
       content={
         <SearchContent
           open={open}
-          records={records}
           columns={columns}
           onClosePop={handleTogglePop}
         />

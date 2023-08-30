@@ -104,7 +104,7 @@ interface EditTitleProps {
   item: WorkFlowFieldInfo;
   type: string;
   setType: (type: "view" | "edit") => void;
-  updateField: (item: UpdateDSMetaParams) => void;
+  updateField: (item: UpdateDSMetaParams, b?: boolean) => void;
   deleteField: (item: WorkFlowFieldInfo) => void;
 }
 const EditTitle: React.FC<EditTitleProps> = (props) => {
@@ -173,7 +173,7 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
           name: name, //
           type: k,
         };
-        await updateField(temp);
+        await updateField(temp, true);
         setType("view");
         return;
       }
@@ -291,7 +291,7 @@ interface CellEditorProps {
   item: WorkFlowFieldInfo;
   form: { [id: string]: string };
   setForm: (value: any) => void;
-  updateField: (item: UpdateDSMetaParams) => void;
+  updateField: (item: UpdateDSMetaParams, b?: boolean) => void;
   deleteField: (item: WorkFlowFieldInfo) => void;
   modalType: string;
 }

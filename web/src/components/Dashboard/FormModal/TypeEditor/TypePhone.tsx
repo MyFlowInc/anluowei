@@ -1,9 +1,5 @@
-/**
- * type=3
- */
-
-import React, { useState, useRef, useEffect, SyntheticEvent } from "react";
-import { Input, Form } from "antd";
+import React, { useRef, SyntheticEvent } from "react";
+import { Input } from "antd";
 import { PhoneOutlined } from "@ant-design/icons";
 import { TableColumnItem } from "../../../../store/workflowSlice";
 import _ from "lodash";
@@ -26,7 +22,6 @@ const TypePhone: React.FC<TypePhoneProps> = (props: TypePhoneProps) => {
       ...form,
       [cell.fieldId]: value,
     });
-    console.log("onChangeContent", form);
   };
 
   return (

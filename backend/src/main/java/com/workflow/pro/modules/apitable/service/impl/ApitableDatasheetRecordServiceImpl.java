@@ -214,4 +214,19 @@ public class ApitableDatasheetRecordServiceImpl extends ServiceImpl<ApitableData
 
         return 0;
     }
+
+    @Override
+    public void resetFieldType(String dstId, String fieldId) {
+       List<ApitableDatasheetRecord> records = apitableDatasheetRecordMapper.selectList(new QueryWrapper<ApitableDatasheetRecord>().eq("dst_id", dstId));
+       if(null == records || records.isEmpty()) {
+           throw new BusinessExceptionNew(3011, "当前dst_id不存在");
+       }
+
+       for(ApitableDatasheetRecord record : records) {
+           JSONObject jsonObject = JSONUtil.parseObj(record.getData());
+           jsonObject.remove(fieldId);
+           record.setData(jsonObject.toString());
+           apitableDatasheetRecordMapper.updateApitableDatasheetRecord(record);
+       }
+    }
 }
