@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { TreeSelect } from 'antd'
+import { Tag } from 'antd'
 import { TableColumnItem } from '../../../../store/workflowSlice'
 
 import _ from 'lodash'
@@ -53,25 +53,38 @@ const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
     console.log('onChangeContent', form)
   }
 
-  return (
-    <>
-      <TreeSelect
-        fieldNames={{
-          label: 'name',
-          value: 'name',
-          children: 'children',
-        }}
-        style={{ width: '100%' }}
-        value={value}
-        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-        placeholder="Please select"
-        allowClear
-        treeDefaultExpandAll
-        onChange={handleSelectChange}
-        treeData={items as any}
-      />
-    </>
-  )
+  if (value) {
+    let color = 'default'
+    if (value === '已同意') {
+      color = '#87d068'
+    }
+    if (value === '已拒绝') {
+      color = '#f50'
+    }
+    return <Tag color={color}>{value}</Tag>
+  } else {
+    return <div></div>
+  }
+
+  // return (
+  //   <>
+  //     <TreeSelect
+  //       fieldNames={{
+  //         label: 'name',
+  //         value: 'name',
+  //         children: 'children',
+  //       }}
+  //       style={{ width: '100%' }}
+  //       value={value}
+  //       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+  //       placeholder="Please select"
+  //       allowClear
+  //       treeDefaultExpandAll
+  //       onChange={handleSelectChange}
+  //       treeData={items as any}
+  //     />
+  //   </>
+  // )
 }
 
 export default TypeTreeSelect

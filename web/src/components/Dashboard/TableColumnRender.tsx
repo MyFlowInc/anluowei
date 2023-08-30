@@ -3,7 +3,11 @@ import { Button, Tag, Avatar } from 'antd'
 import { Link } from 'react-router-dom'
 import { DiscussModal } from './FormModal/TypeEditor/TypeDiscuss'
 import _ from 'lodash'
-import { flatList, freshCurTableRows } from '../../store/workflowSlice'
+import {
+  flatList,
+  freshCurTableRows,
+  setCopyModalPorps,
+} from '../../store/workflowSlice'
 import { CopyOutlined, SendOutlined } from '@ant-design/icons'
 import { clipboardWriteText } from '../../util/clipboard'
 import { FlowItemTableDataType } from './FlowTable/core'
@@ -243,7 +247,9 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
       inviteFieldId +
       '&&nameFieldId=' +
       nameFieldId
-    clipboardWriteText(path)
+
+    // 更换方案
+    // clipboardWriteText(path)
 
     const inviteStatus = record[inviteFieldId]
 
@@ -277,6 +283,13 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
         },
       })
     }
+
+    store.dispatch(
+      setCopyModalPorps({
+        isShow: true,
+        copyText: path,
+      })
+    )
   } catch (e) {
     console.log(e)
   }
@@ -387,7 +400,7 @@ const InviteSingleSelect: React.FC<{
         {text == '未邀请' && (
           <Tag
             icon={<SendOutlined />}
-            style={{ cursor: 'pointer !important' }}
+            style={{ cursor: 'pointer' }}
             color="#55acee"
             onClick={() => {
               copyInviteLink(record)
@@ -399,7 +412,7 @@ const InviteSingleSelect: React.FC<{
         {['未接受', '已同意', '已拒绝'].includes(text) && (
           <Tag
             icon={<CopyOutlined />}
-            style={{ cursor: 'pointer !important' }}
+            style={{ cursor: 'pointer' }}
             color="#55acee"
             onClick={() => {
               copyInviteLink(record)
