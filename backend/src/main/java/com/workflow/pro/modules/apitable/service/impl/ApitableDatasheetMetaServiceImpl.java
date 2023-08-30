@@ -290,7 +290,7 @@ public class ApitableDatasheetMetaServiceImpl extends ServiceImpl<ApitableDatash
 
 
     @Override
-    public List<ApitableDatasheetRecord>  addRecords(String dstId, CreateRecordRequest record) throws BusinessExceptionNew {
+    public List<ApitableDatasheetRecord> addRecords(String dstId, CreateRecordRequest record) throws BusinessExceptionNew {
         ApitableDatasheetMeta exist = getOne(new QueryWrapper<ApitableDatasheetMeta>().eq("dst_id", dstId));
         if (exist == null || exist.getId() == null) {
             throw new BusinessExceptionNew(3011, "当前dst_id不存在");
@@ -327,28 +327,44 @@ public class ApitableDatasheetMetaServiceImpl extends ServiceImpl<ApitableDatash
 
     @Override
     public List<ApitableDatasheetRecord> updateRecords(String dstId, UpdateRecordRequest record) throws BusinessExceptionNew {
-        ApitableDatasheetMeta exist = getOne(new QueryWrapper<ApitableDatasheetMeta>().eq("dst_id", dstId));
+        ApitableDatasheetMeta exist = getOne(new QueryWrapper<ApitableDatasheetMeta>().eq("dst_id", dstId), false);
         if (exist == null || exist.getId() == null) {
             throw new BusinessExceptionNew(3011, "当前dst_id不存在");
         }
+        //1.当前record 记录，并取出 jsonMeta
+        //2.jsonObject 更新对应字符串
         JSONObject recordMap = JSONUtil.createObj();
         JSONArray rows = JSONUtil.createArray();
         List<UpdateRecord> records = record.getRecords();
 
         for (UpdateRecord list1 : records) {
+
             if (list1.getRecordId() != null || !Objects.equals(list1.getRecordId(), "")) {
+
+                //记录不为空 取字段合并
                 Map<String, Object> fields = list1.getFields();
                 JSONObject jsonObject = JSONUtil.parseObj(fields);
+
+                ApitableDatasheetRecord datasheetRecord = datasheetRecordService.getOne(new QueryWrapper<ApitableDatasheetRecord>().eq("record_id", list1.getRecordId()), false);
+                if (datasheetRecord != null && datasheetRecord.getData() != null) {
+                    JSONObject jsonObject1 = JSONUtil.parseObj(datasheetRecord.getData());
+                    //新的数据覆盖旧的数据
+                    jsonObject1.putAll(jsonObject);
+                    jsonObject = jsonObject1;
+                }
+
                 String recordId = list1.getRecordId();
                 RecordMapRo recordMapRo = RecordMapRo.builder().id(recordId).data(jsonObject).build();
+
                 recordMap.set(recordId, recordMapRo);
                 JSONObject recordJson = JSONUtil.createObj();
                 recordJson.set("recordId", recordId);
                 rows.add(recordJson);
             }
         }
+        //更新meta表 关联rows
         updateViewRows(dstId, rows);
-
+        //更新record表
         List<ApitableDatasheetRecord> apitableDatasheetRecords = datasheetRecordService.saveBatchRecord("1", recordMap, dstId);
         return apitableDatasheetRecords;
     }

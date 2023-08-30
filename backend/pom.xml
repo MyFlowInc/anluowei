@@ -24,7 +24,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <common.pool.version>2.11.1</common.pool.version>
-        <fastjson.version>1.2.45</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <token.version>0.9.1</token.version>
         <datasource.version>3.3.1</datasource.version>
         <mybatis.plus.version>3.4.0</mybatis.plus.version>
@@ -36,7 +36,7 @@
         <captcha.version>1.6.2</captcha.version>
         <api.version>2.3.0</api.version>
         <oshi.version>3.9.1</oshi.version>
-        <hutool.version>5.5.7</hutool.version>
+        <hutool.version>5.8.16</hutool.version>
         <jedis.version>2.9.0</jedis.version>
         <oss.version>3.10.2</oss.version>
         <page.version>1.4.1</page.version>

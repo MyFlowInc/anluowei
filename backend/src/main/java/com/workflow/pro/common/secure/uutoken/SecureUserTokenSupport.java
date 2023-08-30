@@ -56,10 +56,6 @@ public class SecureUserTokenSupport extends OncePerRequestFilter {
         // token verify
         //todo 开发环境使用
         SecureUser secureUser;
-        if (tokenHeader.equals("admin")) {
-            tokenHeader="eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE2NzI5OTczNzcsImlzcyI6IkNtcy1BZG1pbiJ9.QF9h18e1V88J1TaCXm7eqhAogms-zZfgLHlowJlcnDlmjKyfIeKTk6u0I1OrUzNBn4bighwz8ggvJE52GTFxoA";
-            tokenHeaderKey="aeb1ba1a-1b4f-403d-9682-65984cc8e44c";
-        }
             try {
                 SecureUserToken userToken = customUserDetailsTokenService.verifyToken(tokenHeaderKey, tokenHeader.replaceFirst(TokenConstant.TOKEN_PREFIX, ""));
                 secureUser = userToken.getSecureUser();
