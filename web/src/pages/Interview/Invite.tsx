@@ -194,7 +194,7 @@ const Invite: React.FC = () => {
             <div className="flex flex-col mb-4 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
               {inviteStatus === '已同意' && AcceptUI()}
               {inviteStatus === '已拒绝' && RejectUI()}
-              {['未邀请', '已邀请'].includes(inviteStatus) && (
+              {['未邀请', '未接受'].includes(inviteStatus) && (
                 <>
                   <span
                     onClick={rejectHandle}

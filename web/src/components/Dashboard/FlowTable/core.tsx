@@ -163,7 +163,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
               recordId: record.recordId,
               fields: {
                 ...rest,
-                [inviteFieldId]: '已邀请',
+                [inviteFieldId]: '未接受',
               },
             },
           ],
@@ -177,7 +177,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           type: SocketMsgType.SetRecords,
           recordId: record.recordId,
           row: {
-            [inviteFieldId]: '已邀请',
+            [inviteFieldId]: '未接受',
           },
         })
       }

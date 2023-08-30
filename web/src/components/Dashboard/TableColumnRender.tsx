@@ -259,7 +259,7 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
             recordId: record.recordId,
             fields: {
               ...rest,
-              [inviteFieldId]: '已邀请',
+              [inviteFieldId]: '未接受',
             },
           },
         ],
@@ -273,7 +273,7 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
         type: SocketMsgType.SetRecords,
         recordId: record.recordId,
         row: {
-          [inviteFieldId]: '已邀请',
+          [inviteFieldId]: '未接受',
         },
       })
     }
@@ -396,7 +396,7 @@ const InviteSingleSelect: React.FC<{
             生成邀约
           </Tag>
         )}
-        {['已邀请', '已同意', '已拒绝'].includes(text) && (
+        {['未接受', '已同意', '已拒绝'].includes(text) && (
           <Tag
             icon={<CopyOutlined />}
             style={{ cursor: 'pointer !important' }}
