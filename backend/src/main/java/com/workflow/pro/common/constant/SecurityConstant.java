@@ -20,6 +20,8 @@ public class SecurityConstant {
             + "/api/sys/apitableDatasheetRecord/getRecord,"
             + "/api/sys/apitableDatasheetRecord/setRecordValue,"
             + "/api/sys/user/password/reset/email,"
+            + "/file/**/**/**/*,"
+            + "/file/*,"
 
 
 
@@ -28,7 +30,9 @@ public class SecurityConstant {
     /**
      * 不需要认证的静态资源
      */
-    public static final String WEB_ACT_MATCHERS = "/favicon.ico";
+    public static final String WEB_ACT_MATCHERS = "/favicon.ico"
+            + "/file/**/**/**/*,"
+            + "/file/*,";
 
     /**
      * 默认的登录接口

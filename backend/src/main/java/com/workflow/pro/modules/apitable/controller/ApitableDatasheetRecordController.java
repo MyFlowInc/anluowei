@@ -166,6 +166,7 @@ public class ApitableDatasheetRecordController extends BaseController {
         return success();
     }
 
+    //分享邀请功能
     @GetMapping("getRecord")
     @ApiOperation(value = "getRecord")
     public Result getRecords(@RequestParam(value = "record_id") String recordId) {
@@ -177,7 +178,7 @@ public class ApitableDatasheetRecordController extends BaseController {
 
         return success(record_id);
     }
-
+    //设置邀请状态
     @PostMapping("setRecordValue")
     public Result setRecordValue(@RequestParam(value = "record_id") String recordId, @RequestBody AddFieldRecordUpdate record) {
         ApitableDatasheetRecord record_id = apitableDatasheetRecordService.getOne(new QueryWrapper<ApitableDatasheetRecord>().eq("record_id", recordId), false);

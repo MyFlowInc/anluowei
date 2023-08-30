@@ -1,5 +1,6 @@
 package com.workflow.pro.common.configure;
 
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,10 @@ public class RedisConfig {
      * */
     @Bean
     public RedisTemplate<String, Serializable> redisTemplate(LettuceConnectionFactory connectionFactory){
+
+        ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
         RedisTemplate<String,Serializable> redisTemplate = new RedisTemplate<>();
+
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericFastJsonRedisSerializer());
         redisTemplate.setConnectionFactory(connectionFactory);
