@@ -89,5 +89,13 @@ public interface IApitableDatasheetRecordService extends IService<ApitableDatash
     DatasheetRecordMapVo delFieldData(String dstId, List<String> delFieldIds, boolean saveDb);
 
     int addRecords(String dstId, CreateRecordRequest record) throws BusinessExceptionNew;
+
+    /**
+     * 修订类型重置值
+     *
+     * @param datasheetId
+     * @param fieldId
+     */
+    void resetFieldType(String datasheetId, String fieldId);
 }
 

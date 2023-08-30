@@ -25,7 +25,7 @@ const FunArea: React.FC<FunAreaProps> = () => {
       <Filter records={records} columns={dstColumns} />
       <Sort records={records} columns={dstColumns} />
       {/* <Senior /> */}
-      <Search records={records} columns={dstColumns} />
+      <Search columns={dstColumns} />
     </Space>
   );
 };
