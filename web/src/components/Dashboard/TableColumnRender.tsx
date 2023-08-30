@@ -450,7 +450,7 @@ const MultiSelect: React.FC<{
 
 const getFileName = (url: string) => {
   const file = url.split('/').pop()
-  const fileName = file?.split('-')[1] || ''
+  const fileName = file || ''
   return fileName
 }
 

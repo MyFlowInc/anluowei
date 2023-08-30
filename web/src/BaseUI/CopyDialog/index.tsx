@@ -19,7 +19,6 @@ const CopyDialog: React.FC<CopyDialogProps> = (props: CopyDialogProps) => {
     closeModal()
   }
   useEffect(() => {
-    console.log(11, spanRef)
     let spanElement = spanRef.current
     if (!spanElement) {
       return

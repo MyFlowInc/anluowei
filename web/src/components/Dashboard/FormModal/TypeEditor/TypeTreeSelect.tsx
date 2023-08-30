@@ -25,7 +25,7 @@ const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
 
   // 初始化
   useEffect(() => {
-    console.log('useEffect--TypeTreeSelect === ', cell, 'form == =', form)
+    // console.log('useEffect--TypeTreeSelect === ', cell, 'form == =', form)
     const options = _.get(cell, 'fieldConfig.property.options')
     if (options) {
       setItems(options)
