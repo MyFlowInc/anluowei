@@ -14,8 +14,10 @@ public class MyWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler(  "/file/*")
         // registry.addResourceHandler(System.getProperty("user.dir") + "/file/*")
                 .addResourceLocations(System.getProperty("user.dir") + "/file/");
-
-
+        registry.addResourceHandler("/file/**").addResourceLocations(
+                "file:"+System.getProperty("user.dir")+System.getProperty("file.separator")+"file"
+                        +System.getProperty("file.separator")+System.getProperty("file.separator")
+        );
     }
 
 }

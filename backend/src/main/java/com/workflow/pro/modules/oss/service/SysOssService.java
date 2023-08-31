@@ -1,5 +1,6 @@
 package com.workflow.pro.modules.oss.service;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public interface SysOssService {
      *
      * @param file 文件本身
      */
-    String upload(MultipartFile file);
+    String upload(MultipartFile file) throws UnknownHostException;
 
     /**
      * 多文件上传

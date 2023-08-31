@@ -108,7 +108,7 @@
                         },
                         {
                             "id": "${optionId5}",
-                            "name": "已邀请",
+                            "name": "未接受",
                             "color": 1,
                             "children": [
                                 {
@@ -180,15 +180,6 @@
                 "id": "${viewId}",
                 "frozenColumnCount": 1,
                 "rows": [
-                    {
-                        "recordId": "${recordId0}"
-                    },
-                    {
-                        "recordId": "${recordId1}"
-                    },
-                    {
-                        "recordId": "${recordId2}"
-                    }
                 ],
                 "type": 1,
                 "displayHiddenColumnWithinMirror": false,
@@ -197,26 +188,6 @@
         ]
     },
     "recordMap": {
-        "${recordId0}": {
-            "id": "${recordId0}",
-            "revisionHistory": 0,
-            "revision": 0,
-            "data": {
-            }
-        },
-        "${recordId1}": {
-            "id": "${recordId1}",
-            "revisionHistory": 0,
-            "revision": 0,
-            "data": {
-            }
-        },
-        "${recordId2}": {
-            "id": "${recordId2}",
-            "revisionHistory": 0,
-            "revision": 0,
-            "data": {
-            }
-        }
+
     }
 }

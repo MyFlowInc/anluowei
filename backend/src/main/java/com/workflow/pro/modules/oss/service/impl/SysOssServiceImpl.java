@@ -2,6 +2,8 @@ package com.workflow.pro.modules.oss.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ import com.workflow.pro.modules.oss.repository.SysOssRepository;
 import com.workflow.pro.modules.oss.service.SysOssService;
 
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,7 +72,12 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssRepository, SysOss> imp
     public List<String> upload(List<MultipartFile> files) {
         List<String> urls = new ArrayList<>();
         files.forEach(file -> {
-            urls.add(upload(file));
+            try {
+                urls.add(upload(file));
+            }
+            catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
         });
         return urls;
     }
@@ -77,7 +85,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssRepository, SysOss> imp
 
     @Override
     @Transactional
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file) throws UnknownHostException {
 
         /// 基础信息
         SysOss sysOss = parseInfo(file);
@@ -85,7 +93,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssRepository, SysOss> imp
         if (storageConfig.getEnable().equals(SystemConstant.LOCAL)) {
             String f1 = DateUtil.format(new Date(), "yyyy/MM/dd");
 
-            File folder = new File(System.getProperty("user.dir") + "/file/" + f1);
+            File folder = new File(System.getProperty("user.dir") +  System.getProperty("file.separator") + "/file/" + f1);
             folder.mkdirs();
             File dest = new File(folder, sysOss.getName());
             try {
@@ -94,9 +102,15 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssRepository, SysOss> imp
                 e.printStackTrace();
                 log.error("文件上传失败", e);
             }
-            String path = folder + "/" + sysOss.getName();
+           // String path = folder + "/" + sysOss.getName();
+            String path = "/file/" + f1 + "/" + sysOss.getName();
             sysOss.setPath(path);
-            sysOss.setBucket("local");
+
+            InetAddress ia = InetAddress.getLocalHost();
+
+            String computerIp = ia.getHostAddress();
+
+            sysOss.setBucket(computerIp);
         }
         /// 本地存储
         if (storageConfig.getEnable().equals(SystemConstant.ALIYUN)) {

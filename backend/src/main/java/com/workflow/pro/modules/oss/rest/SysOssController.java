@@ -20,6 +20,7 @@ import com.workflow.pro.common.constant.ControllerConstant;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class SysOssController extends BaseController {
      */
     @PostMapping("upload")
     @ApiOperation(value = "文件上传")
-    public Result upload(@RequestParam("file") MultipartFile file) {
+    public Result upload(@RequestParam("file") MultipartFile file) throws UnknownHostException {
         if (file.isEmpty()) {
             return failure();
         }

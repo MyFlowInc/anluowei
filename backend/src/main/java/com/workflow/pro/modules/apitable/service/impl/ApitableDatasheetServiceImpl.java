@@ -1,5 +1,6 @@
 package com.workflow.pro.modules.apitable.service.impl;
 
+import cn.hutool.db.Page;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -155,19 +156,30 @@ public class ApitableDatasheetServiceImpl extends ServiceImpl<ApitableDatasheetM
                     ids.add(developer.getDstId());
                 }
             }
+            if (ids.size() > 0) {
+                //就不查询 创建者相关
+                request.setCreateBy(null);
+                request.setIds(ids);
+            }
+            else {
+                PageResponse<ApitableDatasheet> a = new PageResponse<>();
+                a.setRecord(new ArrayList<>());
+                a.setTotal(0);
+                return a;
+            }
         }
-        if (ids.size() > 0) {
-            //就不查询 创建者相关
-            request.setCreateBy(null);
-            request.setIds(ids);
-        }
+        //1.如果传isDeveloper 就认为 只筛选我协作的
+        //2.不传 代表所有的 我创建和我协作的
+        //3.传了 先筛选 有无协作 有就id 遍历，无id 就是说 id >0 或协作者=1 都要制空查询条件
+
         //获取我协作的列表
         PageResponse<ApitableDatasheet> page = Pageable.of(request, (() -> apitableDatasheetMapper.selectApitableDatasheetList(request)));
         List<ApitableDatasheet> list = new ArrayList<>();
         for (ApitableDatasheet datasheet : page.getRecord()) {
             //如果此人在 协作表里就是协作者 如果不是就是创建者
-            ApitableDeveloper one = developerService.getOne(new QueryWrapper<ApitableDeveloper>().eq("dst_id", datasheet.getDstId()).eq("user_id", userContext.getUserId()),false);
-            if (one == null) {//为创建者
+            ApitableDeveloper one = developerService.getOne(new QueryWrapper<ApitableDeveloper>().eq("dst_id", datasheet.getDstId()).eq("user_id", userContext.getUserId()), false);
+            //为创建者 如果 不在协作 且不筛选协作
+            if (one == null) {
                 datasheet.setIsCreator(true);
                 one = new ApitableDeveloper();
                 one.setAllowEdit(1);
