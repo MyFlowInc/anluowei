@@ -219,7 +219,10 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
 export default TableColumnRender
 
-export const copyInviteLink = async (record: FlowItemTableDataType) => {
+export const copyInviteLink = async (
+  record: FlowItemTableDataType,
+  options: any = {}
+) => {
   const dstColumns = store.getState().workflow.curTableColumn
   const curDstId = store.getState().workflow.curFlowDstId
   const user = store.getState().global.user
@@ -253,7 +256,7 @@ export const copyInviteLink = async (record: FlowItemTableDataType) => {
 
     const inviteStatus = record[inviteFieldId]
 
-    if (inviteStatus === '未邀请' || !inviteStatus) {
+    if ((inviteStatus === '未邀请' || !inviteStatus) && options.stop !== 1) {
       // 修改状态
       // TODO 这个接口有没有必要用rest, 业务意图只想更新一个字段
       const { id, recordId, key, ...rest } = record

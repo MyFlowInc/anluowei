@@ -16,7 +16,6 @@ const CopyModal: React.FC = () => {
     setIsModalOpen(false)
   }
   useEffect(() => {
-    console.log(11, spanRef)
     let spanElement = spanRef.current
     if (!spanElement) {
       return

@@ -111,7 +111,6 @@ interface CellEditorItemProps {
 }
 const CellEditorItem: React.FC<CellEditorItemProps> = (props) => {
   const { item, form, setForm, modalType, record } = props
-
   return (
     <CellEditorItemRoot>
       {item.type === NumFieldType.SingleText && (
@@ -151,7 +150,10 @@ const CellEditorItem: React.FC<CellEditorItemProps> = (props) => {
         <TypeDiscuss cell={item} {...{ form, setForm }} />
       )}
       {item.type === NumFieldType.InviteStatus && (
-        <TypeInviteStatus cell={item} {...{ form, setForm, record }} />
+        <TypeInviteStatus
+          cell={item}
+          {...{ form, setForm, record, modalType }}
+        />
       )}
     </CellEditorItemRoot>
   )

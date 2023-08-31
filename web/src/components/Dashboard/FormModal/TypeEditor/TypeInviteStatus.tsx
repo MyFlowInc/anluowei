@@ -14,6 +14,7 @@ import { FlowItemTableDataType } from '../../FlowTable/core'
 interface TypeInviteStatusProps {
   cell: TableColumnItem
   form: any
+  modalType: string
   setForm: any
   record: FlowItemTableDataType
 }
@@ -22,7 +23,7 @@ let index = 0
 const TypeInviteStatus: React.FC<TypeInviteStatusProps> = (
   props: TypeInviteStatusProps
 ) => {
-  const { cell, form, setForm, record } = props
+  const { cell, form, setForm, record, modalType } = props
 
   const [items, setItems] = useState<string[]>([])
   const [value, setValue] = useState<string>('')
@@ -65,36 +66,39 @@ const TypeInviteStatus: React.FC<TypeInviteStatusProps> = (
     if (value === '已拒绝') {
       color = '#f50'
     }
-    return <Tag color={color}>{value}</Tag>
-    // return (
-    //   <div>
-    //     <Tag color={color}>{value}</Tag>
-    //     {value == '未邀请' && (
-    //       <Tag
-    //         icon={<SendOutlined />}
-    //         style={{ cursor: 'pointer' }}
-    //         color="#55acee"
-    //         onClick={() => {
-    //           copyInviteLink(record)
-    //         }}
-    //       >
-    //         生成邀约
-    //       </Tag>
-    //     )}
-    //     {['未接受', '已同意', '已拒绝'].includes(value) && (
-    //       <Tag
-    //         icon={<CopyOutlined />}
-    //         style={{ cursor: 'pointer' }}
-    //         color="#55acee"
-    //         onClick={() => {
-    //           copyInviteLink(record)
-    //         }}
-    //       >
-    //         复制
-    //       </Tag>
-    //     )}
-    //   </div>
-    // )
+    if (modalType === 'add') {
+      return <Tag color={color}>{value}</Tag>
+    }
+    return (
+      <div>
+        <Tag color={color}>{value}</Tag>
+        {value == '未邀请' && (
+          <Tag
+            icon={<SendOutlined />}
+            style={{ cursor: 'pointer' }}
+            color="#55acee"
+            onClick={() => {
+              handleSelectChange('未接受')
+              copyInviteLink(record)
+            }}
+          >
+            生成邀约
+          </Tag>
+        )}
+        {['未接受', '已同意', '已拒绝'].includes(value) && (
+          <Tag
+            icon={<CopyOutlined />}
+            style={{ cursor: 'pointer' }}
+            color="#55acee"
+            onClick={() => {
+              copyInviteLink(record, { stop: 1 })
+            }}
+          >
+            复制
+          </Tag>
+        )}
+      </div>
+    )
   } else {
     return <div></div>
   }
