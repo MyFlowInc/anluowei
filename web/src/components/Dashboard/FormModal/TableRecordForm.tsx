@@ -141,6 +141,7 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
           dstId: curDstId,
           fieldId: item.fieldId,
         };
+        setForm({ ..._.omit(form, item.fieldId) });
         await resetFieldType(params);
         dispatch(freshCurTableRows(curDstId));
       }
