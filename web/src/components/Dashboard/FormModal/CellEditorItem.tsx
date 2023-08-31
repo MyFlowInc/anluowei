@@ -26,8 +26,9 @@ import TypeEmail from './TypeEditor/TypeEmail'
 import TypePhone from './TypeEditor/TypePhone'
 import TypeMember from './TypeEditor/TypeMember'
 import TypeDiscuss from './TypeEditor/TypeDiscuss'
-import TypeTreeSelect from './TypeEditor/TypeTreeSelect'
+import TypeInviteStatus from './TypeEditor/TypeInviteStatus'
 import TypeInterviewer from './TypeEditor/TypeInterviewer'
+import { FlowItemTableDataType } from '../FlowTable/core'
 
 const FieldTypeList = [
   {
@@ -106,9 +107,10 @@ interface CellEditorItemProps {
   form: { [id: string]: string }
   setForm: (value: any) => void
   modalType: string
+  record: FlowItemTableDataType
 }
 const CellEditorItem: React.FC<CellEditorItemProps> = (props) => {
-  const { item, form, setForm, modalType } = props
+  const { item, form, setForm, modalType, record } = props
 
   return (
     <CellEditorItemRoot>
@@ -149,7 +151,7 @@ const CellEditorItem: React.FC<CellEditorItemProps> = (props) => {
         <TypeDiscuss cell={item} {...{ form, setForm }} />
       )}
       {item.type === NumFieldType.InviteStatus && (
-        <TypeTreeSelect cell={item} {...{ form, setForm }} />
+        <TypeInviteStatus cell={item} {...{ form, setForm, record }} />
       )}
     </CellEditorItemRoot>
   )

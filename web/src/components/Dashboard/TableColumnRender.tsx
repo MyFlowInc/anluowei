@@ -219,7 +219,7 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
 export default TableColumnRender
 
-const copyInviteLink = async (record: FlowItemTableDataType) => {
+export const copyInviteLink = async (record: FlowItemTableDataType) => {
   const dstColumns = store.getState().workflow.curTableColumn
   const curDstId = store.getState().workflow.curFlowDstId
   const user = store.getState().global.user
