@@ -9,6 +9,7 @@ import { getInviteList } from '../api/apitable/ds-share'
 import _ from 'lodash'
 import { useAppSelector } from '../store/hooks'
 import { selectUser } from '../store/globalSlice'
+import EmptyInvite from '../BaseUI/Empty/EmptyInvite'
 const UIROOT = styled.div`
   display: flex;
   flex-direction: column;
@@ -81,7 +82,11 @@ const Notify = () => {
       /> */}
       <div className="content" style={{ marginBottom: '16px' }}>
         {/* <NotifyHeader /> */}
-        {inviteList.length === 0 && <div>暂无邀请信息</div>}
+        {inviteList.length === 0 && (
+          <div>
+            <EmptyInvite></EmptyInvite>
+          </div>
+        )}
         {inviteList.length > 0 &&
           inviteList.map((item, index) => {
             return (
