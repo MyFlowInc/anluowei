@@ -7,25 +7,30 @@ import { Tag } from 'antd'
 import { TableColumnItem } from '../../../../store/workflowSlice'
 
 import _ from 'lodash'
+import { CopyOutlined, SendOutlined } from '@ant-design/icons'
+import { copyInviteLink } from '../../TableColumnRender'
+import { FlowItemTableDataType } from '../../FlowTable/core'
 
-interface TypeTreeSelectProps {
+interface TypeInviteStatusProps {
   cell: TableColumnItem
   form: any
+  modalType: string
   setForm: any
+  record: FlowItemTableDataType
 }
 
 let index = 0
-const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
-  props: TypeTreeSelectProps
+const TypeInviteStatus: React.FC<TypeInviteStatusProps> = (
+  props: TypeInviteStatusProps
 ) => {
-  const { cell, form, setForm } = props
+  const { cell, form, setForm, record, modalType } = props
 
   const [items, setItems] = useState<string[]>([])
   const [value, setValue] = useState<string>('')
 
   // 初始化
   useEffect(() => {
-    // console.log('useEffect--TypeTreeSelect === ', cell, 'form == =', form)
+    // console.log('useEffect--TypeInviteStatus === ', cell, 'form == =', form)
     const options = _.get(cell, 'fieldConfig.property.options')
     if (options) {
       setItems(options)
@@ -61,7 +66,39 @@ const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
     if (value === '已拒绝') {
       color = '#f50'
     }
-    return <Tag color={color}>{value}</Tag>
+    if (modalType === 'add') {
+      return <Tag color={color}>{value}</Tag>
+    }
+    return (
+      <div>
+        <Tag color={color}>{value}</Tag>
+        {value == '未邀请' && (
+          <Tag
+            icon={<SendOutlined />}
+            style={{ cursor: 'pointer' }}
+            color="#55acee"
+            onClick={() => {
+              handleSelectChange('未接受')
+              copyInviteLink(record)
+            }}
+          >
+            生成邀约
+          </Tag>
+        )}
+        {['未接受', '已同意', '已拒绝'].includes(value) && (
+          <Tag
+            icon={<CopyOutlined />}
+            style={{ cursor: 'pointer' }}
+            color="#55acee"
+            onClick={() => {
+              copyInviteLink(record, { stop: 1 })
+            }}
+          >
+            复制
+          </Tag>
+        )}
+      </div>
+    )
   } else {
     return <div></div>
   }
@@ -87,4 +124,4 @@ const TypeTreeSelect: React.FC<TypeTreeSelectProps> = (
   // )
 }
 
-export default TypeTreeSelect
+export default TypeInviteStatus

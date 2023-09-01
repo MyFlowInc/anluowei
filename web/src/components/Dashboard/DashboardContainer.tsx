@@ -69,17 +69,16 @@ const DashboardContainer: React.FC<ContainerProps> = ({
   const statusList = useAppSelector(selectCurTableStatusList) || []
   const user = useAppSelector(selectUser)
   const curDstId = useAppSelector(selectCurFlowDstId)
-
-  const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || ''
-  const [editFlowItemRecord, setEditFlowItemRecord] = useState<
-    FlowItemTableDataType | undefined
-  >(undefined)
-
   const history = useHistory()
   const { dstId } = useParams<{ dstId: string }>()
   const [loading, setLoading] = useState(true)
+  const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || ''
 
-  // for modal
+  // cur edit record data
+  const [editFlowItemRecord, setEditFlowItemRecord] = useState<
+    FlowItemTableDataType | undefined
+  >(undefined)
+  // cur edit record modal
   const [open, setOpen] = useState(false)
   const [modalType, setModalType] = useState('add')
 

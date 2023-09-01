@@ -1,7 +1,7 @@
-import CellEditor from "./CellEditor";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import styled from "styled-components";
-import _ from "lodash";
+import CellEditor from './CellEditor'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import styled from 'styled-components'
+import _ from 'lodash'
 import {
   freshCurMetaData,
   selectCurFlowDstId,
@@ -12,20 +12,21 @@ import {
   syncCurMetaDataColumn,
   WorkFlowFieldInfo,
   freshCurTableRows,
-} from "../../../store/workflowSlice";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { Modal } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+} from '../../../store/workflowSlice'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { Modal } from 'antd'
+import { ExclamationCircleFilled } from '@ant-design/icons'
 import {
   UpdateDSMetaParams,
   deleteDSMeta,
   saveDSMeta,
   updateDSMeta,
-} from "../../../api/apitable/ds-meta";
+} from '../../../api/apitable/ds-meta'
 import {
   resetFieldType,
   ResetFieldTypeParams,
-} from "../../../api/apitable/ds-record";
+} from '../../../api/apitable/ds-record'
+import { FlowItemTableDataType } from '../FlowTable/core'
 
 // 重新记录数组顺序
 const reorder = (
@@ -33,29 +34,29 @@ const reorder = (
   startIndex: number,
   endIndex: number
 ) => {
-  let result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result;
-};
-const grid = 0;
+  let result = Array.from(list)
+  const [removed] = result.splice(startIndex, 1)
+  result.splice(endIndex, 0, removed)
+  return result
+}
+const grid = 0
 // 设置样式
 const getItemStyle = (isDragging: any, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
-  userSelect: "none",
+  userSelect: 'none',
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
   // 拖拽的时候背景变化
   // background: isDragging ? "lightgreen" : "#ffffff",
   // styles we need to apply on draggables
   ...draggableStyle,
-});
+})
 
 const getListStyle = () => ({
   // background: 'black',
   padding: grid,
-  width: "100%",
-});
+  width: '100%',
+})
 
 const ItemSettingRoot = styled.div`
   display: flex;
@@ -64,48 +65,49 @@ const ItemSettingRoot = styled.div`
   height: 100%;
   overflow: auto;
   background-color: #ffffff;
-`;
+`
 const DnDRoot = styled.div`
   flex: 1;
   display: flex;
-`;
+`
 
 interface TableRecordFormProps {
-  dstColumns: WorkFlowFieldInfo[];
-  form: { [id: string]: string };
-  setForm: (value: any) => void;
-  modalType: string;
+  dstColumns: WorkFlowFieldInfo[]
+  form: { [id: string]: string }
+  setForm: (value: any) => void
+  modalType: string
+  record: FlowItemTableDataType
 }
 
 const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
-  const { dstColumns, form, setForm, modalType } = props;
+  const { dstColumns, form, setForm, modalType, record } = props
 
-  const dispatch = useAppDispatch();
-  const curDstId = useAppSelector(selectCurFlowDstId);
-  const curFlowId = useAppSelector(selectCurFlowId);
-  const metaId = useAppSelector(selectCurMetaId);
-  const curMetaData = useAppSelector(selectCurMetaData);
+  const dispatch = useAppDispatch()
+  const curDstId = useAppSelector(selectCurFlowDstId)
+  const curFlowId = useAppSelector(selectCurFlowId)
+  const metaId = useAppSelector(selectCurMetaId)
+  const curMetaData = useAppSelector(selectCurMetaData)
 
   const onDragEnd = async (result: any) => {
-    console.log("onDragEnd", result);
+    console.log('onDragEnd', result)
     if (!result.destination) {
-      return;
+      return
     }
     const res: WorkFlowFieldInfo[] = reorder(
       dstColumns,
       result.source.index,
       result.destination.index
-    );
+    )
     // TODO update
     try {
-      const meta_data = _.cloneDeep(curMetaData);
-      let temp = _.get(meta_data, "views.0") as any;
+      const meta_data = _.cloneDeep(curMetaData)
+      let temp = _.get(meta_data, 'views.0') as any
       if (temp && meta_data) {
         temp.columns = res.map((item: any) => {
           return {
             fieldId: item.fieldId,
-          };
-        });
+          }
+        })
       }
       await saveDSMeta({
         id: metaId!,
@@ -115,14 +117,14 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
         deleted: false,
         sort: null,
         tenantId: null,
-      });
+      })
       // 同步状态
-      dispatch(setCurTableColumn(res));
-      dispatch(syncCurMetaDataColumn(res));
+      dispatch(setCurTableColumn(res))
+      dispatch(syncCurMetaDataColumn(res))
     } catch (error) {
-      console.log("onDragEnd error", error);
+      console.log('onDragEnd error', error)
     }
-  };
+  }
 
   const updateFieldHandler = async (
     item: UpdateDSMetaParams,
@@ -132,48 +134,48 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
       const res = await updateDSMeta(item);
       // console.log("updateFieldHandler", item, "res=", res);
       if (!curDstId) {
-        return;
+        return
       }
-      await dispatch(freshCurMetaData(curDstId));
+      await dispatch(freshCurMetaData(curDstId))
 
       if (b && item.fieldId) {
         const params: ResetFieldTypeParams = {
           dstId: curDstId,
           fieldId: item.fieldId,
-        };
-        setForm({ ..._.omit(form, item.fieldId) });
-        await resetFieldType(params);
-        dispatch(freshCurTableRows(curDstId));
+        }
+        setForm({ ..._.omit(form, item.fieldId) })
+        await resetFieldType(params)
+        dispatch(freshCurTableRows(curDstId))
       }
     } catch (error) {
-      console.log("updateFieldHandler error", error);
+      console.log('updateFieldHandler error', error)
     }
-  };
-  const { confirm } = Modal;
+  }
+  const { confirm } = Modal
 
   const deleteFieldHandler = async (item: WorkFlowFieldInfo) => {
     confirm({
-      title: "是否确认删除?",
+      title: '是否确认删除?',
       icon: <ExclamationCircleFilled />,
-      okText: "确认",
-      okType: "danger",
-      cancelText: "取消",
+      okText: '确认',
+      okType: 'danger',
+      cancelText: '取消',
       onOk: async () => {
-        console.log("OK");
+        console.log('OK')
         const res = await deleteDSMeta({
           dstId: curDstId!,
           fieldIds: [item.fieldId],
-        });
+        })
         if (!curDstId) {
-          return;
+          return
         }
-        dispatch(freshCurMetaData(curDstId));
+        dispatch(freshCurMetaData(curDstId))
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
     <ItemSettingRoot>
@@ -183,10 +185,10 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
           onDragEnd={onDragEnd}
           // onDragUpdate={onDragUpdate}
         >
-          <div style={{ width: "100%" }}>
+          <div style={{ width: '100%' }}>
             <Droppable droppableId="droppable" type="common">
               {(provided, snapshot) => {
-                const length = dstColumns.length;
+                const length = dstColumns.length
 
                 return (
                   <div
@@ -199,8 +201,8 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
                     {dstColumns.map((item, index) => {
                       return (
                         <Draggable
-                          key={"field_" + item.fieldId}
-                          draggableId={"field_" + item.fieldId}
+                          key={'field_' + item.fieldId}
+                          draggableId={'field_' + item.fieldId}
                           index={index}
                           isDragDisabled={length === 1}
                         >
@@ -221,24 +223,25 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
                                   deleteField={deleteFieldHandler}
                                   form={form}
                                   setForm={setForm}
+                                  record={record}
                                   modalType={modalType}
                                 />
                               </div>
-                            );
+                            )
                           }}
                         </Draggable>
-                      );
+                      )
                     })}
                     {provided.placeholder}
                   </div>
-                );
+                )
               }}
             </Droppable>
           </div>
         </DragDropContext>
       </DnDRoot>
     </ItemSettingRoot>
-  );
-};
+  )
+}
 
-export default TableRecordForm;
+export default TableRecordForm
