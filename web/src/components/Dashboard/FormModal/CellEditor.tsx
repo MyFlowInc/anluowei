@@ -1,6 +1,8 @@
 import moveSvg from "../assets/move.svg";
 import { SyntheticEvent, useEffect, useState, useRef } from "react";
-import { Dropdown, Input, MenuProps, Space, Tooltip, Form } from "antd";
+import { Dropdown, Input, MenuProps, Space, Tooltip, Form, Modal } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+
 import { WorkFlowFieldInfo } from "../../../store/workflowSlice";
 import styled from "styled-components";
 import {
@@ -115,6 +117,32 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
     setName(target.value);
   };
 
+  const showConfirm = (type: any) => {
+    Modal.confirm({
+      title: "确认修改列的类型吗?",
+      icon: <ExclamationCircleFilled />,
+      content: "修改类型将会重置当前列的所有值，确认修改吗？",
+      okText: "确定",
+      okType: "danger",
+      cancelText: "取消",
+      onOk: async () => {
+        const k =
+          ReverSedNumFieldType[
+            type as unknown as keyof typeof ReverSedNumFieldType
+          ] || "NotSupport";
+        const temp: UpdateDSMetaParams = {
+          dstId: item.dstId,
+          fieldId: item.fieldId,
+          name: name, //
+          type: k,
+        };
+        await updateField(temp, true);
+        setType("view");
+      },
+      onCancel: () => {},
+    });
+  };
+
   const changeFieldName = async () => {
     const k =
       ReverSedNumFieldType[
@@ -161,21 +189,8 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
     }
     if (info.keyPath.length > 1) {
       const type = _.find(FieldTypeList, { key: info.key })?.type || "";
-
-      if (type) {
-        const k =
-          ReverSedNumFieldType[
-            type as unknown as keyof typeof ReverSedNumFieldType
-          ] || "NotSupport";
-        const temp: UpdateDSMetaParams = {
-          dstId: item.dstId,
-          fieldId: item.fieldId,
-          name: name, //
-          type: k,
-        };
-        await updateField(temp, true);
-        setType("view");
-        return;
+      if (type && type !== item.type) {
+        showConfirm(type);
       }
     }
   };
@@ -231,6 +246,7 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
           selectable: true,
           defaultSelectedKeys: [selectKey],
         }}
+        destroyPopupOnHide
       >
         <a onClick={(e) => e.preventDefault()}>
           <Space>

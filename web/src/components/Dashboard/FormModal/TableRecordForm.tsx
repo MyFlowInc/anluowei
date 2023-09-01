@@ -130,7 +130,7 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
   ) => {
     try {
       const res = await updateDSMeta(item);
-      console.log("updateFieldHandler", item, "res=", res);
+      // console.log("updateFieldHandler", item, "res=", res);
       if (!curDstId) {
         return;
       }
