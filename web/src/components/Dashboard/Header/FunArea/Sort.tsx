@@ -134,6 +134,10 @@ const SortContent: React.FC<SearchContentProps> = ({ columns }) => {
     resetSortCondition();
   }, [columns]);
 
+  useEffect(() => {
+    s !== "" && c !== "" && sort(c);
+  }, [records.length]);
+
   return (
     <Form
       form={form}

@@ -94,7 +94,6 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
       }
     });
 
-    console.log("filterRecords", filterRecords);
     dispatch(setCurTableRows(filterRecords));
   };
 
@@ -131,7 +130,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
   };
 
   React.useEffect(() => {
-    conditions.length > 0 && handleFilter();
+    conditions.length > 0 ? handleFilter() : dispatch(setCurTableRows(records));
   }, [relation, conditions]);
 
   React.useEffect(() => {

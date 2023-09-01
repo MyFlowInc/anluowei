@@ -131,8 +131,8 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
     b: boolean = false
   ) => {
     try {
-      const res = await updateDSMeta(item)
-      console.log('updateFieldHandler', item, 'res=', res)
+      const res = await updateDSMeta(item);
+      // console.log("updateFieldHandler", item, "res=", res);
       if (!curDstId) {
         return
       }
