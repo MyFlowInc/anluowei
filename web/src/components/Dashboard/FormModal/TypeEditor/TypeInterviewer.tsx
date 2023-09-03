@@ -78,6 +78,8 @@ const TypeInterviewer: React.FC<TypeInterviewerProps> = (
   const dstColumns = useAppSelector(selectCurTableColumn)
   const curDstId = useAppSelector(selectCurFlowDstId)
 
+  // 
+
   // 初始化
   useEffect(() => {
     const temp = _.get(form, cell.fieldId)

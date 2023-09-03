@@ -346,9 +346,21 @@ export const selectCurTableRecords = (state: RootState) =>
 
 export const selectMembers = (state: RootState) => state.workflow.members
 
-export const selectInviteMembers = (state: RootState) =>
-  state.workflow.inviteMembers
+export const selectInviteMembers = (state: RootState) => {
+ const list =  _.cloneDeep(state.workflow.inviteMembers)
+ const curUser = state.global.user
+ const curTable = _.find(state.workflow.WorkflowList, {dstId: state.workflow.curFlowDstId})
+ const createBy = _.get(curTable, 'createBy')
+ if(createBy === curUser.id){
+  list.push({
+    ...curUser,
+    userInfo: curUser
+  } as any)
+ }
+ return list
 
+}
+  
 export const selectCurMetaData = (state: RootState) =>
   state.workflow.curMetaData
 
