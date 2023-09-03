@@ -316,12 +316,21 @@ export const selectCurFlowName = (state: RootState) => {
   }
   return ''
 }
+// 所有表格
 export const selectAllWorkflowList = (state: RootState) => {
   return state.workflow.WorkflowList
 }
 
+// 我创建的表格
 export const selectWorkflowList = (state: RootState) => {
   return state.workflow.WorkflowList.filter((item) => item.isCreator)
+}
+// 当前选中的表格
+export const selectCurWorkflow = (state: RootState) => {
+  const curTable = _.find(state.workflow.WorkflowList, {
+    dstId: state.workflow.curFlowDstId,
+  })
+  return curTable
 }
 
 export const selectAttachedWorkflowList = (state: RootState) => {
@@ -347,20 +356,20 @@ export const selectCurTableRecords = (state: RootState) =>
 export const selectMembers = (state: RootState) => state.workflow.members
 
 export const selectInviteMembers = (state: RootState) => {
- const list =  _.cloneDeep(state.workflow.inviteMembers)
- const curUser = state.global.user
- const curTable = _.find(state.workflow.WorkflowList, {dstId: state.workflow.curFlowDstId})
- const createBy = _.get(curTable, 'createBy')
- if(createBy === curUser.id){
-  list.push({
-    ...curUser,
-    userInfo: curUser
-  } as any)
- }
- return list
-
+  const list = _.cloneDeep(state.workflow.inviteMembers)
+  const curTable = _.find(state.workflow.WorkflowList, {
+    dstId: state.workflow.curFlowDstId,
+  })
+  const createUserInfo = _.get(curTable, 'createUserInfo')
+  if (createUserInfo) {
+    list.push({
+      ...(createUserInfo as any),
+      userInfo: createUserInfo,
+    } as any)
+  }
+  return list
 }
-  
+
 export const selectCurMetaData = (state: RootState) =>
   state.workflow.curMetaData
 
