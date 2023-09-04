@@ -6,6 +6,7 @@ import { apiCall } from "../../network";
 interface ListParams {
   pageNum: number;
   pageSize: number;
+  archive?: 0 | 1;
 }
 
 interface DSTableList {
@@ -31,13 +32,9 @@ export function fetchInviteWorkflowList(
   return apiCall({
     url: "api/sys/apitableDatasheet/page",
     method: "get",
-    params: { ...data, isDeveloper: 1},
+    params: { ...data, isDeveloper: 1 },
   });
 }
-
-
-
-
 
 interface AddParams {
   deleted: boolean;
@@ -61,7 +58,8 @@ export function addWorkFlow(data: Partial<AddParams>) {
 
 interface updateParams {
   id: string;
-  dstName: string;
+  dstName?: string;
+  archive?: number;
 }
 export function updateWorkFlow(data: updateParams) {
   return apiCall({
