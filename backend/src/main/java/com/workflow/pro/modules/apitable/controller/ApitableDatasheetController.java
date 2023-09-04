@@ -95,9 +95,10 @@ public class ApitableDatasheetController extends BaseController {
     @Log(title = "数据格列表")
     @ApiOperation(value = "数据格列表")
     public Result page(ApitableDatasheetRequest request) {
-
+        if(null != request.getArchive() && request.getArchive() == 1) {
+            request.setArchive(null);
+        }
         PageResponse<ApitableDatasheet> page = apitableDatasheetService.page(request);
-
 
         return success(page);
     }

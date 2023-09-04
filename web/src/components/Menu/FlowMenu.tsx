@@ -27,10 +27,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import AddFlowMenu from "./AddFlowMenu";
-import {
-  deleteWorkFlow,
-  updateWorkFlow,
-} from "../../api/apitable/ds-table";
+import { deleteWorkFlow, updateWorkFlow } from "../../api/apitable/ds-table";
 import RenameModal from "./FlowMenuItem/RenameModal";
 import { fetchAllWorkflowList } from "../../controller/dsTable";
 
@@ -74,6 +71,7 @@ const FlowMenu = forwardRef<
   const attachedFlowList = useAppSelector(selectAttachedWorkflowList);
 
   const allFlowList = useAppSelector(selectAllWorkflowList);
+  console.log("allFlowList", allFlowList);
 
   const curFlowDstId = useAppSelector(selectCurFlowDstId);
   const dispatch = useAppDispatch();
@@ -110,6 +108,17 @@ const FlowMenu = forwardRef<
     }
     setCurRenameFlow(flowInfo);
     setIsRenameModalOpen(true);
+  };
+
+  const setArchiveHandler = async (id: string, archive: number) => {
+    try {
+      await updateWorkFlow({
+        id,
+        archive,
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   const renameWorkFlowHandler = async (id: string, dstName: string) => {
@@ -149,8 +158,7 @@ const FlowMenu = forwardRef<
   };
   // 刷新列表
   const freshWorkFlowList = async () => {
- 
-    const list = await fetchAllWorkflowList()
+    const list = await fetchAllWorkflowList();
 
     dispatch(setWorkflowList(list));
     return list;
@@ -168,6 +176,7 @@ const FlowMenu = forwardRef<
           setCurFlowDstId={setCurFlowDstId}
           deleteHandler={deleteWorkFlowHandler}
           openRenameModal={openRenameModal}
+          setArchiveHandler={setArchiveHandler}
         />
       ),
       key: item.id,
@@ -191,6 +200,7 @@ const FlowMenu = forwardRef<
               setCurFlowDstId={setCurFlowDstId}
               deleteHandler={deleteWorkFlowHandler}
               openRenameModal={openRenameModal}
+              setArchiveHandler={setArchiveHandler}
             />,
             ele.id
           )
