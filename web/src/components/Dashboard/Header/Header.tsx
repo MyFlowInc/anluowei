@@ -9,7 +9,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, notification } from "antd";
 import ShowMode from "./ShowMode";
 import TourContext from "../../../context/tour";
-import FilterArea from "./FilterArea";
 import FunArea from "./FunArea";
 import notifySvg from "./assets/notify.svg";
 import { useAppSelector } from "../../../store/hooks";
