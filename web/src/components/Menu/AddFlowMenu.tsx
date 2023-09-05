@@ -56,35 +56,27 @@ const RootUI = styled.div`
 `;
 
 const MenuItemLabel = (props: any) => {
-  const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isArchive, setIsArchive] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
   const isAdmin =
     user.roles && user.roles.some((item: any) => item.code === "fe-admin");
-
-  const handleToggleArchive = async () => {
-    const list = await fetchAllWorkflowList(!isArchive);
-    setIsArchive((pre) => !pre);
-    dispatch(setWorkflowList(list));
-  };
 
   return (
     <ItemRootUI>
       <div className="title">岗位列表</div>
       <div className="action-icon">
-        {isArchive ? (
+        {props.isArchive ? (
           <Tooltip title={"隐藏归档"}>
             <EyeOutlined
               style={{ marginRight: "12px" }}
-              onClick={handleToggleArchive}
+              onClick={props.setToggleArchive}
             />
           </Tooltip>
         ) : (
           <Tooltip title={"显示所有"}>
             <EyeInvisibleOutlined
               style={{ marginRight: "12px" }}
-              onClick={handleToggleArchive}
+              onClick={props.setToggleArchive}
             />
           </Tooltip>
         )}
