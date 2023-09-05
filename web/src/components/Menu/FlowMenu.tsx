@@ -69,9 +69,8 @@ const FlowMenu = forwardRef<
   const history = useHistory();
   const flowList = useAppSelector(selectWorkflowList);
   const attachedFlowList = useAppSelector(selectAttachedWorkflowList);
-
+  const [isArchive, setIsArchive] = useState<boolean>(false);
   const allFlowList = useAppSelector(selectAllWorkflowList);
-  console.log("allFlowList", allFlowList);
 
   const curFlowDstId = useAppSelector(selectCurFlowDstId);
   const dispatch = useAppDispatch();
@@ -116,9 +115,17 @@ const FlowMenu = forwardRef<
         id,
         archive,
       });
+      const list = await fetchAllWorkflowList(isArchive);
+      dispatch(setWorkflowList(list));
     } catch (error) {
       console.log("error", error);
     }
+  };
+
+  const toggleArchive = async () => {
+    const list = await fetchAllWorkflowList(!isArchive);
+    setIsArchive((pre) => !pre);
+    dispatch(setWorkflowList(list));
   };
 
   const renameWorkFlowHandler = async (id: string, dstName: string) => {
@@ -250,7 +257,7 @@ const FlowMenu = forwardRef<
       <HiFlowLogo />
       <div className="menu-content">
         <div className="menu-content-list">
-          <AddFlowMenu />
+          <AddFlowMenu isArchive={isArchive} setToggleArchive={toggleArchive} />
           <Menu
             mode="inline"
             selectedKeys={[curFlowDstId || ""]}

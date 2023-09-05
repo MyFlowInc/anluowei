@@ -4,15 +4,16 @@ import { useHistory, useLocation } from "react-router";
 import styled from "styled-components";
 import { WorkFlowInfo } from "../../../store/workflowSlice";
 import { documentTextOutline, settingsOutline } from "ionicons/icons";
-import { Dropdown, MenuProps, Modal } from "antd";
+import { Dropdown, MenuProps, Modal, message } from "antd";
 import { ExclamationCircleFilled, MoreOutlined } from "@ant-design/icons";
 import Cooperation from "../../Notify/Cooperation";
 import Invite from "../../Notify/Invite";
 
-const genDropItems: (isCreator: boolean) => MenuProps["items"] = (
-  isCreator: boolean
-) => {
-  if (isCreator) {
+const genDropItems: (
+  isCreator: boolean,
+  isArchive?: boolean
+) => MenuProps["items"] = (isCreator: boolean, isArchive: boolean = false) => {
+  if (isCreator && !isArchive) {
     return [
       {
         key: "edit",
@@ -33,6 +34,33 @@ const genDropItems: (isCreator: boolean) => MenuProps["items"] = (
       {
         key: "archive",
         label: <div>归档</div>,
+      },
+      {
+        key: "delete",
+        label: <div>删除</div>,
+      },
+    ];
+  } else if (isCreator && isArchive) {
+    return [
+      {
+        key: "edit",
+        label: <div>岗位设置</div>,
+      },
+      {
+        key: "rename",
+        label: <div>重命名</div>,
+      },
+      {
+        key: "invite",
+        label: <div>邀请成员</div>,
+      },
+      {
+        key: "cooperation",
+        label: <div>成员列表</div>,
+      },
+      {
+        key: "unarchive",
+        label: <div>取消归档</div>,
       },
       {
         key: "delete",
@@ -159,17 +187,22 @@ export const FlowMenuItem: React.FC<MenuItemProps> = (props) => {
       confirm({
         title: "是否确认归档?",
         icon: <ExclamationCircleFilled />,
+        content: `【${workflowInfo.dstName}】是否确认归档？其他操作人员将视为归档，查看所有可见！`,
         okText: "确认",
         okType: "danger",
         cancelText: "取消",
         onOk() {
-          console.log("OK");
           setArchiveHandler(workflowInfo.id, 1);
         },
         onCancel() {
-          console.log("Cancel");
+          // console.log("取消确认归档");
         },
       });
+    }
+
+    if (key === "unarchive") {
+      setArchiveHandler(workflowInfo.id, 0);
+      message.success(`【${workflowInfo.dstName}】已取消归档`);
     }
   };
 
@@ -177,7 +210,10 @@ export const FlowMenuItem: React.FC<MenuItemProps> = (props) => {
     <MenuItemRoot>
       <div className={titleClass.join(" ")}>{workflowInfo.dstName}</div>
       <Dropdown
-        menu={{ items: genDropItems(workflowInfo.isCreator), onClick }}
+        menu={{
+          items: genDropItems(workflowInfo.isCreator, !!workflowInfo.archive),
+          onClick,
+        }}
         placement="bottomLeft"
       >
         <MoreOutlined />
