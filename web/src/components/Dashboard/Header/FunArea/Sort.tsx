@@ -128,6 +128,7 @@ const SortContent: React.FC<SearchContentProps> = ({ columns }) => {
     form.resetFields();
     setSortValue("");
     setConditionValue("");
+    sort("createDateTime", "desc");
   };
 
   useEffect(() => {

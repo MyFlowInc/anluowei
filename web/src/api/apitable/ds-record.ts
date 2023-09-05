@@ -46,6 +46,7 @@ export function fetchDSRecord(data: DSMetaQuery): Promise<FetchRes> {
 export const fetchRecords = async (dstId: string) => {
   const response = await fetchDSRecord({ dstId });
   const res = _.get(response, "data.record") || [];
+
   // generate table data
   const temp = res.map((item, index) => {
     try {
@@ -55,6 +56,7 @@ export const fetchRecords = async (dstId: string) => {
         id: item.id + "",
         key: item.recordId + "",
         recordId: item.recordId + "",
+        createDateTime: item.createTime,
       };
     } catch (error) {
       console.log("error--", error);
