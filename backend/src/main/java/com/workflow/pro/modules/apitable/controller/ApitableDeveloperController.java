@@ -125,7 +125,8 @@ public class ApitableDeveloperController extends BaseController {
         String name = userContext.getNickName() != null ? userContext.getNickName() : userContext.getUsername();
         ApitableDatasheet dst_id = datasheet.getOne(new QueryWrapper<ApitableDatasheet>().eq("dst_id", apitableDeveloper.getDstId()), false);
         if (Objects.equals(dst_id.getCreateBy(), apitableDeveloper.getUserId())) {
-            throw new BusinessExceptionNew(3017, "不能邀请创建者");
+           // throw new BusinessExceptionNew(3017, "不能邀请创建者");
+            return success();
         }
 
 
