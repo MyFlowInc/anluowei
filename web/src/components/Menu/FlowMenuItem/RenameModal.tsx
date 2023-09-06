@@ -70,7 +70,7 @@ const RenameModal: React.FC<RenameModalProps> = (props: RenameModalProps) => {
   }
 
   return (
-    <Modal title="重命名" open={isRenameModalOpen} width={680} footer={null}>
+    <Modal title="重命名" open={isRenameModalOpen} width={680} footer={null} onCancel={cancle}>
       <FormRoot>
         {contextHolder}
         <Form layout={'horizontal'} form={form} style={{ width: '100%' }}>

@@ -8,7 +8,6 @@ export const msgCenter = (msg: any, user: User, dstId: string) => {
   console.log('msgCenter', msg, typeof msg.content)
   try {
     const data = JSON.parse(msg.content)
-    console.log(data)
     if (!data[0]) return
     const { cmd, recordId } = data[0]
 

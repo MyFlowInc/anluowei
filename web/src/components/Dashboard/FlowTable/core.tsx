@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { FlowTableContainer } from './style'
 import { Modal, Table, Space, Button, Tooltip } from 'antd'
-import { ExclamationCircleFilled, LinkOutlined } from '@ant-design/icons'
+import { ExclamationCircleFilled } from '@ant-design/icons'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import {
+  selectCopyModalProps,
   selectCurTableColumn,
   selectCurTableRows,
   selectMembers,
-  selectCurFlowDstId,
-  freshCurTableRows,
+  setCopyModalPorps,
+  TableColumnItem,
 } from '../../../store/workflowSlice'
 import _ from 'lodash'
 import { ColumnsType } from 'antd/es/table'
 import TableColumnRender from '../TableColumnRender'
 import deleteSvg from '../assets/table/delete-bin.svg'
 import editSvg from '../assets/table/edit.svg'
-import { clipboardWriteText } from '../../../util/clipboard'
-import {
-  UpdateDSCellsParams,
-  updateDSCells,
-} from '../../../api/apitable/ds-record'
-import { SocketMsgType, sendWebSocketMsg } from '../../../api/apitable/ws-msg'
-import { selectUser } from '../../../store/globalSlice'
+import CopyModal from '../../../BaseUI/CopyDialog'
+
 export interface FlowItemTableDataType {
   key: string
   flowItemId: number
@@ -80,12 +76,19 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
   } = props
   const { confirm } = Modal
   const dispatch = useAppDispatch()
-  const user = useAppSelector(selectUser)
-
-  const curDstId = useAppSelector(selectCurFlowDstId)
   const tableData = useAppSelector(selectCurTableRows)
   const dstColumns = useAppSelector(selectCurTableColumn)
   const userList = useAppSelector(selectMembers)
+  const copyModalProps = useAppSelector(selectCopyModalProps)
+  const closeCopyModal = () => {
+    dispatch(
+      setCopyModalPorps({
+        isShow: false,
+        copyText: '',
+      })
+    )
+  }
+
   const [tableColumn, setTableColumn] = useState<
     ColumnsType<FlowItemTableDataType>
   >([])
@@ -123,71 +126,10 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
     setModalType?.('edit')
     setOpen?.(true)
   }
-  const copyInviteLink = async (record: FlowItemTableDataType) => {
-    try {
-      console.log('copyInviteLink', record)
-      const invite_item = _.find(dstColumns, {
-        name_en: 'invite_status',
-      }) as any
 
-      if (!invite_item) return
-      const inviteFieldId = invite_item.fieldId
-
-      const name_item = _.find(dstColumns, {
-        name_en: 'interviewer_name',
-      }) as any
-      if (!name_item) return
-      const nameFieldId = name_item.fieldId
-
-      const path =
-        window.location.origin +
-        '/invite?recordId=' +
-        record.recordId +
-        '&&inviteFieldId=' +
-        inviteFieldId +
-        '&&nameFieldId=' +
-        nameFieldId
-      clipboardWriteText(path)
-
-      const inviteStatus = record[inviteFieldId]
-
-      if (inviteStatus === '未邀请' || !inviteStatus) {
-        // 修改状态
-        // TODO 这个接口有没有必要用rest, 业务意图只想更新一个字段
-        const { id, recordId, key, ...rest } = record
-        const params: UpdateDSCellsParams = {
-          dstId: curDstId!,
-          fieldKey: 'id',
-          records: [
-            {
-              recordId: record.recordId,
-              fields: {
-                ...rest,
-                [inviteFieldId]: '已邀请',
-              },
-            },
-          ],
-        }
-        await updateDSCells(params)
-        dispatch(freshCurTableRows(curDstId!))
-        // 同步
-        sendWebSocketMsg({
-          user,
-          dstId: curDstId!,
-          type: SocketMsgType.SetRecords,
-          recordId: record.recordId,
-          row: {
-            [inviteFieldId]: '已邀请',
-          },
-        })
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
   useEffect(() => {
     const temp = dstColumns
-      .map((item: any, cIndex: any) => {
+      .map((item: TableColumnItem, cIndex: number) => {
         return {
           ...item,
           ellipsis: true,
@@ -242,15 +184,6 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
                   />
                 </Tooltip>
               )}
-              {/* <Tooltip placement="top" title={'复制邀请链接'}>
-                <Button
-                  type="text"
-                  icon={<LinkOutlined />}
-                  onClick={() => {
-                    copyInviteLink(record)
-                  }}
-                />
-              </Tooltip> */}
             </Space>
           )
         },
@@ -270,7 +203,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
           item.width = 200
       }
     })
-    setTableColumn(columns)
+    setTableColumn(columns as any)
   }, [dstColumns, reader, writer, manager, userList])
 
   const filterTableData = (records: any[]) => {
@@ -306,6 +239,7 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = (props) => {
         scroll={{ x: true }}
         dataSource={filterTableData(tableData)}
       />
+      <CopyModal {...copyModalProps} closeModal={closeCopyModal} />
     </FlowTableContainer>
   )
 }

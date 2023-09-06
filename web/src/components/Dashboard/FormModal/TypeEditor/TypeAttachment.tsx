@@ -42,8 +42,9 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
           formData.append('file', inputTag.files[0])
           const res = await myFlowUpload(formData)
           console.log('uploadHandler', res.data.url)
-          if(res.data.url) {
-            onUrlChange(res.data.url)
+          if (res.data.url) {
+            const path = process.env.REACT_APP_BASE_SERVER_URL + res.data.url
+            onUrlChange(path)
           }
         }
       } catch (e) {
@@ -58,15 +59,13 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 
   const onUrlChange = (url: string) => {
     const file = url.split('/').pop()
-    const fileName = file?.split('-')[1] || ''
+    const fileName = file || ''
     setFileName(fileName)
     setForm({
       ...form,
       [cell.fieldId]: url,
     })
   }
-
-
 
   return (
     <div>

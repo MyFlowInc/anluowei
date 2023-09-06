@@ -3,8 +3,11 @@ import { Button, Popover, Form, Typography, Select, Segmented } from "antd";
 import { SortAscendingOutlined, CloseOutlined } from "@ant-design/icons";
 import ArrowRightFilled from "../assets/ArrowRightFilled";
 
-import { useAppDispatch } from "../../../../store/hooks";
-import { setCurTableRows } from "../../../../store/workflowSlice";
+import { useAppSelector, useAppDispatch } from "../../../../store/hooks";
+import {
+  setCurTableRows,
+  selectCurTableRows,
+} from "../../../../store/workflowSlice";
 import { NumFieldType } from "../../TableColumnRender";
 import styled from "styled-components";
 import _ from "lodash";
@@ -17,11 +20,6 @@ const getFileName = (url: string) => {
   const fileName = file?.split("-")[1] || "";
   return fileName;
 };
-
-function encode(keyword: string) {
-  const reg = /[\[\(\$\^\.\]\*\\\?\+\{\}\\|\)]/gi;
-  return keyword.replace(reg, (key) => `\\${key}`);
-}
 
 interface SortSegmentedProps {
   from: string;
@@ -52,16 +50,17 @@ SortSegmented.defaultProps = {
 };
 
 interface SearchContentProps {
-  records: any[];
   columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const SortContent: React.FC<SearchContentProps> = ({ records, columns }) => {
+const SortContent: React.FC<SearchContentProps> = ({ columns }) => {
   const [form] = Form.useForm();
+  const records = useAppSelector(selectCurTableRows);
   const dispatch = useAppDispatch();
 
-  const [s, set] = useState<string | "">("");
+  const [c, setConditionValue] = useState<string | "">("");
+  const [s, setSortValue] = useState<string | "">("");
 
   const options: SelectProps["options"] = columns.map((item: any) => {
     return {
@@ -114,20 +113,31 @@ const SortContent: React.FC<SearchContentProps> = ({ records, columns }) => {
   };
 
   const handleValuesChanged = (changedValues: any, allValues: any) => {
-    if (changedValues.condition && changedValues.condition !== "" && s !== "") {
-      sort(changedValues.condition);
+    if (changedValues.condition && changedValues.condition !== "") {
+      setConditionValue(changedValues.condition as string);
+      s !== "" && sort(changedValues.condition);
     }
   };
 
   const handleSortChange = (value: string | number) => {
-    set(value as string);
+    setSortValue(value as string);
     sort(form.getFieldValue("condition"), value as string);
   };
 
-  useEffect(() => {
+  const resetSortCondition = () => {
     form.resetFields();
-    set("");
-  }, [records, columns]);
+    setSortValue("");
+    setConditionValue("");
+    sort("createDateTime", "desc");
+  };
+
+  useEffect(() => {
+    resetSortCondition();
+  }, [columns]);
+
+  useEffect(() => {
+    s !== "" && c !== "" && sort(c);
+  }, [records.length]);
 
   return (
     <Form
@@ -140,50 +150,56 @@ const SortContent: React.FC<SearchContentProps> = ({ records, columns }) => {
       <Form.Item>
         <Typography.Text>设置排序条件</Typography.Text>
       </Form.Item>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Form.Item name="condition">
           <Select
             style={{ width: 180 }}
-            options={[{ label: "请选择条件", value: "" }, ...options]}
+            options={[{ label: "选择条件", value: "" }, ...options]}
           />
         </Form.Item>
-        <Form.Item>
-          <Segmented
-            defaultValue=""
-            options={[
-              {
-                label: (
-                  <SortSegmented from="A" to="Z" v={s === "asc" ? 1 : 0} />
-                ),
-                value: "asc",
-              },
-              {
-                label: (
-                  <SortSegmented from="Z" to="A" v={s === "desc" ? 1 : 0} />
-                ),
-                value: "desc",
-              },
-            ]}
-            onChange={handleSortChange}
-          />
-        </Form.Item>
-        {/* <Button type="text" icon={<CloseOutlined />} /> */}
+        {c !== "" && (
+          <Form.Item>
+            <Segmented
+              defaultValue=""
+              options={[
+                {
+                  label: (
+                    <SortSegmented from="A" to="Z" v={s === "asc" ? 1 : 0} />
+                  ),
+                  value: "asc",
+                },
+                {
+                  label: (
+                    <SortSegmented from="Z" to="A" v={s === "desc" ? 1 : 0} />
+                  ),
+                  value: "desc",
+                },
+              ]}
+              onChange={handleSortChange}
+            />
+            <Button
+              type="text"
+              icon={<CloseOutlined />}
+              style={{ marginLeft: "16px" }}
+              onClick={resetSortCondition}
+            />
+          </Form.Item>
+        )}
       </div>
     </Form>
   );
 };
 
 interface SortProps {
-  records: any[];
   columns: TableColumnItem[];
   children?: React.ReactNode;
 }
 
-const Sort: React.FC<SortProps> = ({ records, columns }) => {
+const Sort: React.FC<SortProps> = ({ columns }) => {
   return (
     <Popover
       placement="bottom"
-      content={<SortContent records={records} columns={columns} />}
+      content={<SortContent columns={columns} />}
       trigger="click"
     >
       <Button type="text" icon={<SortAscendingOutlined />}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
-import { Button, Form, Input } from 'antd'
+import { Button, Form } from 'antd'
 import styled from 'styled-components'
 import { StatusTag } from './StatusTag'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
@@ -201,11 +201,10 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
         recordId: '',
         row: {},
       })
+      setOpen(false)
     } catch (error) {
       console.log(error)
     }
-
-    setOpen(false)
   }
 
   const editFormItemHandler = async () => {
@@ -279,6 +278,7 @@ const CustomModal: React.FC<CustomModalProps> = (props) => {
                 form={form}
                 setForm={setForm}
                 dstColumns={dstColumns}
+                record={editFlowItemRecord!}
                 modalType={modalType}
               />
             ) : (

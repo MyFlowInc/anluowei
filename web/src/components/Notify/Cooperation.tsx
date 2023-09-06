@@ -8,7 +8,9 @@ import {
   deleteInviteUser,
   editInviteUser,
 } from '../../api/apitable/ds-share'
-const { confirm } = Modal;
+import { useAppSelector } from '../../store/hooks'
+import { selectCurWorkflow } from '../../store/workflowSlice'
+const { confirm } = Modal
 const UIListItem = styled.div`
   display: flex;
   width: fit-content;
@@ -61,6 +63,7 @@ const UIListItem = styled.div`
 const ListItem = (props: any) => {
   const { className } = props
   const { info, freshUserList } = props
+  const { isCreator } = info
   const items = [
     {
       label: <div>仅查看</div>,
@@ -75,7 +78,7 @@ const ListItem = (props: any) => {
       key: 'remove',
     },
   ]
-  const showDeleteConfirm  = (info: any, key: string) => {
+  const showDeleteConfirm = (info: any, key: string) => {
     confirm({
       title: '确认移除成员吗?',
       icon: <ExclamationCircleFilled />,
@@ -85,8 +88,7 @@ const ListItem = (props: any) => {
       onOk() {
         deleteHandler(info, key)
       },
-      onCancel() {
-      },
+      onCancel() {},
     } as any)
   }
 
@@ -132,6 +134,27 @@ const ListItem = (props: any) => {
     }
     return '仅查看'
   }
+  if (isCreator) {
+    return (
+      <UIListItem className={className}>
+        <div className="container">
+          <div className="left">
+            <div className="img-container">
+              <img src={_.get(info, 'userInfo.avatar')} className="image" />
+            </div>
+
+            <div className="word">
+              <div className="title">{_.get(info, 'userInfo.nickname')} </div>
+              <div className="content">{_.get(info, 'userInfo.phone')} </div>
+            </div>
+          </div>
+          <div>
+            <span style={{ marginRight: '22px' }}>创建者</span>
+          </div>
+        </div>
+      </UIListItem>
+    )
+  }
   return (
     <UIListItem className={className}>
       <div className="container">
@@ -146,7 +169,7 @@ const ListItem = (props: any) => {
           </div>
         </div>
 
-        <Dropdown menu={{ items, onClick:updateHandler }} trigger={['click']}>
+        <Dropdown menu={{ items, onClick: updateHandler }} trigger={['click']}>
           <div onClick={(e) => e.preventDefault()}>
             <div>
               <span style={{ marginRight: '8px' }}>{getAccessTitle(info)}</span>
@@ -183,7 +206,8 @@ const UIROOT = styled.div`
 const Cooperation = (props: any) => {
   const { className } = props
   const { isCooperationModalOpen, setIsCooperationModalOpen, editDstId } = props
-  const [useList, setUseList] = useState<any[]>([])
+  const [userList, setUserList] = useState<any[]>([])
+  const curWorkFlow = useAppSelector(selectCurWorkflow)
 
   const handleOk = () => {
     setIsCooperationModalOpen(false)
@@ -195,15 +219,24 @@ const Cooperation = (props: any) => {
 
   const fetchUserList = async () => {
     const res = await apitableDeveloperUserList(editDstId)
+    const list = []
     if (_.get(res, 'data.record')) {
-      setUseList(res.data.record)
+      list.push(...res.data.record)
     }
+    if (curWorkFlow) {
+      const createUserInfo = _.get(curWorkFlow, 'createUserInfo')
+      list.unshift({
+        ...(createUserInfo as any),
+        userInfo: createUserInfo,
+        isCreator: true,
+      })
+    }
+    setUserList(list)
   }
 
   useEffect(() => {
     isCooperationModalOpen && fetchUserList()
   }, [isCooperationModalOpen])
-
   return (
     <Modal
       title="成员列表"
@@ -218,7 +251,7 @@ const Cooperation = (props: any) => {
           <div style={{ marginRight: '48px' }}>权限</div>
         </div>
         <div className="list-content">
-          {useList.map((item, index) => {
+          {userList.map((item, index) => {
             return (
               <ListItem key={index} info={item} freshUserList={fetchUserList} />
             )

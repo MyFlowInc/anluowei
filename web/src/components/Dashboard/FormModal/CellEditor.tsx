@@ -1,8 +1,11 @@
 import moveSvg from "../assets/move.svg";
 import { SyntheticEvent, useEffect, useState, useRef } from "react";
-import { Dropdown, Input, MenuProps, Space, Tooltip, Form } from "antd";
+import { Dropdown, Input, MenuProps, Space, Tooltip, Form, Modal } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+
 import { WorkFlowFieldInfo } from "../../../store/workflowSlice";
 import styled from "styled-components";
+
 import {
   CheckOutlined,
   CloseOutlined,
@@ -25,6 +28,7 @@ import { NumFieldType, ReverSedNumFieldType } from "../TableColumnRender";
 import _, { lowerCase } from "lodash";
 import { UpdateDSMetaParams } from "../../../api/apitable/ds-meta";
 import CellEditorItem from "./CellEditorItem";
+import { FlowItemTableDataType } from "../FlowTable/core";
 const FieldTypeList = [
   {
     key: "SingleText",
@@ -92,19 +96,19 @@ const FieldTypeList = [
     type: NumFieldType.discuss,
     icon: <EditOutlined style={{ fontSize: 12 }} />,
   },
-  {
-    key: "NotSupport",
-    label: "未识别类型",
-    type: NumFieldType.NotSupport,
-    icon: <img src={errorSvg} width={12} height={12} />,
-  },
+  // {
+  //   key: "NotSupport",
+  //   label: "未识别类型",
+  //   type: NumFieldType.NotSupport,
+  //   icon: <img src={errorSvg} width={12} height={12} />,
+  // },
 ];
 
 interface EditTitleProps {
   item: WorkFlowFieldInfo;
   type: string;
   setType: (type: "view" | "edit") => void;
-  updateField: (item: UpdateDSMetaParams) => void;
+  updateField: (item: UpdateDSMetaParams, b?: boolean) => void;
   deleteField: (item: WorkFlowFieldInfo) => void;
 }
 const EditTitle: React.FC<EditTitleProps> = (props) => {
@@ -113,6 +117,32 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
   const onChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     setName(target.value);
+  };
+
+  const showConfirm = (type: any) => {
+    Modal.confirm({
+      title: "确认修改列的类型吗?",
+      icon: <ExclamationCircleFilled />,
+      content: "修改类型将会重置当前列的所有值，确认修改吗？",
+      okText: "确定",
+      okType: "danger",
+      cancelText: "取消",
+      onOk: async () => {
+        const k =
+          ReverSedNumFieldType[
+            type as unknown as keyof typeof ReverSedNumFieldType
+          ] || "NotSupport";
+        const temp: UpdateDSMetaParams = {
+          dstId: item.dstId,
+          fieldId: item.fieldId,
+          name: name, //
+          type: k,
+        };
+        await updateField(temp, true);
+        setType("view");
+      },
+      onCancel: () => {},
+    });
   };
 
   const changeFieldName = async () => {
@@ -161,21 +191,8 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
     }
     if (info.keyPath.length > 1) {
       const type = _.find(FieldTypeList, { key: info.key })?.type || "";
-
-      if (type) {
-        const k =
-          ReverSedNumFieldType[
-            type as unknown as keyof typeof ReverSedNumFieldType
-          ] || "NotSupport";
-        const temp: UpdateDSMetaParams = {
-          dstId: item.dstId,
-          fieldId: item.fieldId,
-          name: name, //
-          type: k,
-        };
-        await updateField(temp);
-        setType("view");
-        return;
+      if (type && type !== item.type) {
+        showConfirm(type);
       }
     }
   };
@@ -231,6 +248,7 @@ const EditTitle: React.FC<EditTitleProps> = (props) => {
           selectable: true,
           defaultSelectedKeys: [selectKey],
         }}
+        destroyPopupOnHide
       >
         <a onClick={(e) => e.preventDefault()}>
           <Space>
@@ -291,12 +309,14 @@ interface CellEditorProps {
   item: WorkFlowFieldInfo;
   form: { [id: string]: string };
   setForm: (value: any) => void;
-  updateField: (item: UpdateDSMetaParams) => void;
+  updateField: (item: UpdateDSMetaParams, b?: boolean) => void;
   deleteField: (item: WorkFlowFieldInfo) => void;
   modalType: string;
+  record: FlowItemTableDataType;
 }
 const CellEditor: React.FC<CellEditorProps> = (props) => {
-  const { item, updateField, deleteField, form, setForm, modalType } = props;
+  const { item, updateField, deleteField, form, setForm, modalType, record } =
+    props;
   const [type, setType] = useState("view");
   let rules: any = undefined;
 
@@ -327,7 +347,7 @@ const CellEditor: React.FC<CellEditorProps> = (props) => {
       rules = [{ type: "array" }];
       break;
     case NumFieldType.Number:
-      rules = [{ type: "number" }];
+      rules = [{ type: "number", message: "请输入有效的数字." }];
       break;
 
     default:
@@ -345,7 +365,7 @@ const CellEditor: React.FC<CellEditorProps> = (props) => {
       style={{ margin: "8px", padding: 0 }}
       rules={rules}
     >
-      <CellEditorItem {...{ item, form, setForm, modalType }} />
+      <CellEditorItem {...{ item, form, setForm, modalType, record }} />
     </Form.Item>
   );
 };

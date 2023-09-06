@@ -182,19 +182,10 @@ const Invite: React.FC = () => {
               您好！
               我司人力资源部已初审您的简历，经过初步沟通，认为您基本具备XXX岗位的任职资格，因此正式通知您来我公司参加面试。
             </p>
-            {/* <p className=" text-left mb-4 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-              面试时间：xxxxx
-            </p>
-            <p className=" text-left mb-4 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-              面试地点：xxxxx
-            </p>
-            <p className=" text-left mb-4 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-              联系人：xxxxx
-            </p> */}
             <div className="flex flex-col mb-4 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
               {inviteStatus === '已同意' && AcceptUI()}
               {inviteStatus === '已拒绝' && RejectUI()}
-              {['未邀请', '已邀请'].includes(inviteStatus) && (
+              {['未邀请', '未接受'].includes(inviteStatus) && (
                 <>
                   <span
                     onClick={rejectHandle}

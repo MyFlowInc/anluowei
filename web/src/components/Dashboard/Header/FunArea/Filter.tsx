@@ -130,7 +130,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
   };
 
   React.useEffect(() => {
-    handleFilter();
+    conditions.length > 0 ? handleFilter() : dispatch(setCurTableRows(records));
   }, [relation, conditions]);
 
   React.useEffect(() => {
@@ -167,14 +167,6 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns }) => {
       <Form.List
         name="conditions"
         initialValue={[
-          {
-            conditionName: _.get(columns, 0).fieldId,
-            conditionOperator: "eq",
-          },
-          {
-            conditionName: _.get(columns, 0).fieldId,
-            conditionOperator: "eq",
-          },
           {
             conditionName: _.get(columns, 0).fieldId,
             conditionOperator: "eq",

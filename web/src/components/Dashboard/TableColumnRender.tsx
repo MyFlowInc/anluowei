@@ -3,7 +3,11 @@ import { Button, Tag, Avatar } from 'antd'
 import { Link } from 'react-router-dom'
 import { DiscussModal } from './FormModal/TypeEditor/TypeDiscuss'
 import _ from 'lodash'
-import { flatList, freshCurTableRows } from '../../store/workflowSlice'
+import {
+  flatList,
+  freshCurTableRows,
+  setCopyModalPorps,
+} from '../../store/workflowSlice'
 import { CopyOutlined, SendOutlined } from '@ant-design/icons'
 import { clipboardWriteText } from '../../util/clipboard'
 import { FlowItemTableDataType } from './FlowTable/core'
@@ -215,7 +219,10 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 
 export default TableColumnRender
 
-const copyInviteLink = async (record: FlowItemTableDataType) => {
+export const copyInviteLink = async (
+  record: FlowItemTableDataType,
+  options: any = {}
+) => {
   const dstColumns = store.getState().workflow.curTableColumn
   const curDstId = store.getState().workflow.curFlowDstId
   const user = store.getState().global.user
@@ -243,11 +250,13 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
       inviteFieldId +
       '&&nameFieldId=' +
       nameFieldId
-    clipboardWriteText(path)
+
+    // 更换方案
+    // clipboardWriteText(path)
 
     const inviteStatus = record[inviteFieldId]
 
-    if (inviteStatus === '未邀请' || !inviteStatus) {
+    if ((inviteStatus === '未邀请' || !inviteStatus) && options.stop !== 1) {
       // 修改状态
       // TODO 这个接口有没有必要用rest, 业务意图只想更新一个字段
       const { id, recordId, key, ...rest } = record
@@ -259,7 +268,7 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
             recordId: record.recordId,
             fields: {
               ...rest,
-              [inviteFieldId]: '已邀请',
+              [inviteFieldId]: '未接受',
             },
           },
         ],
@@ -273,10 +282,17 @@ const copyInviteLink = async (record: FlowItemTableDataType) => {
         type: SocketMsgType.SetRecords,
         recordId: record.recordId,
         row: {
-          [inviteFieldId]: '已邀请',
+          [inviteFieldId]: '未接受',
         },
       })
     }
+
+    store.dispatch(
+      setCopyModalPorps({
+        isShow: true,
+        copyText: path,
+      })
+    )
   } catch (e) {
     console.log(e)
   }
@@ -387,7 +403,7 @@ const InviteSingleSelect: React.FC<{
         {text == '未邀请' && (
           <Tag
             icon={<SendOutlined />}
-            style={{ cursor: 'pointer !important' }}
+            style={{ cursor: 'pointer' }}
             color="#55acee"
             onClick={() => {
               copyInviteLink(record)
@@ -396,10 +412,10 @@ const InviteSingleSelect: React.FC<{
             生成邀约
           </Tag>
         )}
-        {['已邀请', '已同意', '已拒绝'].includes(text) && (
+        {['未接受', '已同意', '已拒绝'].includes(text) && (
           <Tag
             icon={<CopyOutlined />}
-            style={{ cursor: 'pointer !important' }}
+            style={{ cursor: 'pointer' }}
             color="#55acee"
             onClick={() => {
               copyInviteLink(record)
@@ -437,7 +453,7 @@ const MultiSelect: React.FC<{
 
 const getFileName = (url: string) => {
   const file = url.split('/').pop()
-  const fileName = file?.split('-')[1] || ''
+  const fileName = file || ''
   return fileName
 }
 

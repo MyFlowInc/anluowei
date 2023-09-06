@@ -11,6 +11,7 @@ import {
   setCurTableColumn,
   syncCurMetaDataColumn,
   WorkFlowFieldInfo,
+  freshCurTableRows,
 } from '../../../store/workflowSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { Modal } from 'antd'
@@ -21,6 +22,11 @@ import {
   saveDSMeta,
   updateDSMeta,
 } from '../../../api/apitable/ds-meta'
+import {
+  resetFieldType,
+  ResetFieldTypeParams,
+} from '../../../api/apitable/ds-record'
+import { FlowItemTableDataType } from '../FlowTable/core'
 
 // 重新记录数组顺序
 const reorder = (
@@ -70,10 +76,11 @@ interface TableRecordFormProps {
   form: { [id: string]: string }
   setForm: (value: any) => void
   modalType: string
+  record: FlowItemTableDataType
 }
 
 const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
-  const { dstColumns, form, setForm, modalType } = props
+  const { dstColumns, form, setForm, modalType, record } = props
 
   const dispatch = useAppDispatch()
   const curDstId = useAppSelector(selectCurFlowDstId)
@@ -119,14 +126,27 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
     }
   }
 
-  const updateFieldHandler = async (item: UpdateDSMetaParams) => {
+  const updateFieldHandler = async (
+    item: UpdateDSMetaParams,
+    b: boolean = false
+  ) => {
     try {
-      const res = await updateDSMeta(item)
-      console.log('updateFieldHandler', item, 'res=', res)
+      const res = await updateDSMeta(item);
+      // console.log("updateFieldHandler", item, "res=", res);
       if (!curDstId) {
         return
       }
       await dispatch(freshCurMetaData(curDstId))
+
+      if (b && item.fieldId) {
+        const params: ResetFieldTypeParams = {
+          dstId: curDstId,
+          fieldId: item.fieldId,
+        }
+        setForm({ ..._.omit(form, item.fieldId) })
+        await resetFieldType(params)
+        dispatch(freshCurTableRows(curDstId))
+      }
     } catch (error) {
       console.log('updateFieldHandler error', error)
     }
@@ -203,6 +223,7 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
                                   deleteField={deleteFieldHandler}
                                   form={form}
                                   setForm={setForm}
+                                  record={record}
                                   modalType={modalType}
                                 />
                               </div>
