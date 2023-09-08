@@ -1,8 +1,8 @@
 /**
- * type=3 
+ * type=3
  */
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, KeyboardEventHandler } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { Divider, Input, Select, Space, Button } from 'antd'
 import type { InputRef } from 'antd'
@@ -21,7 +21,7 @@ import _ from 'lodash'
 interface TypeSelectEditorProps {
   mode?: 'multiple'
   cell: TableColumnItem
-  form:any 
+  form: any
   setForm: any
 }
 
@@ -29,8 +29,7 @@ let index = 0
 const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
   props: TypeSelectEditorProps
 ) => {
-  const { mode, cell,form, setForm } = props
-
+  const { mode, cell, form, setForm } = props
 
   const [items, setItems] = useState<string[]>([])
   const [name, setName] = useState('')
@@ -47,7 +46,9 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
   const addItem = async (
     e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
   ) => {
-    e.preventDefault()
+    console.log(111, e)
+    e && e.preventDefault()
+    e && e.stopPropagation()
     const text = name || `选项${index++}`
     const options = [...items, text]
     try {
@@ -83,11 +84,11 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
   useEffect(() => {
     // console.log('useEffect--TypeSelectEditor === ', cell, 'form == =',form)
     const options = _.get(cell, 'fieldConfig.property.options')
-    if(options) {
+    if (options) {
       setItems(options)
     }
-    const temp = _.get(form, cell.fieldId) 
-    if(!temp){
+    const temp = _.get(form, cell.fieldId)
+    if (!temp) {
       mode === 'multiple' ? setValue([]) : setValue('')
     } else {
       setValue(temp)
@@ -105,8 +106,6 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
     console.log('onChangeContent', form)
   }
 
- 
-  
   return (
     <Select
       style={{ width: '100%' }}
@@ -120,10 +119,11 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
           <Divider style={{ margin: '8px 0' }} />
           <Space style={{ padding: '0 8px 4px' }}>
             <Input
-              placeholder="Please enter item"
+              placeholder="请输入"
               ref={inputRef}
               value={name}
               onChange={onNameChange}
+              onPressEnter={addItem as any}
             />
             <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
               添加项
