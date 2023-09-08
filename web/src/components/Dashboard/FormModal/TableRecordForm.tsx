@@ -84,7 +84,6 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
 
   const dispatch = useAppDispatch()
   const curDstId = useAppSelector(selectCurFlowDstId)
-  const curFlowId = useAppSelector(selectCurFlowId)
   const metaId = useAppSelector(selectCurMetaId)
   const curMetaData = useAppSelector(selectCurMetaData)
 
@@ -131,7 +130,7 @@ const TableRecordForm: React.FC<TableRecordFormProps> = (props) => {
     b: boolean = false
   ) => {
     try {
-      const res = await updateDSMeta(item);
+      const res = await updateDSMeta(item)
       // console.log("updateFieldHandler", item, "res=", res);
       if (!curDstId) {
         return
